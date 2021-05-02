@@ -5,6 +5,7 @@
 
 import * as React from 'react';
 import { Text as DefaultText, View as DefaultView } from 'react-native';
+import { Card as DefaultCard } from 'react-native-elements'; 
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -43,4 +44,29 @@ export function View(props: ViewProps) {
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+}
+
+export function Card(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'card');
+
+  return <DefaultCard containerStyle={[{ backgroundColor }, { borderWidth: 0, width: '95%', borderRadius: 10 }, style]} {...otherProps} />;
+}
+
+export function Separator(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'separator');
+
+  return (
+    <View 
+      style={[
+      { backgroundColor },   
+      {
+        marginVertical: 30,
+        height: 1,
+        width: '80%'
+      }]}
+      {...otherProps}
+    />
+  )
 }
