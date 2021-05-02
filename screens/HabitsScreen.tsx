@@ -2,9 +2,9 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react'; 
 import { themeColor } from '../constants/Colors';
-import { Text, View, Card, Separator } from '../components/Themed';
+import { Text, View, Card, Separator, CheckBox } from '../components/Themed';
+import ThemeButton from '../components/ThemeButton'; 
 import { ScrollView } from 'react-native'; 
-import { CheckBox } from 'react-native-elements'; 
 import { CheckBoxType } from '../types'; 
 import firebase from '../firebase'; 
 import '@firebase/firestore'
@@ -30,21 +30,32 @@ const dataRemaining = {
 export default function HabitsScreen() {
   const [currentDate, setCurrentDate] = useState('');
   const [remainingHabits, setRemainingHabits] = useState<CheckBoxType[]>([]);
-  const [finishedHabits, setFinishedHabits] = useState<CheckBoxType[]>([]); 
+  const [finishedHabits, setFinishedHabits] = useState<CheckBoxType[]>([]);
+  const [habits, setHabits] = useState<string[]>([]); 
+
+  const db = firebase.firestore(); 
+  const habitsRef = db.collection('Habits');
+  const daysRef = db.collection('Days'); 
 
   useEffect(() => {
-    async function test() {
-      firebase.firestore().collection('test').add({ 'hello': 'asdf' })
-    }
-    // const db = firebase.database().ref('data'); 
-    // db.push().set('test'); 
-    // setCurrentDate(getDateString()); 
 
-    // setRemainingHabits(dataRemaining['remaining']); 
+    setCurrentDate(getDateString()); 
+    setRemainingHabits(dataRemaining['remaining']);
 
-    // setFinishedHabits(dataRemaining['finished']); 
-    test()
+    setFinishedHabits(dataRemaining['finished']);
   }, [])
+
+  async function getHabits() {
+    return await firebase.firestore().collection('Habits'); 
+  }
+
+  async function getRemainingHabits() {
+    return await firebase.firestore().collection('remainingHabits'); 
+  }
+
+  async function getFinishedHabits() {
+    return await firebase.firestore().collection('finishedHabits'); 
+  }
 
   function changeHabitCheckedStatus(id: number, checked: boolean) {
     console.log('ere', id, checked)
@@ -84,9 +95,8 @@ export default function HabitsScreen() {
                   />
         })}
       </ScrollView>
-      <Card>
-        <Text>hellomoto</Text>
-      </Card>
+      <ThemeButton title="New Habit" />
+      <ThemeButton title="Finish Day" />
     </View>
   );
 }
@@ -100,14 +110,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    alignSelf: 'flex-start', 
+    marginLeft: 20
   },
   date: {
     fontSize: 15, 
-    fontWeight: 'bold'
+    fontWeight: 'bold', 
+    marginVertical: 10,
   },
   separator: {
-    borderColor: 'red', 
-    marginVertical: 0,
+    marginBottom: 30,
     height: 1,
     width: '80%',
   }, 

@@ -4,11 +4,12 @@
  */
 
 import * as React from 'react';
-import { Text as DefaultText, View as DefaultView } from 'react-native';
-import { Card as DefaultCard } from 'react-native-elements'; 
+import { Text as DefaultText, View as DefaultView, Button } from 'react-native';
+import { Card as DefaultCard, CheckBox as DefaultCheckBox } from 'react-native-elements'; 
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
+import {themeColor} from '../constants/Colors'; 
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
@@ -62,11 +63,28 @@ export function Separator(props: ViewProps) {
       style={[
       { backgroundColor },   
       {
-        marginVertical: 30,
         height: 1,
         width: '80%'
-      }]}
+      }, style]}
       {...otherProps}
     />
   )
+}
+
+export function CheckBox(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const textColor = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+
+  return (
+    <DefaultCheckBox 
+      containerStyle={[
+        {backgroundColor: 'transparent'}, 
+        { borderWidth: 0, width: '95%', marginLeft: 30, padding: 0 }, 
+        style
+      ]}
+      textStyle={{color: textColor}}
+      checkedColor={themeColor}
+      {...otherProps} 
+    />
+  );
 }
