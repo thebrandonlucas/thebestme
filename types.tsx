@@ -5,7 +5,7 @@
 
 export type RootStackParamList = {
   Root: undefined;
-  Settings: undefined; 
+  Settings: undefined;
   NotFound: undefined;
 };
 
@@ -42,8 +42,13 @@ export type SettingsParamList = {
 };
 
 export type CheckBoxType = {
-  id: number; 
-  title: string; 
-  checked: boolean; 
-  checkedTitle?: string; 
-}
+  id: number;
+  title: string;
+  checked: boolean;
+  checkedTitle?: string;
+};
+
+export type DateTime = {
+  date: string;
+  time: string;
+};

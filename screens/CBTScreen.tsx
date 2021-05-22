@@ -1,39 +1,56 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View, Card } from '../components/Themed';
-// import {  } from '../components/Themed'; 
+import TextInputModal from '../components/TextInputModal';
+import ThemeButton from '../components/ThemeButton';
+import { Card, Text, View } from '../components/Themed';
+import { themeColor } from '../constants/Colors';
+import { getDateString } from '../utils';
 
 export default function CBTScreen() {
+  const { date } = getDateString();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
-      <Card style={styles.t}>
-        <Text>hellomoto</Text>
-      </Card>
-    </View>
+    <>
+      <View style={styles.container}>
+        <Text style={[styles.date, { color: themeColor }]}>{date}</Text>
+        <View style={styles.inputContainer}>
+          <Card style={{ margin: 0 }}>
+            <TextInputModal label="Situation" />
+            <TextInputModal label="Thoughts" />
+            <TextInputModal label="Emotions" />
+            <TextInputModal label="Behaviors" />
+            <TextInputModal label="Alternative Thoughts" />
+          </Card>
+        </View>
+        <View style={styles.buttonContainer}>
+          <ThemeButton title="Save Entry" />
+          <ThemeButton title="Past Entries" />
+        </View>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 20,
+  date: {
+    fontSize: 15,
     fontWeight: 'bold',
+    margin: 10,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  }, 
-  t: {
-    borderRadius: 10
-  }
+  inputContainer: {
+    width: '100%',
+    margin: 0,
+    aspectRatio: 5 / 6,
+  },
+  buttonContainer: {
+    justifyContent: 'space-between',
+    width: '100%',
+    alignItems: 'center',
+    top: '5%',
+    aspectRatio: 7 / 2,
+  },
 });

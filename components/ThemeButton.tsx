@@ -1,21 +1,21 @@
-import * as React from 'react'; 
-import { themeColor } from '../constants/Colors'; 
-import { Button } from 'react-native-elements'; 
+import * as React from 'react';
+import { Button } from 'react-native-elements';
+import { Colors } from '../constants';
 
 export default function ThemeButton(props: any) {
-    const { style, ...otherProps } = props;
+  const { style, ...otherProps } = props;
 
-    return (
-        <Button 
-            buttonStyle={{
-                backgroundColor: themeColor
-            }}
-            containerStyle={{
-                width: '80%', 
-                marginVertical: 10,
-                borderRadius: 8
-            }}
-            { ...otherProps }
-        />
-    );
+  return (
+    <Button
+      buttonStyle={{
+        backgroundColor: Colors.themeColor,
+        padding: 10,
+      }}
+      containerStyle={{
+        width: '90%',
+        borderRadius: 8,
+      }}
+      {...otherProps}
+    />
+  );
 }

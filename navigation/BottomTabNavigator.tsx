@@ -2,37 +2,34 @@
  * Learn more about createBottomTabNavigator:
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import { MaterialIcons } from '@expo/vector-icons';
-import { FontAwesome } from '@expo/vector-icons';
-import { Foundation } from '@expo/vector-icons';
-
+import {
+  FontAwesome,
+  Foundation,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-
+import { Icon } from 'react-native-elements/dist/icons/Icon';
+import MyCircleButton from '../components/HeaderButtons/MyCircleButton';
+import SettingsButton from '../components/HeaderButtons/SettingsButton';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-
+import AWAREScreen from '../screens/AWAREScreen';
+import CBTScreen from '../screens/CBTScreen';
+import DataScreen from '../screens/DataScreen';
 import HabitsScreen from '../screens/HabitsScreen';
 import JournalScreen from '../screens/JournalScreen';
-import CBTScreen from '../screens/CBTScreen';
-import AWAREScreen from '../screens/AWAREScreen';
-import DataScreen from '../screens/DataScreen';
-
 import {
-  BottomTabParamList, 
-  HabitsParamList, 
-  JournalParamList, 
-  CBTParamList,
   AWAREParamList,
-  DataParamList, 
+  BottomTabParamList,
+  CBTParamList,
+  DataParamList,
+  HabitsParamList,
+  JournalParamList,
 } from '../types';
-import { Icon } from 'react-native-elements/dist/icons/Icon';
-
-import SettingsButton from '../components/HeaderButtons/SettingsButton';
-import MyCircleButton from '../components/HeaderButtons/MyCircleButton';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -42,41 +39,67 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Habits"
-      tabBarOptions={{ activeTintColor: 'white', inactiveTintColor: '#bbb', style: { backgroundColor: Colors[colorScheme].themeColor } }}>
-
+      tabBarOptions={{
+        activeTintColor: 'white',
+        inactiveTintColor: '#bbb',
+        style: { backgroundColor: Colors[colorScheme].themeColor },
+      }}
+    >
       <BottomTab.Screen
         name="Habits"
         component={HabitsNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} iconComponent={FontAwesome} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="home" color={color} iconComponent={FontAwesome} />
+          ),
         }}
       />
       <BottomTab.Screen
         name="Journal"
         component={JournalNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="menu-book" color={color} iconComponent={MaterialIcons} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon
+              name="menu-book"
+              color={color}
+              iconComponent={MaterialIcons}
+            />
+          ),
         }}
       />
       <BottomTab.Screen
         name="CBT"
         component={CBTNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="thought-bubble" color={color} iconComponent={MaterialCommunityIcons} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon
+              name="thought-bubble"
+              color={color}
+              iconComponent={MaterialCommunityIcons}
+            />
+          ),
         }}
       />
       <BottomTab.Screen
         name="AWARE"
         component={AWARENavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="magnifying-glass" color={color} iconComponent={Foundation} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon
+              name="magnifying-glass"
+              color={color}
+              iconComponent={Foundation}
+            />
+          ),
         }}
       />
       <BottomTab.Screen
         name="Data"
         component={DataNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="stats-chart" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="stats-chart" color={color} />
+          ),
         }}
       />
     </BottomTab.Navigator>
@@ -85,17 +108,29 @@ export default function BottomTabNavigator() {
 
 // You can explore the built-in icon families and icons on the web at:
 // https://icons.expo.fyi/
-function TabBarIcon(props: { name: any; color: string, iconComponent?: React.ComponentProps<typeof Icon> }) {
+function TabBarIcon(props: {
+  name: any;
+  color: string;
+  iconComponent?: React.ComponentProps<typeof Icon>;
+}) {
   switch (props.iconComponent) {
     case MaterialCommunityIcons:
-      return <MaterialCommunityIcons size={30} style={{ marginBottom: -3 }} {...props} />;
-    case FontAwesome: 
+      return (
+        <MaterialCommunityIcons
+          size={30}
+          style={{ marginBottom: -3 }}
+          {...props}
+        />
+      );
+    case FontAwesome:
       return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-    case MaterialIcons: 
-      return <MaterialIcons size={30} style={{ marginBottom: -3 }} {...props} />;
-    case Foundation: 
+    case MaterialIcons:
+      return (
+        <MaterialIcons size={30} style={{ marginBottom: -3 }} {...props} />
+      );
+    case Foundation:
       return <Foundation size={30} style={{ marginBottom: -3 }} {...props} />;
-    default: 
+    default:
       return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
   }
 }
@@ -103,13 +138,9 @@ function TabBarIcon(props: { name: any; color: string, iconComponent?: React.Com
 function headerOptions(title: string) {
   return {
     headerTitle: title,
-    headerLeft: () => (
-      <MyCircleButton />
-    ),
-    headerRight: () => (
-        <SettingsButton />
-    )
-  }
+    headerLeft: () => <MyCircleButton />,
+    headerRight: () => <SettingsButton />,
+  };
 }
 
 // Each tab has its own navigation stack, you can read more about this pattern here:

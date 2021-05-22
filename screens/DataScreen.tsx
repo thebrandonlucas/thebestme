@@ -1,19 +1,22 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View, Card } from '../components/Themed';
-// import {  } from '../components/Themed'; 
+import CalendarTestData from '../components/CalendarTestData';
+import { Calendar, Card, Text, View } from '../components/Themed';
+import { themeColor } from '../constants/Colors';
+import { getDateString } from '../utils/index.ts';
 
 export default function DataScreen() {
+  const { date } = getDateString();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
-      <Card style={styles.t}>
-        <Text>hellomoto</Text>
-      </Card>
+      <Text style={[styles.date, { color: themeColor }]}>{date}</Text>
+      <Calendar
+        style={styles.calendar}
+        markingType="period"
+        markedDates={CalendarTestData}
+      />
+      <Card style={styles.cardContainer} />
     </View>
   );
 }
@@ -24,16 +27,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 20,
+  date: {
+    fontSize: 15,
     fontWeight: 'bold',
+    margin: 10,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  }, 
-  t: {
-    borderRadius: 10
-  }
+  calendar: {
+    width: '100%',
+    aspectRatio: 1,
+  },
+  cardContainer: {
+    width: '100%',
+    aspectRatio: 2 / 1,
+  },
 });
