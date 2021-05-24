@@ -1,4 +1,4 @@
-import Colors from './Colors.ts';
-import Layout from './Layout.ts';
+import Colors from './Colors';
+import Layout from './Layout';
 
 export { Colors, Layout };

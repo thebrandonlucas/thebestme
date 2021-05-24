@@ -3,8 +3,8 @@ import { StyleSheet } from 'react-native';
 import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
-import { themeColor } from '../constants/Colors';
-import { getDateString } from '../utils/index';
+import { Colors } from '../constants';
+import getDateString from '../utils/index';
 
 export default function CBTScreen() {
   const { date } = getDateString();
@@ -12,7 +12,7 @@ export default function CBTScreen() {
   return (
     <>
       <View style={styles.container}>
-        <Text style={[styles.date, { color: themeColor }]}>{date}</Text>
+        <Text style={[styles.date, { color: Colors.themeColor }]}>{date}</Text>
         <View style={styles.inputContainer}>
           <Card style={{ margin: 0 }}>
             <TextInputModal label="Acknowledge and Accept" />
@@ -23,8 +23,14 @@ export default function CBTScreen() {
           </Card>
         </View>
         <View style={styles.buttonContainer}>
-          <ThemeButton title="Save Entry" />
-          <ThemeButton title="Past Entries" />
+          <ThemeButton
+            title="Save Entry"
+            onPress={() => console.log('Implement')}
+          />
+          <ThemeButton
+            title="Past Entries"
+            onPress={() => console.log('Implement')}
+          />
         </View>
       </View>
     </>

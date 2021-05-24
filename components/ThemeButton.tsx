@@ -1,9 +1,10 @@
 import * as React from 'react';
+import { ButtonProps } from 'react-native';
 import { Button } from 'react-native-elements';
 import { Colors } from '../constants';
 
-export default function ThemeButton(props: any) {
-  const { style, ...otherProps } = props;
+export default function ThemeButton(props: ButtonProps) {
+  const { title } = props;
 
   return (
     <Button
@@ -11,11 +12,13 @@ export default function ThemeButton(props: any) {
         backgroundColor: Colors.themeColor,
         padding: 10,
       }}
-      containerStyle={{
-        width: '90%',
-        borderRadius: 8,
-      }}
-      {...otherProps}
+      containerStyle={[
+        {
+          width: '90%',
+          borderRadius: 8,
+        },
+      ]}
+      title={title}
     />
   );
 }

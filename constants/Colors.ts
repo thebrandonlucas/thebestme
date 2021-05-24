@@ -1,11 +1,11 @@
 const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
-export const themeColor = '#039678';
-export const happyGreen = '#3eb489';
-export const neutralYellow = '#cfb53b';
-export const sadRed = '#a32638';
 
 export default {
+  themeColor: '#039678',
+  happyGreen: '#3eb489',
+  neutralYellow: '#cfb53b',
+  sadRed: '#a32638',
   light: {
     text: '#000',
     background: '#efefef',
@@ -14,7 +14,6 @@ export default {
     tabIconSelected: tintColorLight,
     card: '#fff',
     separator: '#999',
-    themeColor,
     mutedText: '#777',
     strongMutedText: '#eee',
   },
@@ -26,7 +25,6 @@ export default {
     tabIconSelected: tintColorDark,
     card: '#222',
     separator: '#555',
-    themeColor,
     mutedText: '#bbb',
     strongMutedText: '#333',
   },

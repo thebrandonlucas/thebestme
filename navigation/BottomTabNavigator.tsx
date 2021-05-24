@@ -12,11 +12,10 @@ import {
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { Icon } from 'react-native-elements/dist/icons/Icon';
+import { Icon } from 'react-native-elements';
 import MyCircleButton from '../components/HeaderButtons/MyCircleButton';
 import SettingsButton from '../components/HeaderButtons/SettingsButton';
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
+import { Colors } from '../constants';
 import AWAREScreen from '../screens/AWAREScreen';
 import CBTScreen from '../screens/CBTScreen';
 import DataScreen from '../screens/DataScreen';
@@ -34,22 +33,20 @@ import {
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
   return (
     <BottomTab.Navigator
       initialRouteName="Habits"
       tabBarOptions={{
         activeTintColor: 'white',
         inactiveTintColor: '#bbb',
-        style: { backgroundColor: Colors[colorScheme].themeColor },
+        style: { backgroundColor: Colors.themeColor },
       }}
     >
       <BottomTab.Screen
         name="Habits"
         component={HabitsNavigator}
         options={{
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <TabBarIcon name="home" color={color} iconComponent={FontAwesome} />
           ),
         }}
@@ -58,7 +55,7 @@ export default function BottomTabNavigator() {
         name="Journal"
         component={JournalNavigator}
         options={{
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <TabBarIcon
               name="menu-book"
               color={color}
@@ -71,7 +68,7 @@ export default function BottomTabNavigator() {
         name="CBT"
         component={CBTNavigator}
         options={{
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <TabBarIcon
               name="thought-bubble"
               color={color}
@@ -84,7 +81,7 @@ export default function BottomTabNavigator() {
         name="AWARE"
         component={AWARENavigator}
         options={{
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <TabBarIcon
               name="magnifying-glass"
               color={color}
@@ -97,8 +94,12 @@ export default function BottomTabNavigator() {
         name="Data"
         component={DataNavigator}
         options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="stats-chart" color={color} />
+          tabBarIcon: ({ color }: { color: string }) => (
+            <TabBarIcon
+              name="stats-chart"
+              color={color}
+              iconComponent={Ionicons}
+            />
           ),
         }}
       />
@@ -106,34 +107,73 @@ export default function BottomTabNavigator() {
   );
 }
 
-// You can explore the built-in icon families and icons on the web at:
-// https://icons.expo.fyi/
-function TabBarIcon(props: {
+interface TabBarIconProps {
   name: any;
   color: string;
   iconComponent?: React.ComponentProps<typeof Icon>;
-}) {
+}
+
+// You can explore the built-in icon families and icons on the web at:
+// https://icons.expo.fyi/
+function TabBarIcon(props: TabBarIconProps) {
+  const { color, iconComponent, name } = props;
   switch (props.iconComponent) {
     case MaterialCommunityIcons:
       return (
         <MaterialCommunityIcons
           size={30}
           style={{ marginBottom: -3 }}
-          {...props}
+          color={color}
+          iconComponent={iconComponent}
+          name={name}
         />
       );
     case FontAwesome:
-      return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
+      return (
+        <FontAwesome
+          size={30}
+          style={{ marginBottom: -3 }}
+          color={color}
+          iconComponent={iconComponent}
+          name={name}
+        />
+      );
     case MaterialIcons:
       return (
-        <MaterialIcons size={30} style={{ marginBottom: -3 }} {...props} />
+        <MaterialIcons
+          size={30}
+          style={{ marginBottom: -3 }}
+          color={color}
+          iconComponent={iconComponent}
+          name={name}
+        />
       );
     case Foundation:
-      return <Foundation size={30} style={{ marginBottom: -3 }} {...props} />;
+      return (
+        <Foundation
+          size={30}
+          style={{ marginBottom: -3 }}
+          color={color}
+          iconComponent={iconComponent}
+          name={name}
+        />
+      );
     default:
-      return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
+      return (
+        <Ionicons
+          size={30}
+          style={{ marginBottom: -3 }}
+          color={color}
+          iconComponent={iconComponent}
+          name={name}
+        />
+      );
   }
 }
+
+TabBarIcon.defaultProps = {
+  iconComponent: Icon,
+};
 
 function headerOptions(title: string) {
   return {

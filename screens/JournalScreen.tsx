@@ -7,11 +7,11 @@ import {
 } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Input, Separator, Text, View } from '../components/Themed';
-import Colors, { themeColor } from '../constants/Colors';
-import { getDateString } from '../utils/index';
+import { Colors } from '../constants';
+import getDateString from '../utils/index';
 
 export default function JournalScreen() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme() ?? 'dark';
   const [text, onChangeText] = useState<string>('');
   const { date } = getDateString();
 
@@ -20,17 +20,19 @@ export default function JournalScreen() {
       <View style={styles.headerContainer}>
         <Text>
           <TouchableWithoutFeedback>
-            <Text style={[styles.headerText, { color: themeColor }]}>
+            <Text style={[styles.headerText, { color: Colors.themeColor }]}>
               {date}
             </Text>
           </TouchableWithoutFeedback>
         </Text>
         <Text>
           <TouchableOpacity>
-            <Text style={[styles.headerText, { color: themeColor }]}>Save</Text>
+            <Text style={[styles.headerText, { color: Colors.themeColor }]}>
+              Save
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity>
-            <Text style={[styles.headerText, { color: themeColor }]}>
+            <Text style={[styles.headerText, { color: Colors.themeColor }]}>
               Past Entries
             </Text>
           </TouchableOpacity>

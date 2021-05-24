@@ -2,15 +2,22 @@ import * as React from 'react';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
+import { Colors } from '../constants';
 import { Card, Input, Text, useThemeColor } from './Themed';
 
-export default function TextInputModal({
-  label,
-  inputStyle,
-  inputContainerStyle,
-  lightColor,
-  darkColor,
-}) {
+interface TextInputModalProps {
+  label: string;
+  lightColor?: string;
+  darkColor?: string;
+}
+
+TextInputModal.defaultProps = {
+  lightColor: Colors.light.mutedText,
+  darkColor: Colors.dark.mutedText,
+};
+
+export default function TextInputModal(props: TextInputModalProps) {
+  const { label, lightColor, darkColor } = props;
   const mutedTextColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'mutedText'

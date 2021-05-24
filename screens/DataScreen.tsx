@@ -2,15 +2,15 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import CalendarTestData from '../components/CalendarTestData';
 import { Calendar, Card, Text, View } from '../components/Themed';
-import { themeColor } from '../constants/Colors';
-import { getDateString } from '../utils/index.ts';
+import { Colors } from '../constants';
+import getDateString from '../utils';
 
 export default function DataScreen() {
   const { date } = getDateString();
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.date, { color: themeColor }]}>{date}</Text>
+      <Text style={[styles.date, { color: Colors.themeColor }]}>{date}</Text>
       <Calendar
         style={styles.calendar}
         markingType="period"

@@ -1,7 +1,11 @@
 {
+  "strict": true,
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "jsx": "react",
-    "strict": true
-  }
+    "alwaysStrict": true,
+    "lib": [
+      "es5", "es6", "dom", "dom.iterable"
+    ]
+  },
 }

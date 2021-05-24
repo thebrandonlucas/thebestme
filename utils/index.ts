@@ -1,6 +1,6 @@
 import { DateTime } from '../types';
 
-export function getDateString(): DateTime {
+export default function getDateString(): DateTime {
   const monthNames = [
     'January',
     'February',
@@ -36,8 +36,4 @@ export function getDateString(): DateTime {
     hour12: true,
   });
   return { date, time };
-}
-
-export function ns(): string {
-  return '';
 }

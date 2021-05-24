@@ -3,17 +3,15 @@ import React from 'react';
 import { Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
-import useColorScheme from '../../hooks/useColorScheme';
 
 export default function MyCircleButton() {
-  const colorScheme = useColorScheme();
   return (
     <TouchableOpacity onPress={myCircleAlert}>
       <Ionicons
         name="alert-circle"
         size={30}
         style={{ marginLeft: 30 }}
-        color={Colors[colorScheme].themeColor}
+        color={Colors.themeColor}
       />
     </TouchableOpacity>
   );

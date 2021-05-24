@@ -2,6 +2,7 @@
  * Learn more about using TypeScript with React Navigation:
  * https://reactnavigation.org/docs/typescript/
  */
+import React from 'react';
 
 export type RootStackParamList = {
   Root: undefined;
@@ -52,3 +53,9 @@ export type DateTime = {
   date: string;
   time: string;
 };
+
+export type GetComponentProps<T> = T extends
+  | React.ComponentType<infer P>
+  | React.Component<infer P>
+  ? P
+  : never;

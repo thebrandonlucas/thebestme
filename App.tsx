@@ -12,6 +12,7 @@ export default function App() {
   if (!isLoadingComplete) {
     return null;
   }
+  // TODO: How to pass colorScheme as a prop through the app?
   return (
     <SafeAreaProvider>
       <Navigation colorScheme={colorScheme} />
