@@ -4,7 +4,7 @@ import { Button } from 'react-native-elements';
 import { Colors } from '../constants';
 
 export default function ThemeButton(props: ButtonProps) {
-  const { title } = props;
+  const { title, onPress } = props;
 
   return (
     <Button
@@ -19,6 +19,7 @@ export default function ThemeButton(props: ButtonProps) {
         },
       ]}
       title={title}
+      onPress={onPress}
     />
   );
 }

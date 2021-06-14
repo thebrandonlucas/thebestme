@@ -25,10 +25,12 @@ export default function CBTScreen() {
         <View style={styles.buttonContainer}>
           <ThemeButton
             title="Save Entry"
+            testID="save"
             onPress={() => console.log('Implement')}
           />
           <ThemeButton
             title="Past Entries"
+            testID="pastEntries"
             onPress={() => console.log('Implement')}
           />
         </View>

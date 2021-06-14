@@ -6,6 +6,9 @@ import React from 'react';
 
 export type RootStackParamList = {
   Root: undefined;
+  BottomTabNavigator: undefined;
+  Signup: undefined;
+  Login: undefined;
   Settings: undefined;
   NotFound: undefined;
 };
@@ -52,6 +55,12 @@ export type CheckBoxType = {
 export type DateTime = {
   date: string;
   time: string;
+};
+
+export type HabitType = {
+  id: number;
+  checked: boolean;
+  title: string;
 };
 
 export type GetComponentProps<T> = T extends

@@ -221,7 +221,7 @@ function CBTNavigator() {
       <CBTStack.Screen
         name="CBTScreen"
         component={CBTScreen}
-        options={() => headerOptions('Cognitive Behavioral Therapy')}
+        options={() => headerOptions('CBT')}
       />
     </CBTStack.Navigator>
   );
@@ -235,7 +235,7 @@ function AWARENavigator() {
       <AWAREStack.Screen
         name="AWAREScreen"
         component={AWAREScreen}
-        options={() => headerOptions('AWARE - Panic Attack Prevention')}
+        options={() => headerOptions('AWARE')}
       />
     </AWAREStack.Navigator>
   );

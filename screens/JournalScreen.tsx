@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 15,
     margin: 10,
-    // fontWeight: 'bold',
   },
   separator: {
     margin: 5,

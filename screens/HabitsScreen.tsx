@@ -1,14 +1,16 @@
-import '@firebase/firestore';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import ThemeButton from '../components/ThemeButton';
 import { Card, CheckBox, Text, View } from '../components/Themed';
 import { Colors } from '../constants';
-import { CheckBoxType } from '../types';
+import firebase from '../firebase';
+import { CheckBoxType, HabitType } from '../types';
 import getDateString from '../utils';
+import { useHabits } from '../hooks/useHabits';
+import { connect } from 'react-redux';
 
-const dataRemaining = {
+const data = {
   remaining: [
     { id: 1, title: 'box 1', checked: false },
     { id: 2, title: 'box 2', checked: false },
@@ -27,27 +29,21 @@ const dataRemaining = {
   ],
 };
 
-export default function HabitsScreen() {
+const db = firebase.firestore();
+
+
+function HabitsScreen(props) {
   const [currentDate, setCurrentDate] = useState('');
-  const [remainingHabits, setRemainingHabits] = useState<CheckBoxType[]>([]);
-  const [finishedHabits, setFinishedHabits] = useState<CheckBoxType[]>([]);
-  // const [habits, setHabits] = useState<string[]>([]);
+  // const [remainingHabits, setRemainingHabits] = useState<CheckBoxType[]>([]);
+  // const [finishedHabits, setFinishedHabits] = useState<CheckBoxType[]>([]);
 
-  // const db = firebase.firestore();
-  // const habitsRef = db.collection('Habits');
-  // const daysRef = db.collection('Days');
-
+  console.log('props', props);
+  const remainingHabits = useHabits(1, true);
+  const finishedHabits = useHabits(1, false);
+  console.log('fin', finishedHabits)
   useEffect(() => {
     setCurrentDate(getDateString().date);
-    setRemainingHabits(dataRemaining.remaining);
-
-    setFinishedHabits(dataRemaining.finished);
   }, []);
-
-  // TODO: implement
-  // async function getHabits() {
-  //   return await firebase.firestore().collection('Habits');
-  // }
 
   // async function getRemainingHabits() {
   //   return await firebase.firestore().collection('remainingHabits');
@@ -68,6 +64,7 @@ export default function HabitsScreen() {
 
   return (
     <View style={styles.container}>
+      <Text>Welcome, {props.user.username}</Text>
       <Text style={[styles.date, { color: Colors.themeColor }]}>
         {currentDate}
       </Text>
@@ -106,15 +103,23 @@ export default function HabitsScreen() {
         <ThemeButton
           title="New Habit"
           onPress={() => console.log('Implement')}
+          testID="newHabit"
         />
         <ThemeButton
           title="Finish Day"
           onPress={() => console.log('Implement')}
+          testID="finishDay"
         />
       </View>
     </View>
   );
 }
+
+const mapStateToProps = state => {
+  return state;
+}
+
+export default connect(mapStateToProps)(HabitsScreen);
 
 const styles = StyleSheet.create({
   container: {
