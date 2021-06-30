@@ -1,32 +1,40 @@
 import firebase from 'firebase';
 import { useState, useEffect } from 'react';
 import { HabitType } from '../types';
+import { useCollection } from 'react-firebase-hooks/firestore';
 
 
 const db = firebase.firestore();
 /** 
  * hook to get habits from firebase
- * @param {number} userId - ID of currently logged in user
- * @param {boolean} isRemaining - Bool for whether to get remaining habits or finshed habits.
- * @return {null}
  */
 // TODO: implement user id
-export function useHabits(userId: number, isRemaining: boolean) {
-    const [habits, setHabits] = useState<HabitType[]>([]);
+export function useHabits() {
+    const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
+    const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
+
+    const [habits, loading, error] = useCollection(firebase.firestore().collection('habits'));
 
     useEffect(() => {
-        const collectionName = isRemaining ? 'remaining' : 'finished';
-        db.collection(collectionName).onSnapshot((snapshot) => {
-            const newHabits = [];
-            snapshot.docs.map((doc) => {
-                let habit;
-                habit = doc.data();
-                habit.id = doc.id;
-                console.log('id', doc.id)
-                newHabits.push(habit);
+        if (!loading) {
+            
+            const remaining = [], finished = [];
+            habits.docs.map((doc) => {
+                const habit = {
+                    id: doc.id,
+                    ...doc.data()
+                };
+                if (habit.checked) {
+                    finished.push(habit)
+                } else {
+                    remaining.push(habit)
+                }
             });
-            setHabits(newHabits);
-        });
-    }, []);
-    return habits;
+            setRemainingHabits(remaining);
+            setFinishedHabits(finished);
+        }
+        
+    }, [loading, habits]);
+    
+    return [remainingHabits, finishedHabits, loading, error];
 }

@@ -47,7 +47,7 @@ export type SettingsParamList = {
 
 export type CheckBoxType = {
   id: number;
-  title: string;
+  text: string;
   checked: boolean;
   checkedTitle?: string;
 };

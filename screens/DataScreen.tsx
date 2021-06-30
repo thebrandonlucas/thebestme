@@ -16,7 +16,9 @@ export default function DataScreen() {
         markingType="period"
         markedDates={CalendarTestData}
       />
-      <Card style={styles.cardContainer} />
+      <Card style={styles.cardContainer}>
+        <Text>More Coming Soon!</Text>
+      </Card>
     </View>
   );
 }

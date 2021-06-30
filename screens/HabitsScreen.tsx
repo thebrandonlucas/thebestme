@@ -10,95 +10,96 @@ import getDateString from '../utils';
 import { useHabits } from '../hooks/useHabits';
 import { connect } from 'react-redux';
 
-const data = {
-  remaining: [
-    { id: 1, title: 'box 1', checked: false },
-    { id: 2, title: 'box 2', checked: false },
-    { id: 3, title: 'box 3', checked: false },
-    { id: 4, title: 'box 4', checked: false },
-  ],
-  finished: [
-    { id: 5, title: 'box 5', checked: true },
-    { id: 6, title: 'box 6', checked: true },
-    { id: 7, title: 'box 7', checked: true },
-    { id: 8, title: 'box 8', checked: true },
-    { id: 9, title: 'box 5', checked: true },
-    { id: 10, title: 'box 6', checked: true },
-    { id: 11, title: 'box 7', checked: true },
-    { id: 12, title: 'box 8', checked: true },
-  ],
-};
+
+
 
 const db = firebase.firestore();
 
-
 function HabitsScreen(props) {
   const [currentDate, setCurrentDate] = useState('');
+  const [checked, setChecked] = useState(false);
   // const [remainingHabits, setRemainingHabits] = useState<CheckBoxType[]>([]);
   // const [finishedHabits, setFinishedHabits] = useState<CheckBoxType[]>([]);
 
-  console.log('props', props);
-  const remainingHabits = useHabits(1, true);
-  const finishedHabits = useHabits(1, false);
-  console.log('fin', finishedHabits)
+  // TODO: reverse logic for true/false
+  // FIXME: is using the useeffect hook like this 
+  // the most effecient way to use it? Does it waste any reads?
+  // const [remainingHabits, loading, error] = useCollection(firebase.firestore().collection('remaining'));
+
+  const [remainingHabits, finishedHabits, loading, error] = useHabits();
+
   useEffect(() => {
     setCurrentDate(getDateString().date);
+    console.log(remainingHabits)
   }, []);
 
-  // async function getRemainingHabits() {
-  //   return await firebase.firestore().collection('remainingHabits');
-  // }
 
-  // async function getFinishedHabits() {
-  //   return await firebase.firestore().collection('finishedHabits');
-  // }
-
-  // function changeHabitCheckedStatus(id: number, checked: boolean) {
-  //   console.log('ere', id, checked);
-  //   if (!checked) {
-  //     console.log('data', dataRemaining.remaining[id]);
-  //   } else {
-  //     dataRemaining.finished[id];
-  //   }
-  // }
+  /** 
+  * Brief description of the function here.
+  * @summary If the description is long, write your summary here. Otherwise, feel free to remove this.
+  * @param {string} parameterNameHere - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
+  * @return {ReturnValueDataTypeHere} Brief description of the returning value here.
+  */
+  function toggleHabit(id: string, checked: boolean): void {
+    // TODO: make all refs (i.e. 'habits' here) variables
+    db.collection('habits').doc(id).update({ checked: !checked });
+  }
 
   return (
     <View style={styles.container}>
-      <Text>Welcome, {props.user.username}</Text>
+      {/* <Text>Welcome, {props.user.username}</Text> */}
       <Text style={[styles.date, { color: Colors.themeColor }]}>
         {currentDate}
       </Text>
-      <View style={styles.cardContainer}>
-        <Card style={[styles.card, { marginBottom: 10 }]}>
-          <Text style={styles.title}>Remaining</Text>
-          <ScrollView style={styles.scrollList}>
-            {remainingHabits.map((habit) => (
-              <CheckBox
-                key={habit.id}
-                checked={habit.checked}
-                checkedTitle={habit.title}
-                title={habit.title}
-                // onPress={() =>
-                //   changeHabitCheckedStatus(habit.id, habit.checked)
-                // }
-              />
-            ))}
-          </ScrollView>
-        </Card>
-        <Card style={styles.card}>
-          <Text style={styles.title}>Finished</Text>
-          <ScrollView style={styles.scrollList}>
-            {finishedHabits.map((habit) => (
-              <CheckBox
-                key={habit.id}
-                checked={habit.checked}
-                checkedTitle={habit.title}
-                title={habit.title}
-              />
-            ))}
-          </ScrollView>
-        </Card>
-      </View>
+      {
+        !loading ? 
+        <View style={styles.cardContainer}>
+          <Card style={[styles.card, { marginBottom: 10 }]}>
+            <Text style={styles.title}>Remaining</Text>
+            <ScrollView style={styles.scrollList}>
+                {remainingHabits.length ? 
+               <>
+                {remainingHabits.map((habit) => (
+                                  <CheckBox
+                                    key={habit.id}
+                                    checked={habit.checked}
+                                    checkedTitle={habit.text}
+                                    title={habit.text}
+                                    onPress={() => toggleHabit(habit.id, habit.checked)}
+                                  />
+                                ))}
+               </>
+                  
+
+                  :
+                <Text>You've completed all your habits today! Hooray!</Text>
+                  
+                }
+                </ScrollView>
+              
+          </Card>
+          <Card style={styles.card}>
+            <Text style={styles.title}>Finished</Text>
+            <ScrollView style={styles.scrollList}>
+              {finishedHabits.map((habit) => (
+                <CheckBox
+                  key={habit.id}
+                  checked={habit.checked}
+                  checkedTitle={habit.text}
+                  title={habit.text}
+                  onPress={() => toggleHabit(habit.id, habit.checked)}
+                />
+              ))}
+            </ScrollView>
+          </Card>
+        </View>
+        :
+        // TODO: impl spinner
+        <Text>Loading...</Text>
+      }
+      { error && 
+        <Text>{JSON.stringify(error)}</Text>
+      }
       <View style={styles.buttonContainer}>
         <ThemeButton
           title="New Habit"
@@ -116,7 +117,9 @@ function HabitsScreen(props) {
 }
 
 const mapStateToProps = state => {
-  return state;
+  // console.log('state',state)
+  const { user } = state;
+  return user;
 }
 
 export default connect(mapStateToProps)(HabitsScreen);

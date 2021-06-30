@@ -66,18 +66,27 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
         <Input label="Email" placeholder="thebestme@example.com" onChangeText={handleInputEmailChange}/>
-        <Input label="Password" secureTextEntry keyboardType="visible-password" placeholder="Keep it secret! Keep it safe!" onChangeText={handlePasswordInputChange} />
-        <ThemeButton
-          title="Login"
-          onPress={handleLogin}
-          testID="login"
-        />
-        <ThemeButton
-          title="Sign Up"
-          onPress={goToSignUp}
-          testID="signUp"
-        />
-      <Button onPress={() => submit()} title="Forgot Password?" />
+        <Input label="Password" 
+          secureTextEntry
+          keyboardType="visible-password"
+          placeholder="Keep it secret! Keep it safe!"
+          onChangeText={handlePasswordInputChange}/>
+        
+        <View style={styles.buttonContainer}>
+          <ThemeButton
+            title="Login"
+            onPress={handleLogin}
+            testID="login"
+          />
+          <ThemeButton
+            title="Sign Up"
+            onPress={goToSignUp}
+            testID="signUp"
+          />
+          <Button onPress={() => submit()} title="Forgot Password?" />
+        </View>
+        
+      
     </View>
   );
 }
@@ -96,5 +105,12 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  buttonContainer: {
+    justifyContent: 'space-between',
+    width: '100%',
+    alignItems: 'center',
+    top: '5%',
+    aspectRatio: 7 / 3,
   },
 });

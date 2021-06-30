@@ -104,7 +104,7 @@ export function Separator(props: ViewProps) {
 }
 
 export function CheckBox(props: CheckBoxProps) {
-  const { checked, checkedTitle, title, style, lightColor, darkColor } = props;
+  const { checked, checkedTitle, title, style, lightColor, darkColor, onPress } = props;
   const textColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'text'
@@ -122,6 +122,7 @@ export function CheckBox(props: CheckBoxProps) {
       checked={checked}
       checkedTitle={checkedTitle}
       title={title}
+      onPress={onPress}
     />
   );
 }
@@ -138,6 +139,10 @@ export const Input = (props: InputProps) => {
     inputContainerStyle,
     lightColor,
     darkColor,
+    keyboardType,
+    secureTextEntry,
+    maxLength,
+    placeholderTextColor,
     onChangeText,
   } = props;
   const textColor = useThemeColor(
@@ -155,6 +160,8 @@ export const Input = (props: InputProps) => {
       style={style}
       inputStyle={{ color: textColor, ...inputStyle }}
       inputContainerStyle={[inputContainerStyle]}
+      keyboardType={keyboardType}
+      secureTextEntry={secureTextEntry}
       onChangeText={onChangeText}
     />
   );

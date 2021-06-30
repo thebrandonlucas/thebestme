@@ -2,6 +2,7 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
+    "eslint.validate": [ "javascript", "javascriptreact", "html", "typescriptreact" ],
     "files.eol": "\n",
     "typescript.preferences.importModuleSpecifier": "relative"
 }
