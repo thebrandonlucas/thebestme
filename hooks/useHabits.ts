@@ -10,8 +10,8 @@ const db = firebase.firestore();
  */
 // TODO: implement user id
 export function useHabits() {
-    const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
-    const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
+    const [remainingHabits, setRemainingHabits] = useState<any[]>([]);
+    const [finishedHabits, setFinishedHabits] = useState<any[]>([]);
 
     const [habits, loading, error] = useCollection(firebase.firestore().collection('habits'));
 

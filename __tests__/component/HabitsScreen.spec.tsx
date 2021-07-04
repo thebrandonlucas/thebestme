@@ -6,11 +6,12 @@ import HabitsScreen from '../../screens/HabitsScreen';
 describe('HabitsScreen', () => {
   it('should render buttons', () => {
     const { queryByTestId } = render(<HabitsScreen />);
-    expect(queryByTestId('newHabit')).not.toBeNull();
     expect(queryByTestId('finishDay')).not.toBeNull();
   });
 
-  it('should display date', () => {});
+  it('should display date', () => {
+
+  });
 
   it('should render remaining habits', () => {
     // TODO: mock firebase call

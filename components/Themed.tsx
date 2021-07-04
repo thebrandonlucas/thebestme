@@ -4,6 +4,7 @@
  */
 
 import * as React from 'react';
+import { forwardRef } from 'react';
 import { Text as DefaultText, View as DefaultView } from 'react-native';
 import { Calendar as DefaultCalendar } from 'react-native-calendars';
 import {
@@ -127,7 +128,7 @@ export function CheckBox(props: CheckBoxProps) {
   );
 }
 
-export const Input = (props: InputProps) => {
+export const Input = forwardRef((props: InputProps, ref: React.ForwardedRef<any>) => {
   const {
     label,
     value,
@@ -136,6 +137,7 @@ export const Input = (props: InputProps) => {
     multiline,
     style,
     inputStyle,
+    containerStyle,
     inputContainerStyle,
     lightColor,
     darkColor,
@@ -152,6 +154,7 @@ export const Input = (props: InputProps) => {
 
   return (
     <DefaultInput
+      ref={ref}
       label={label}
       value={value}
       placeholder={placeholder}
@@ -159,13 +162,14 @@ export const Input = (props: InputProps) => {
       multiline={multiline}
       style={style}
       inputStyle={{ color: textColor, ...inputStyle }}
+      containerStyle={containerStyle}
       inputContainerStyle={[inputContainerStyle]}
       keyboardType={keyboardType}
       secureTextEntry={secureTextEntry}
       onChangeText={onChangeText}
     />
   );
-};
+});
 
 export const Calendar = (props: any) => {
   const { markedDates, markingType, style, lightColor, darkColor } = props;
