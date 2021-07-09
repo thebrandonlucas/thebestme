@@ -11,7 +11,7 @@ import {
 import { connect } from 'react-redux';
 import ThemeButton from '../components/ThemeButton';
 import { Card, CheckBox, Input, Text, View } from '../components/Themed';
-import { Colors } from '../constants';
+import { Colors, Collections } from '../constants';
 import firebase from '../firebase';
 import { useHabits } from '../hooks/useHabits';
 import getDateString from '../utils';
@@ -21,6 +21,8 @@ const db = firebase.firestore();
 export default function HabitsScreen() {
   const [currentDate, setCurrentDate] = useState('');
   const [addingHabit, setAddingHabit] = useState(false);
+  const [editingHabit, setEditingHabit] = useState(false);
+  const [habitId, setHabitId] = useState('');
   const [habitText, setHabitText] = useState<string>('');
   const [remainingHabits, finishedHabits, loading, error] = useHabits();
   const colorScheme = useColorScheme();
@@ -29,10 +31,10 @@ export default function HabitsScreen() {
   // FIXME: should useLayoutEffect be used for DOM manipulation?
   useEffect(() => {
     setCurrentDate(getDateString().date);
-    if (addingHabit) {
-      // inputRef.current.focus();
+    if (addingHabit || editingHabit) {
+      inputRef.current.focus();
     }
-  }, []);
+  }, [addingHabit, editingHabit]);
 
   /**
    * Toggle the habit "checked" status
@@ -41,8 +43,7 @@ export default function HabitsScreen() {
    * @return {void}
    */
   function toggleHabit(id: string, checked: boolean): void {
-    // TODO: make all refs (i.e. 'habits' here) variables
-    db.collection('habits').doc(id).update({ checked: !checked });
+    db.collection(Collections.habits).doc(id).update({ checked: !checked });
   }
 
   /**
@@ -58,8 +59,14 @@ export default function HabitsScreen() {
    * @return {void}
    */
   function clickCheck(): void {
-    addHabit();
-    setAddingHabit(false);
+    if (addingHabit) {
+      addHabit();
+      setAddingHabit(false);
+    } else {
+      updateHabit();
+      setEditingHabit(false);
+      setHabitText('');
+    }
   }
 
   /**
@@ -88,11 +95,42 @@ export default function HabitsScreen() {
     setHabitText('');
   }
 
+  /**
+   * Update a habit's text
+   * @return {void}
+   */
+  function updateHabit(): void {
+    db.collection('habits').doc(habitId).update({ text: habitText });
+    setEditingHabit(false);
+  }
+
+  /**
+   * Click handler for the "Edit" button
+   * @param {string} id - The habit id
+   * @param {string} text - The edited habit text
+   * @return {void}
+   */
+  function clickEdit(id: string, text: string): void {
+    setEditingHabit(true);
+    setHabitText(text);
+    setHabitId(id);
+  }
+
+  /**
+   * Click handler for the "Delete" button
+   * @return {void}
+   */
+  function clickDelete(): void {
+    db.collection('habits').doc(habitId).delete();
+    setEditingHabit(false);
+    setHabitText('');
+  }
+
   return (
     <View style={styles.container}>
       {/* <Text>Welcome, {props.user.username}</Text> */}
       <View style={styles.headerContainer}>
-        {!addingHabit ? (
+        {!addingHabit && !editingHabit ? (
           <>
             <Text style={[styles.date, { color: Colors.themeColor }]}>
               {currentDate}
@@ -104,7 +142,7 @@ export default function HabitsScreen() {
         ) : (
           <>
             <Input
-              // ref={inputRef}
+              ref={inputRef}
               containerStyle={styles.addHabitInputContainer}
               // inputContainerStyle={{borderColor: 'green', borderWidth: 1, paddingHorizontal: 0, paddingVertical: 0, marginVertical: 0,}}
               placeholder="Add a habit"
@@ -114,12 +152,12 @@ export default function HabitsScreen() {
             <View style={styles.addHabitIconContainer}>
               <TouchableOpacity
                 style={[styles.date, styles.closeIcon]}
-                onPress={clickClose}
+                onPress={editingHabit ? clickDelete : clickClose}
               >
                 <AntDesign
                   name="close"
                   size={24}
-                  color={Colors[colorScheme].mutedText}
+                  color={editingHabit ? Colors.sadRed : Colors[colorScheme].mutedText}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -138,7 +176,7 @@ export default function HabitsScreen() {
             <Card style={[styles.card, { marginBottom: 10 }]}>
               <Text style={styles.title}>Remaining</Text>
               <ScrollView style={styles.scrollList}>
-                {remainingHabits.length ? (
+                {remainingHabits.length !== 0 ? (
                   <>
                     {remainingHabits.map((habit) => (
                       <CheckBox
@@ -146,7 +184,8 @@ export default function HabitsScreen() {
                         checked={habit.checked}
                         checkedTitle={habit.text}
                         title={habit.text}
-                        onPress={() => toggleHabit(habit.id, habit.checked)}
+                        onIconPress={() => toggleHabit(habit.id, habit.checked)}
+                        onPress={() => clickEdit(habit.id, habit.text)}
                       />
                     ))}
                   </>
@@ -158,7 +197,7 @@ export default function HabitsScreen() {
             <Card style={styles.card}>
               <Text style={styles.title}>Finished</Text>
               <ScrollView style={styles.scrollList}>
-                {finishedHabits.length ? (
+                {finishedHabits.length !== 0 ? (
                   <>
                     {finishedHabits.map((habit) => (
                       <CheckBox
@@ -166,7 +205,8 @@ export default function HabitsScreen() {
                         checked={habit.checked}
                         checkedTitle={habit.text}
                         title={habit.text}
-                        onPress={() => toggleHabit(habit.id, habit.checked)}
+                        onIconPress={() => toggleHabit(habit.id, habit.checked)}
+                        onPress={() => clickEdit(habit.text)}
                       />
                     ))}
                   </>

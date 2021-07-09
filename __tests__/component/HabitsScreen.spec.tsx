@@ -1,6 +1,8 @@
 import { render } from '@testing-library/react-native';
 import React from 'react';
 import HabitsScreen from '../../screens/HabitsScreen';
+import {rest} from 'msw'
+import {setupServer} from 'msw/node'
 // TODO: import firebase api caller
 
 describe('HabitsScreen', () => {
@@ -26,4 +28,12 @@ describe('HabitsScreen', () => {
   it('should save the journal entry', () => {});
 
   it('should redirect to past entries', () => {});
+
+  it('should add a habit', () => {});
+
+  it('should delete a habit', () => {});
+
+  it('should edit a habit', () => {});
+
+  it ('should navigate to finish day page', () => {});
 });
