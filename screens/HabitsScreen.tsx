@@ -10,18 +10,19 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import ThemeButton from '../components/ThemeButton';
-import { Card, CheckBox, Input, Text, View } from '../components/Themed';
+import { Card, Input, Text, View } from '../components/Themed';
 import { Colors, Collections } from '../constants';
 import firebase from '../firebase';
 import { useHabits } from '../hooks/useHabits';
 import getDateString from '../utils';
+import HabitContainer from '../components/HabitContainer';
 
 const db = firebase.firestore();
 
 export default function HabitsScreen() {
   const [currentDate, setCurrentDate] = useState('');
-  const [addingHabit, setAddingHabit] = useState(false);
-  const [editingHabit, setEditingHabit] = useState(false);
+  const [isAddingHabit, setIsAddingHabit] = useState(false);
+  const [isEditingHabit, setIsEditingHabit] = useState(false);
   const [habitId, setHabitId] = useState('');
   const [habitText, setHabitText] = useState<string>('');
   const [remainingHabits, finishedHabits, loading, error] = useHabits();
@@ -31,10 +32,10 @@ export default function HabitsScreen() {
   // FIXME: should useLayoutEffect be used for DOM manipulation?
   useEffect(() => {
     setCurrentDate(getDateString().date);
-    if (addingHabit || editingHabit) {
+    if (isAddingHabit || isEditingHabit) {
       inputRef.current.focus();
     }
-  }, [addingHabit, editingHabit]);
+  }, [isAddingHabit, isEditingHabit]);
 
   /**
    * Toggle the habit "checked" status
@@ -51,7 +52,7 @@ export default function HabitsScreen() {
    * @return {void}
    */
   function clickPlus(): void {
-    setAddingHabit(true);
+    setIsAddingHabit(true);
   }
 
   /**
@@ -59,12 +60,12 @@ export default function HabitsScreen() {
    * @return {void}
    */
   function clickCheck(): void {
-    if (addingHabit) {
+    if (isAddingHabit) {
       addHabit();
-      setAddingHabit(false);
+      setIsAddingHabit(false);
     } else {
       updateHabit();
-      setEditingHabit(false);
+      setIsEditingHabit(false);
       setHabitText('');
     }
   }
@@ -74,7 +75,7 @@ export default function HabitsScreen() {
    * @return {void}
    */
   function clickClose(): void {
-    setAddingHabit(false);
+    setIsAddingHabit(false);
   }
 
   /**
@@ -90,8 +91,8 @@ export default function HabitsScreen() {
       checked: false,
     };
 
-    db.collection('habits').add(habit);
-    setAddingHabit(false);
+    db.collection(Collections.habits).add(habit);
+    setIsAddingHabit(false);
     setHabitText('');
   }
 
@@ -100,8 +101,8 @@ export default function HabitsScreen() {
    * @return {void}
    */
   function updateHabit(): void {
-    db.collection('habits').doc(habitId).update({ text: habitText });
-    setEditingHabit(false);
+    db.collection(Collections.habits).doc(habitId).update({ text: habitText });
+    setIsEditingHabit(false);
   }
 
   /**
@@ -111,7 +112,7 @@ export default function HabitsScreen() {
    * @return {void}
    */
   function clickEdit(id: string, text: string): void {
-    setEditingHabit(true);
+    setIsEditingHabit(true);
     setHabitText(text);
     setHabitId(id);
   }
@@ -121,8 +122,8 @@ export default function HabitsScreen() {
    * @return {void}
    */
   function clickDelete(): void {
-    db.collection('habits').doc(habitId).delete();
-    setEditingHabit(false);
+    db.collection(Collections.habits).doc(habitId).delete();
+    setIsEditingHabit(false);
     setHabitText('');
   }
 
@@ -130,7 +131,7 @@ export default function HabitsScreen() {
     <View style={styles.container}>
       {/* <Text>Welcome, {props.user.username}</Text> */}
       <View style={styles.headerContainer}>
-        {!addingHabit && !editingHabit ? (
+        {!isAddingHabit && !isEditingHabit ? (
           <>
             <Text style={[styles.date, { color: Colors.themeColor }]}>
               {currentDate}
@@ -144,7 +145,6 @@ export default function HabitsScreen() {
             <Input
               ref={inputRef}
               containerStyle={styles.addHabitInputContainer}
-              // inputContainerStyle={{borderColor: 'green', borderWidth: 1, paddingHorizontal: 0, paddingVertical: 0, marginVertical: 0,}}
               placeholder="Add a habit"
               onChangeText={setHabitText}
               value={habitText}
@@ -152,12 +152,12 @@ export default function HabitsScreen() {
             <View style={styles.addHabitIconContainer}>
               <TouchableOpacity
                 style={[styles.date, styles.closeIcon]}
-                onPress={editingHabit ? clickDelete : clickClose}
+                onPress={isEditingHabit ? clickDelete : clickClose}
               >
                 <AntDesign
                   name="close"
                   size={24}
-                  color={editingHabit ? Colors.sadRed : Colors[colorScheme].mutedText}
+                  color={isEditingHabit ? Colors.sadRed : Colors[colorScheme].mutedText}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -179,13 +179,13 @@ export default function HabitsScreen() {
                 {remainingHabits.length !== 0 ? (
                   <>
                     {remainingHabits.map((habit) => (
-                      <CheckBox
+                      <HabitContainer 
                         key={habit.id}
-                        checked={habit.checked}
-                        checkedTitle={habit.text}
-                        title={habit.text}
-                        onIconPress={() => toggleHabit(habit.id, habit.checked)}
-                        onPress={() => clickEdit(habit.id, habit.text)}
+                        habit={habit}
+                        toggleHabit={toggleHabit}
+                        clickEdit={clickEdit}
+                        isAddingHabit={isAddingHabit}
+                        isEditingHabit={isEditingHabit}
                       />
                     ))}
                   </>
@@ -200,13 +200,13 @@ export default function HabitsScreen() {
                 {finishedHabits.length !== 0 ? (
                   <>
                     {finishedHabits.map((habit) => (
-                      <CheckBox
+                      <HabitContainer 
                         key={habit.id}
-                        checked={habit.checked}
-                        checkedTitle={habit.text}
-                        title={habit.text}
-                        onIconPress={() => toggleHabit(habit.id, habit.checked)}
-                        onPress={() => clickEdit(habit.text)}
+                        habit={habit}
+                        toggleHabit={toggleHabit}
+                        clickEdit={clickEdit}
+                        isAddingHabit={isAddingHabit}
+                        isEditingHabit={isEditingHabit}
                       />
                     ))}
                   </>
@@ -233,7 +233,6 @@ export default function HabitsScreen() {
 }
 
 const mapStateToProps = (state) => {
-  // console.log('state',state)
   const { user } = state;
   return user;
 };

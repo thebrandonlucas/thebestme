@@ -6,6 +6,7 @@ export default {
   happyGreen: '#3eb489',
   neutralYellow: '#cfb53b',
   sadRed: '#a32638',
+  iosBlue: '#06c',
   light: {
     text: '#000',
     background: '#efefef',
