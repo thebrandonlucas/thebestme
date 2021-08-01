@@ -4,25 +4,29 @@ import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 import { Colors } from '../constants';
 import { Card, Input, Text, useThemeColor } from './Themed';
-import JournalModal from './JournalModal';
 
-interface TextInputModalProps {
+interface JournalModalProps {
+  modalVisible: boolean;
+  text: string;
   label: string;
   lightColor?: string;
   darkColor?: string;
+  setText: (text: string) => void;
+  onBackdropPress: () => void;
+  onSwipeComplete: () => void;
 }
 
-TextInputModal.defaultProps = {
+JournalModal.defaultProps = {
   lightColor: Colors.light.mutedText,
   darkColor: Colors.dark.mutedText,
 };
 
 /**
- * Renders a TextInput that opens a screen-covering modal for entering text
- * @param {TextInputModalProps} props - Title/label of the modal, as well as color strings for light mode and dark mode
+ * Renders a modal for entering text
+ * @param {JournalModalProps} props - Title/label of the modal, as well as color strings for light mode and dark mode
  * @return {JSX.Element}
  */
-export default function TextInputModal(props: TextInputModalProps) {
+export default function JournalModal(props: JournalModalProps) {
   const { label, lightColor, darkColor } = props;
   const mutedTextColor = useThemeColor(
     { light: lightColor, dark: darkColor },
@@ -33,44 +37,45 @@ export default function TextInputModal(props: TextInputModalProps) {
     'separator'
   );
 
-  const [text, setText] = useState<string>('');
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+//   const [text, setText] = useState<string>('');
   const [height, setHeight] = useState(0);
-
-  /**
-   * Opens the TextInput modal
-   * @return {void}
-   */
-  function openModal() {
-    setModalVisible(true);
-  }
-
-  /**
-   * Closes the TextInput modal
-   * @return {void}
-   */
-  function closeModal() {
-    setModalVisible(false);
-  }
 
   return (
     <>
-      <TouchableOpacity onPress={openModal}>
-        <Input
-          label={label}
-          placeholder="Press to Enter"
-          pointerEvents="none"
-          value={text}
-        />
-      </TouchableOpacity>
-      <JournalModal
-        label={label}
-        onBackdropPress={closeModal}
-        onSwipeComplete={closeModal}
-        modalVisible={modalVisible}
-        text={text}
-        setText={setText}
-      />
+      <Modal
+        isVisible={props.modalVisible}
+        onBackdropPress={props.onBackdropPress}
+        onSwipeComplete={props.onSwipeComplete}
+        swipeDirection="down"
+        avoidKeyboard
+      >
+        <Card>
+          <Text style={[styles.journalHeaderLabel, { color: mutedTextColor }]}>
+            {label}
+          </Text>
+          <ScrollView
+            style={[
+              styles.journalScroll,
+              { borderBottomColor: borderColor },
+              { borderTopColor: borderColor },
+            ]}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="always"
+            onLayout={(event) => {
+              setHeight(event.nativeEvent.layout.height);
+            }}
+          >
+            <Input
+              inputContainerStyle={{ borderBottomWidth: 0 }}
+              style={{ height: height - 20 }}
+              placeholder="What's on your mind?"
+              multiline
+              onChangeText={props.setText}
+              value={props.text}
+            />
+          </ScrollView>
+        </Card>
+      </Modal>
     </>
   );
 }

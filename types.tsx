@@ -63,6 +63,12 @@ export type HabitType = {
   title: string;
 };
 
+export type JournalEntryType = {
+  id: string;
+  date: string;
+  text: string;
+};
+
 export type GetComponentProps<T> = T extends
   | React.ComponentType<infer P>
   | React.Component<infer P>

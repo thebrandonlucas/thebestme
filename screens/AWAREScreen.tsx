@@ -14,7 +14,7 @@ export default function CBTScreen() {
       <View style={styles.container}>
         <Text style={[styles.date, { color: Colors.themeColor }]}>{date}</Text>
         <View style={styles.inputContainer}>
-          <Card style={{ margin: 0 }}>
+          <Card>
             <TextInputModal label="Acknowledge and Accept" />
             <TextInputModal label="Wait and Watch" />
             <TextInputModal label="Actions" />

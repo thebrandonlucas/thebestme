@@ -72,7 +72,7 @@ export function Card(props: ViewProps) {
     <DefaultCard
       containerStyle={[
         { backgroundColor },
-        { borderWidth: 0, width: '95%', borderRadius: 10, alignSelf: 'center' },
+        { borderWidth: 0, width: '95%', borderRadius: 10, alignSelf: 'center', margin: 0 },
         style,
       ]}
     >

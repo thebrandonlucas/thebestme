@@ -173,10 +173,11 @@ export default function HabitsScreen() {
       <View style={styles.cardContainer}>
         {!loading ? (
           <>
-            <Card style={[styles.card, { marginBottom: 10 }]}>
+            <Card style={{ marginBottom: 10 }}>
               <Text style={styles.title}>Remaining</Text>
               <ScrollView style={styles.scrollList}>
-                {remainingHabits.length !== 0 ? (
+                {/* FIXME: how to get rid of TS error? */}
+                {remainingHabits.length ? (
                   <>
                     {remainingHabits.map((habit) => (
                       <HabitContainer 
@@ -194,7 +195,7 @@ export default function HabitsScreen() {
                 )}
               </ScrollView>
             </Card>
-            <Card style={styles.card}>
+            <Card>
               <Text style={styles.title}>Finished</Text>
               <ScrollView style={styles.scrollList}>
                 {finishedHabits.length !== 0 ? (
@@ -300,8 +301,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: '5%',
     aspectRatio: 9 / 1,
-  },
-  card: {
-    margin: 0,
-  },
+  }
 });
