@@ -5,7 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Colors } from '../constants';
 
 export default function HabitContainer(props): JSX.Element {
-    console.log(props)
+    // console.log(props)
     return (
         <View style={styles.habitContainer}>
             <CheckBox

@@ -11,7 +11,6 @@ import {
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
-import HabitsScreen from '../screens/HabitsScreen';
 import LoginScreen from '../screens/LoginScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import SettingsScreen from '../screens/SettingsScreen';
@@ -19,6 +18,8 @@ import SignupScreen from '../screens/SignupScreen';
 import { RootStackParamList } from '../types';
 import BottomTabNavigator from './BottomTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
+import AWAREAddScreen from '../screens/AWAREAddScreen';
+import CBTAddScreen from '../screens/CBTAddScreen';
 
 export default function Navigation({
   colorScheme,

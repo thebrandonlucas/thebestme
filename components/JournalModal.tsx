@@ -44,7 +44,7 @@ export default function JournalModal(props: JournalModalProps) {
     <>
       <Modal
         isVisible={props.modalVisible}
-        onBackdropPress={props.onBackdropPress}
+        // onBackdropPress={props.onBackdropPress}
         onSwipeComplete={props.onSwipeComplete}
         swipeDirection="down"
         avoidKeyboard

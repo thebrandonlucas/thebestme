@@ -16,7 +16,9 @@ import { Icon } from 'react-native-elements';
 import MyCircleButton from '../components/HeaderButtons/MyCircleButton';
 import SettingsButton from '../components/HeaderButtons/SettingsButton';
 import { Colors } from '../constants';
+import AWAREAddScreen from '../screens/AWAREAddScreen';
 import AWAREScreen from '../screens/AWAREScreen';
+import CBTAddScreen from '../screens/CBTAddScreen';
 import CBTScreen from '../screens/CBTScreen';
 import DataScreen from '../screens/DataScreen';
 import HabitsScreen from '../screens/HabitsScreen';
@@ -223,6 +225,11 @@ function CBTNavigator() {
         component={CBTScreen}
         options={() => headerOptions('CBT')}
       />
+      <CBTStack.Screen
+        name="CBTAddScreen"
+        component={CBTAddScreen}
+        options={() => headerOptions('CBT - Add Entry')}
+      />
     </CBTStack.Navigator>
   );
 }
@@ -236,6 +243,11 @@ function AWARENavigator() {
         name="AWAREScreen"
         component={AWAREScreen}
         options={() => headerOptions('AWARE')}
+      />
+      <AWAREStack.Screen
+        name="AWAREAddScreen"
+        component={AWAREAddScreen}
+        options={() => headerOptions('AWARE - Add Entry')}
       />
     </AWAREStack.Navigator>
   );

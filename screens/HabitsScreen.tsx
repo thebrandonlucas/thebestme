@@ -25,7 +25,7 @@ export default function HabitsScreen() {
   const [isEditingHabit, setIsEditingHabit] = useState(false);
   const [habitId, setHabitId] = useState('');
   const [habitText, setHabitText] = useState<string>('');
-  const [remainingHabits, finishedHabits, loading, error] = useHabits();
+  const {remainingHabits, finishedHabits, loading, error} = useHabits();
   const colorScheme = useColorScheme();
   const inputRef = useRef(null);
 

@@ -31,10 +31,12 @@ export type JournalParamList = {
 
 export type CBTParamList = {
   CBTScreen: undefined;
+  CBTAddScreen: undefined;
 };
 
 export type AWAREParamList = {
   AWAREScreen: undefined;
+  AWAREAddScreen: undefined;
 };
 
 export type DataParamList = {
@@ -58,9 +60,9 @@ export type DateTime = {
 };
 
 export type HabitType = {
-  id: number;
+  id: string;
   checked: boolean;
-  title: string;
+  text: string;
 };
 
 export type JournalEntryType = {

@@ -1,28 +1,22 @@
 import firebase from 'firebase';
 import * as React from 'react';
 import { useState } from 'react';
-import { Alert, StyleSheet, useColorScheme, FlatList } from 'react-native';
-import {
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native-gesture-handler';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Input, Separator, Text, View } from '../components/Themed';
-import { Collections, Colors } from '../constants';
+import { StyleSheet, useColorScheme } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import JournalListPage from '../components/JournalListPage';
+import { Card, Text, View } from '../components/Themed';
+import { Collections } from '../constants';
+import { useJournals } from '../hooks/useJournals';
 import getDateString from '../utils/index';
-import { JournalEntryType } from '../types';
-import { Card } from '../components/Themed';
-import ThemeButton from '../components/ThemeButton';
-import { AntDesign } from '@expo/vector-icons';
-import JournalModal from '../components/JournalModal';
 
 const db = firebase.firestore();
 
-export default function JournalScreen() {
+export default function JournalScreen({ navigation }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [text, setText] = useState<string>('');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
+  const { journals, loading, error } = useJournals();
 
   /**
    * Save a journal entry
@@ -47,23 +41,10 @@ export default function JournalScreen() {
 
     db.collection(Collections.journal).add(entry);
     setText('');
-
-    Alert.alert(
-      date,
-      'Entry Successfully Saved',
-      [
-        {
-          text: 'OK',
-          onPress: () => console.log('OK Pressed'),
-          style: 'cancel',
-        },
-      ],
-      { cancelable: false }
-    );
   }
 
   /**
-   * Click handler for "plus" button to add new journal entry. 
+   * Click handler for "plus" button to add new journal entry.
    * Clears text, sets current date, and opens journal modal
    * @return {void}
    */
@@ -73,13 +54,12 @@ export default function JournalScreen() {
     setModalVisible(true);
   }
 
-
   /**
    * Click handler for editing journal entry.
    * Sets text, current date, and opens journal modal
    * @return {void}
-   */ 
-  function clickPastEntry({text, date}): void {
+   */
+  function clickPastEntry({ text, date }): void {
     setText(text);
     setDate(date);
     setModalVisible(true);
@@ -89,157 +69,25 @@ export default function JournalScreen() {
    * @return {void}
    */
   function closeModal(): void {
+    add();
     setModalVisible(false);
   }
 
-  /**
-   * Journal entry list item 
-   * @return {JSX.Element} - Return the list element
-   */ 
-  const JournalItem = ({ date, text }) => (
-    <Card>
-      <Text>{date}</Text>
-      {/* FIXME: why does ellipses effect not work for multiline strings? */}
-      <Text numberOfLines={1} ellipsizeMode='tail'>{text}</Text>
-    </Card>
-  );
-
-  /**
-   * Renders a journal entry list item. Clicking opens a modal containing the editable journal text
-   * @param {object} item - A journal object containing the text and date of the entry
-   * @return {JSX.Element} - Return the list element
-   */ 
-  const renderItem = ({ item }): JSX.Element => (
-    <TouchableOpacity onPress={() => clickPastEntry(item)}>
-      <JournalItem date={item.date} text={item.text} />
-    </TouchableOpacity>
-  );
-
-  /**
-   * FIXME: Is there an easier way to do this via another prop or style on the flatlist itself?
-   * Renders the space between journal entry cards
-   * @return {JSX.Element} - Return a space
-   */
-  const renderSpace = (): JSX.Element => (
-    <View style={styles.journalEntrySpace} />
-  );
-
-  const DATA = [
-    {
-      id: 1,
-      date: 'Monday, July 19, 2021',
-      text: 'Test 2'
-    },
-    {
-      id: 2,
-      date: 'Monday, July 19, 2021',
-      text: 'Test 2'
-    },
-    {
-      id: 3,
-      date: 'Monday, July 19, 2021',
-      text: 'Test 2'
-    },
-    {
-      id: 4,
-      date: 'Monday, July 19, 2021',
-      text: 'Test 2'
-    },
-    {
-      id: 5,
-      date: 'Monday, July 19, 2021',
-      text: 'Test 2'
-    },
-    {
-      id: 6,
-      date: 'Monday, July 19, 2021',
-      text: 'Test 2'
-    },
-    {
-      id: 7,
-      date: 'Monday, July 19, 2021',
-      text: 'Test 2'
-    },
-    {
-      id: 8,
-      date: 'Monday, July 19, 2021',
-      text: 'Test 2'
-    },
-    {
-      id: 9,
-      date: 'Monday, July 19, 2021',
-      text: 'There once was a genie with a fifty foot There once was a genie with a fifty foot There once was a genie with a fifty foot '
-    }
-  ]
-
   return (
-    <>
-      <View style={styles.listContainer}>
-        <View style={styles.headerContainer}>
-          <Text style={[styles.title]}>Past Entries</Text>
-          <TouchableOpacity style={styles.plusIcon} onPress={clickPlus}>
-            <AntDesign name="plus" size={24} color={Colors.themeColor} />
-          </TouchableOpacity>
-        </View>
-      
-        <FlatList
-          data={DATA}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          ItemSeparatorComponent={renderSpace}
-        />
-      </View>
-
-
-      <JournalModal
-        label={date}
-        onBackdropPress={closeModal}
-        onSwipeComplete={closeModal}
-        modalVisible={modalVisible}
-        text={text}
-        setText={setText}
-      />
-      
-      {/* <View style={styles.headerContainer}>
-        <Text>
-          <TouchableWithoutFeedback>
-            <Text style={[styles.headerText, { color: Colors.themeColor }]}>
-              {date}
-            </Text>
-          </TouchableWithoutFeedback>
-        </Text>
-        <Text>
-          <TouchableOpacity onPress={() => console.log('implement save')}>
-            <Text style={[styles.headerText, { color: Colors.themeColor }]}>
-              Save
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={[styles.headerText, { color: Colors.themeColor }]}>
-              Past Entries
-            </Text>
-          </TouchableOpacity>
-        </Text>
-      </View>
-      <Separator style={styles.separator} />
-      <KeyboardAwareScrollView
-        style={[
-          { borderBottomColor: Colors[colorScheme].separator },
-          { borderTopColor: Colors[colorScheme].separator },
-        ]}
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="always"
-      >
-        <Input
-          inputContainerStyle={{ borderBottomWidth: 0 }}
-          placeholder="What's on your mind?"
-          multiline
-          onChangeText={setText}
-          value={text}
-          scrollEnabled={false}
-        />
-      </KeyboardAwareScrollView> */}
-    </>
+    <JournalListPage
+      navigation={navigation}
+      save={save}
+      add={add}
+      clickPlus={clickPlus}
+      clickPastEntry={clickPastEntry}
+      closeModal={closeModal}
+      entries={journals}
+      modalVisible={modalVisible}
+      date={date}
+      text={text}
+      setText={setText}
+      setDate={setDate}
+    />
   );
 }
 
@@ -259,7 +107,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   journalEntrySpace: {
-    margin: 5
+    margin: 5,
   },
   buttonContainer: {
     justifyContent: 'space-between',
@@ -283,5 +131,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '95%',
+  },
+  list: {
+    width: '100%',
   },
 });
