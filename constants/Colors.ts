@@ -4,10 +4,12 @@ const tintColorDark = '#fff';
 export default {
   // themeColor: '#36c9ab',
   themeColor: '#039678',
+  translucentThemeColor: '#9ed3c9',
   happyGreen: '#3eb489',
   neutralYellow: '#cfb53b',
   sadRed: '#a32638',
   iosBlue: '#06c',
+  activeTabColor: '#fff',
   light: {
     text: '#000',
     background: '#efefef',

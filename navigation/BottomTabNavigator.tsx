@@ -39,8 +39,8 @@ export default function BottomTabNavigator() {
     <BottomTab.Navigator
       initialRouteName="Habits"
       tabBarOptions={{
-        activeTintColor: 'white',
-        inactiveTintColor: '#bbb',
+        activeTintColor: Colors.activeTabColor,
+        inactiveTintColor: Colors.translucentThemeColor,
         style: { backgroundColor: Colors.themeColor },
       }}
     >

@@ -13,6 +13,7 @@ export default function AWAREAddScreen({ route, navigation }) {
   function save() {
 
   }
+  
   return (
     <>
       <View style={styles.container}>

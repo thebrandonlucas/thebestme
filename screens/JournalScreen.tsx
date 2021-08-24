@@ -2,9 +2,7 @@ import firebase from 'firebase';
 import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, useColorScheme } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import JournalListPage from '../components/JournalListPage';
-import { Card, Text, View } from '../components/Themed';
 import { Collections } from '../constants';
 import { useJournals } from '../hooks/useJournals';
 import getDateString from '../utils/index';
@@ -12,7 +10,10 @@ import getDateString from '../utils/index';
 const db = firebase.firestore();
 
 export default function JournalScreen({ navigation }) {
+  const journalCollection = db.collection(Collections.journal);
+
   const colorScheme = useColorScheme() ?? 'dark';
+  const [journalId, setJournalId] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
@@ -22,15 +23,15 @@ export default function JournalScreen({ navigation }) {
    * Save a journal entry
    * @return {void}
    */
-  function save(journalId: string, journalText: string): void {
-    db.collection(Collections.journal).doc(journalId).update({ journalText });
+  function update(id: string, text: string): void {
+    journalCollection.doc(id).update({ text: text });
   }
 
   /**
    * Add a new journal entry
    * @return {void}
    */
-  function add(): void {
+  function insert(text: string, date: string): void {
     if (text.length === 0) {
       return;
     }
@@ -39,7 +40,7 @@ export default function JournalScreen({ navigation }) {
       date,
     };
 
-    db.collection(Collections.journal).add(entry);
+    journalCollection.add(entry);
     setText('');
   }
 
@@ -50,6 +51,7 @@ export default function JournalScreen({ navigation }) {
    */
   function clickPlus(): void {
     setText('');
+    setJournalId('');
     setDate(getDateString().date);
     setModalVisible(true);
   }
@@ -59,28 +61,35 @@ export default function JournalScreen({ navigation }) {
    * Sets text, current date, and opens journal modal
    * @return {void}
    */
-  function clickPastEntry({ text, date }): void {
+  function clickPastEntry({ id, text, date }): void {
+    setJournalId(id);
     setText(text);
     setDate(date);
     setModalVisible(true);
   }
 
-  /** Close the journal modal
+  /** 
+   * Close the journal modal
+   * @param {string} journalId - Optional param, if present, update the text at that id, else, insert new text
    * @return {void}
    */
-  function closeModal(): void {
-    add();
+  function upsertAndCloseModal(): void {
+    if (journalId === '') {
+      insert(text, date);
+    } else {
+      update(journalId, text);
+    }
     setModalVisible(false);
   }
 
   return (
     <JournalListPage
       navigation={navigation}
-      save={save}
-      add={add}
+      update={update}
+      insert={insert}
       clickPlus={clickPlus}
       clickPastEntry={clickPastEntry}
-      closeModal={closeModal}
+      closeModal={upsertAndCloseModal}
       entries={journals}
       modalVisible={modalVisible}
       date={date}

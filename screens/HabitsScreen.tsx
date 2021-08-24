@@ -176,7 +176,6 @@ export default function HabitsScreen() {
             <Card style={{ marginBottom: 10 }}>
               <Text style={styles.title}>Remaining</Text>
               <ScrollView style={styles.scrollList}>
-                {/* FIXME: how to get rid of TS error? */}
                 {remainingHabits.length ? (
                   <>
                     {remainingHabits.map((habit) => (
