@@ -1,13 +1,11 @@
 import { AntDesign } from '@expo/vector-icons';
 import firebase from 'firebase';
 import * as React from 'react';
-import { useState } from 'react';
-import { Alert, FlatList, StyleSheet, useColorScheme } from 'react-native';
+import { FlatList, StyleSheet, useColorScheme } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Colors } from '../constants';
 import JournalModal from './JournalModal';
 import { Card, Text, View } from './Themed';
-import { Collections, Colors } from '../constants';
-import getDateString from '../utils/index';
 
 const db = firebase.firestore();
 
@@ -18,6 +16,7 @@ const db = firebase.firestore();
  */
 export default function JournalListPage(props) {
   const colorScheme = useColorScheme() ?? 'dark';
+  // console.log('props', props.entries);
 
   /**
    * Journal entry list item
@@ -34,12 +33,40 @@ export default function JournalListPage(props) {
   );
 
   /**
+   * Journal entry list item
+   * @return {JSX.Element} - Return the list element
+   */
+  const AwareJournalItem = ({ date, text }) => (
+    <Card>
+      <Text>{date}</Text>
+      {/* FIXME: why does ellipses effect not work for multiline strings? */}
+      <Text numberOfLines={1} ellipsizeMode="tail">
+        {text}
+      </Text>
+    </Card>
+  );
+
+  /**
+   * Journal entry list item
+   * @return {JSX.Element} - Return the list element
+   */
+  const CbtJournalItem = ({ date, text }) => (
+    <Card>
+      <Text>{date}</Text>
+      {/* FIXME: why does ellipses effect not work for multiline strings? */}
+      <Text numberOfLines={1} ellipsizeMode="tail">
+        {text}
+      </Text>
+    </Card>
+  );
+
+  /**
    * Renders a journal entry list item. Clicking opens a modal containing the editable journal text
    * @param {object} item - A journal object containing the text and date of the entry
    * @return {JSX.Element} - Return the list element
    */
   const renderItem = ({ item }): JSX.Element => (
-    <TouchableOpacity onPress={() => props.clickPastEntry(item)}>
+    <TouchableOpacity onPress={() => {console.log('nav', item); props.clickPastEntry(item)}}>
       <JournalItem date={item.date} text={item.text} />
     </TouchableOpacity>
   );
@@ -63,14 +90,17 @@ export default function JournalListPage(props) {
           </TouchableOpacity>
         </View>
 
-      { !props.loading &&
-        <FlatList
-          data={props.entries}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          ItemSeparatorComponent={renderSpace}
-        />
-      }
+        {!props.loading && props.entries.length !== 0 ? (
+          <FlatList
+            style={styles.list}
+            data={props.entries}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            ItemSeparatorComponent={renderSpace}
+          />
+        ) : (
+          <Text>No journal entries yet!</Text>
+        )}
       </View>
 
       <JournalModal
@@ -92,7 +122,6 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
     flexDirection: 'column',
     flex: 1,
   },
@@ -128,7 +157,5 @@ const styles = StyleSheet.create({
   },
   list: {
     width: '100%',
-    borderColor: 'red',
-    borderWidth: 1,
   },
 });

@@ -1,4 +1,4 @@
-import { JournalEntryType } from './../types';
+import { JournalEntryType, AwareJournalEntryType } from './../types';
 import firebase from 'firebase';
 import { useState, useEffect } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
@@ -11,16 +11,28 @@ const db = firebase.firestore();
  */
 // TODO: implement user id
 export function useAware() {
-    const [journals, setJournals] = useState<JournalEntryType[]>([]);
-
-    const [dbJournals, loading, error] = useCollection(firebase.firestore().collection('journal'));
+    const [journals, setJournals] = useState<AwareJournalEntryType[]>([]);
+    const [dbJournals, loading, error] = useCollection(firebase.firestore().collection('awareJournal'));
     useEffect(() => {
         if (!loading) {
             var tempJournals = [];
             dbJournals.docs.map((doc) => {
-                const { id, date, text } = doc.data();
-                const journalEntry: JournalEntryType = {
-                    id, date, text
+                const { 
+                    date,
+                    acknowledgeAndAcceptText,
+                    waitAndWatchText,
+                    actionsText,
+                    repeatText,
+                    endText 
+                } = doc.data();
+                const journalEntry: AwareJournalEntryType = {
+                    id: doc.id, 
+                    date,
+                    acknowledgeAndAcceptText,
+                    waitAndWatchText,
+                    actionsText,
+                    repeatText,
+                    endText,
                 };
                 tempJournals.push(journalEntry);
             });

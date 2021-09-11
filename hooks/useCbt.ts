@@ -1,26 +1,37 @@
-import { JournalEntryType } from './../types';
+import { AwareJournalEntryType, CbtJournalEntryType } from './../types';
 import firebase from 'firebase';
 import { useState, useEffect } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 
-
 const db = firebase.firestore();
 
-/** 
- * Hook to get CBT Journals from firebase
+/**
+ * Hook to get AWARE Journals from firebase
  */
 // TODO: implement user id
-export function useJournals() {
-    const [journals, setJournals] = useState<JournalEntryType[]>([]);
-
-    const [dbJournals, loading, error] = useCollection(firebase.firestore().collection('journal'));
+export function useCbt() {
+    const [journals, setJournals] = useState<CbtJournalEntryType[]>([]);
+    const [dbJournals, loading, error] = useCollection(firebase.firestore().collection('cbtJournal'));
     useEffect(() => {
         if (!loading) {
             var tempJournals = [];
             dbJournals.docs.map((doc) => {
-                const { id, date, text } = doc.data();
-                const journalEntry: JournalEntryType = {
-                    id, date, text
+                const { 
+                    date,
+                    situationText,
+                    thoughtsText,
+                    emotionsText,
+                    behaviorsText,
+                    alternativeThoughtsText 
+                } = doc.data();
+                const journalEntry: CbtJournalEntryType = {
+                    id: doc.id, 
+                    date,
+                    situationText,
+                    thoughtsText,
+                    emotionsText,
+                    behaviorsText,
+                    alternativeThoughtsText 
                 };
                 tempJournals.push(journalEntry);
             });

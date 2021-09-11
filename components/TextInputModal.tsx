@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import Modal from 'react-native-modal';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '../constants';
-import { Card, Input, Text, useThemeColor } from './Themed';
 import JournalModal from './JournalModal';
+import { Input } from './Themed';
 
 interface TextInputModalProps {
+  text: string;
+  setText: (text: string) => void;
   label: string;
   lightColor?: string;
   darkColor?: string;
@@ -23,19 +24,8 @@ TextInputModal.defaultProps = {
  * @return {JSX.Element}
  */
 export default function TextInputModal(props: TextInputModalProps) {
-  const { label, lightColor, darkColor } = props;
-  const mutedTextColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'mutedText'
-  );
-  const borderColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    'separator'
-  );
-
-  const [text, setText] = useState<string>('');
+  const { label, lightColor, darkColor, text, setText } = props;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [height, setHeight] = useState(0);
 
   /**
    * Opens the TextInput modal

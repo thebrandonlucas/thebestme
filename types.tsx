@@ -71,6 +71,26 @@ export type JournalEntryType = {
   text: string;
 };
 
+export type AwareJournalEntryType = {
+  id: string,
+  date: string,
+  acknowledgeAndAcceptText: string,
+  waitAndWatchText: string,
+  actionsText: string,
+  repeatText: string,
+  endText: string 
+};
+
+export type CbtJournalEntryType = {
+  id: string,
+  date: string,
+  situationText: string,
+  thoughtsText: string,
+  emotionsText: string,
+  behaviorsText: string,
+  alternativeThoughtsText: string
+};
+
 export type GetComponentProps<T> = T extends
   | React.ComponentType<infer P>
   | React.Component<infer P>

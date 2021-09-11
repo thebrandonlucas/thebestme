@@ -12,7 +12,6 @@ const db = firebase.firestore();
 // TODO: implement user id
 export function useJournals() {
     const [journals, setJournals] = useState<JournalEntryType[]>([]);
-
     const [dbJournals, loading, error] = useCollection(firebase.firestore().collection('journal'));
     useEffect(() => {
         if (!loading) {
