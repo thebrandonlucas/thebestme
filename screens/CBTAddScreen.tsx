@@ -2,15 +2,20 @@ import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { connect, useDispatch } from 'react-redux';
+import { setDayInfo } from '../actions';
 import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
 import { Collections, Colors } from '../constants';
 import getDateString from '../utils';
-
 const db = firebase.firestore();
 
-export default function CBTAddScreen({ route, navigation }) {
+export function CBTAddScreen({ route, navigation, day }) {
+  // TODO: After login implemented, should we call daysCollection from redux?
+  const dispatch = useDispatch();
+
+  const daysCollection = db.collection(Collections.days);
   const cbtJournalCollection = db.collection(Collections.cbtJournal);
   const [id, setId] = useState<string>('');
   const [date, setDate] = useState<string>('');
@@ -22,10 +27,11 @@ export default function CBTAddScreen({ route, navigation }) {
   const [alternativeThoughtsText, setAlternativeThoughtsText] =
     useState<string>('');
 
+
   useEffect(() => {
     if (route.params !== undefined) {
       setId(route.params.id);
-      setDate(route.params.date);
+      setDate(getDateString(route.params.date).date);
       setSituationText(route.params.situationText);
       setThoughtsText(route.params.thoughtsText);
       setEmotionsText(route.params.thoughtsText);
@@ -52,8 +58,7 @@ export default function CBTAddScreen({ route, navigation }) {
 
   /**
    * Add a new journal entry
-   * @param {string} text
-   * @param {string} date
+   * @param {string} date - ISO datetime string, used as ID for journals
    * @return {void}
    */
   function insert(date: string): void {
@@ -75,7 +80,11 @@ export default function CBTAddScreen({ route, navigation }) {
       alternativeThoughtsText,
       date,
     };
-    cbtJournalCollection.add(entry);
+    cbtJournalCollection.doc(date).set(entry);
+
+    // Set new cbtId entry as date timestamp and update redux day object
+    const cbtIds = [...day.cbtIds, date];
+    dispatch(setDayInfo({ ...day, cbtIds }));
 
     setSituationText('');
     setThoughtsText('');
@@ -91,8 +100,9 @@ export default function CBTAddScreen({ route, navigation }) {
    */
   function upsertAndCloseModal() {
     if (id === '') {
-      const date = getDateString().date;
-      insert(date);
+      // timestamp of the ISO timestamp format: '2021-09-11T21:39:41.861Z'
+      // https://greenwichmeantime.com/articles/clocks/iso/
+      insert(new Date().toISOString());
     } else {
       update(id);
     }
@@ -146,6 +156,12 @@ export default function CBTAddScreen({ route, navigation }) {
     </>
   );
 }
+
+const mapStateToProps = (state) => {
+  const { day } = state;
+  return { day };
+};
+export default connect(mapStateToProps)(CBTAddScreen);
 
 const styles = StyleSheet.create({
   container: {

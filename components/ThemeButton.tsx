@@ -9,7 +9,7 @@ export default function ThemeButton(props: ButtonProps) {
   return (
     <Button
       buttonStyle={{
-        backgroundColor: Colors.themeColor,
+        backgroundColor: props.color ? props.color : Colors.themeColor,
         padding: 10,
       }}
       containerStyle={[

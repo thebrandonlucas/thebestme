@@ -2,6 +2,8 @@ import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { connect, useDispatch } from 'react-redux';
+import { setDayInfo } from '../actions';
 import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
@@ -10,7 +12,9 @@ import getDateString from '../utils';
 
 const db = firebase.firestore();
 
-export default function AWAREAddScreen({ route, navigation }) {
+export function AWAREAddScreen({ route, navigation, day }) {
+  const dispatch = useDispatch();
+  
   const awareJournalCollection = db.collection(Collections.awareJournal);
 
   // FIXME: is there a better way to do this? They don't need to be state vars
@@ -27,7 +31,7 @@ export default function AWAREAddScreen({ route, navigation }) {
   useEffect(() => {
     if (route.params !== undefined) {
       setId(route.params.id);
-      setDate(route.params.date);
+      setDate(getDateString(route.params.date).date);
       setAcknowledgeAndAcceptText(route.params.acknowledgeAndAcceptText);
       setWaitAndWatchText(route.params.waitAndWatchText);
       setActionsText(route.params.actionsText);
@@ -42,14 +46,7 @@ export default function AWAREAddScreen({ route, navigation }) {
    * @param {string} text
    * @return {void}
    */
-  function update(
-    id: string,
-    acknowledgeAndAcceptText: string,
-    waitAndWatchText: string,
-    actionsText: string,
-    repeatText: string,
-    endText: string
-  ): void {
+  function update(id: string): void {
     awareJournalCollection.doc(id).update({
       acknowledgeAndAcceptText,
       waitAndWatchText,
@@ -62,17 +59,10 @@ export default function AWAREAddScreen({ route, navigation }) {
   /**
    * Add a new journal entry
    * @param {string} text
-   * @param {string} date
+   * @param {string} date - ISO datetime string used as ID of journal entry
    * @return {void}
    */
-  function insert(
-    acknowledgeAndAcceptText: string,
-    waitAndWatchText: string,
-    actionsText: string,
-    repeatText: string,
-    endText: string,
-    date: string
-  ): void {
+  function insert(date: string): void {
     // Don't add to firebase if all fields empty
     if (
       acknowledgeAndAcceptText.length === 0 &&
@@ -91,8 +81,11 @@ export default function AWAREAddScreen({ route, navigation }) {
       endText,
       date,
     };
-    console.log('journal', entry);
-    awareJournalCollection.add(entry);
+    awareJournalCollection.doc(date).set(entry);
+
+    // Set new awareIds entry as date timestamp and update redux day object
+    const awareIds = [...day.awareIds, date];
+    dispatch(setDayInfo({ ...day, awareIds }));
 
     setAcknowledgeAndAcceptText('');
     setWaitAndWatchText('');
@@ -107,26 +100,12 @@ export default function AWAREAddScreen({ route, navigation }) {
    * @return {void}
    */
   function upsertAndCloseModal() {
-    console.log('upsert', acknowledgeAndAcceptText);
     if (id === '') {
-      const date = getDateString().date;
-      insert(
-        acknowledgeAndAcceptText,
-        waitAndWatchText,
-        actionsText,
-        repeatText,
-        endText,
-        date
-      );
+      // timestamp of the ISO timestamp format: '2021-09-11T21:39:41.861Z'
+      // https://greenwichmeantime.com/articles/clocks/iso/
+      insert(new Date().toISOString());
     } else {
-      update(
-        id,
-        acknowledgeAndAcceptText,
-        waitAndWatchText,
-        actionsText,
-        repeatText,
-        endText
-      );
+      update(id);
     }
     navigation.goBack();
   }
@@ -177,6 +156,12 @@ export default function AWAREAddScreen({ route, navigation }) {
   );
 }
 
+const mapStateToProps = (state) => {
+  const { day } = state;
+  return { day };
+};
+export default connect(mapStateToProps)(AWAREAddScreen);
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
@@ -200,3 +185,4 @@ const styles = StyleSheet.create({
     aspectRatio: 7 / 2,
   },
 });
+

@@ -21,6 +21,7 @@ import AWAREScreen from '../screens/AWAREScreen';
 import CBTAddScreen from '../screens/CBTAddScreen';
 import CBTScreen from '../screens/CBTScreen';
 import DataScreen from '../screens/DataScreen';
+import FinishDayScreen from '../screens/FinishDayScreen';
 import HabitsScreen from '../screens/HabitsScreen';
 import JournalScreen from '../screens/JournalScreen';
 import {
@@ -196,6 +197,11 @@ function HabitsNavigator() {
         name="HabitsScreen"
         component={HabitsScreen}
         options={() => headerOptions('My Habits')}
+      />
+      <HabitsStack.Screen
+        name="FinishDayScreen"
+        component={FinishDayScreen}
+        options={() => headerOptions('Day Summary')}
       />
     </HabitsStack.Navigator>
   );

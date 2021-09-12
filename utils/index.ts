@@ -1,6 +1,10 @@
 import { DateTime } from '../types';
 
-export default function getDateString(): DateTime {
+/** 
+ * Gets date as ISO string and returns formatted Date
+ * @param {string} isoDate - date string in ISO format
+ */
+export default function getDateString(isoDate: string): DateTime {
   const monthNames = [
     'January',
     'February',

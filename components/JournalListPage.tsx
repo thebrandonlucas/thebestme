@@ -4,6 +4,7 @@ import * as React from 'react';
 import { FlatList, StyleSheet, useColorScheme } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Colors } from '../constants';
+import getDateString from '../utils';
 import JournalModal from './JournalModal';
 import { Card, Text, View } from './Themed';
 
@@ -16,7 +17,6 @@ const db = firebase.firestore();
  */
 export default function JournalListPage(props) {
   const colorScheme = useColorScheme() ?? 'dark';
-  // console.log('props', props.entries);
 
   /**
    * Journal entry list item
@@ -24,35 +24,7 @@ export default function JournalListPage(props) {
    */
   const JournalItem = ({ date, text }) => (
     <Card>
-      <Text>{date}</Text>
-      {/* FIXME: why does ellipses effect not work for multiline strings? */}
-      <Text numberOfLines={1} ellipsizeMode="tail">
-        {text}
-      </Text>
-    </Card>
-  );
-
-  /**
-   * Journal entry list item
-   * @return {JSX.Element} - Return the list element
-   */
-  const AwareJournalItem = ({ date, text }) => (
-    <Card>
-      <Text>{date}</Text>
-      {/* FIXME: why does ellipses effect not work for multiline strings? */}
-      <Text numberOfLines={1} ellipsizeMode="tail">
-        {text}
-      </Text>
-    </Card>
-  );
-
-  /**
-   * Journal entry list item
-   * @return {JSX.Element} - Return the list element
-   */
-  const CbtJournalItem = ({ date, text }) => (
-    <Card>
-      <Text>{date}</Text>
+      <Text>{getDateString(date).date}</Text>
       {/* FIXME: why does ellipses effect not work for multiline strings? */}
       <Text numberOfLines={1} ellipsizeMode="tail">
         {text}
@@ -66,8 +38,8 @@ export default function JournalListPage(props) {
    * @return {JSX.Element} - Return the list element
    */
   const renderItem = ({ item }): JSX.Element => (
-    <TouchableOpacity onPress={() => {console.log('nav', item); props.clickPastEntry(item)}}>
-      <JournalItem date={item.date} text={item.text} />
+    <TouchableOpacity onPress={() => { props.clickPastEntry(item) }}>
+      <JournalItem date={getDateString(item.date).date} text={item.text} />
     </TouchableOpacity>
   );
 
@@ -104,7 +76,7 @@ export default function JournalListPage(props) {
       </View>
 
       <JournalModal
-        label={props.date}
+        label={getDateString(props.date).date}
         onBackdropPress={props.closeModal}
         onSwipeComplete={props.closeModal}
         modalVisible={props.modalVisible}

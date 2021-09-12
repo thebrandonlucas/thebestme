@@ -4,4 +4,5 @@ export default {
     journal: 'journal',
     cbtJournal: 'cbtJournal',
     awareJournal: 'awareJournal',
+    days: 'days',
 };

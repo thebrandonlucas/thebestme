@@ -8,30 +8,33 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
+import { setDayInfo } from '../actions';
+import HabitContainer from '../components/HabitContainer';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Input, Text, View } from '../components/Themed';
-import { Colors, Collections } from '../constants';
+import { Collections, Colors } from '../constants';
 import firebase from '../firebase';
 import { useHabits } from '../hooks/useHabits';
 import getDateString from '../utils';
-import HabitContainer from '../components/HabitContainer';
 
 const db = firebase.firestore();
 
-export default function HabitsScreen() {
+export function HabitsScreen({ user, day, navigation }) {
+  const dispatch = useDispatch();
+
   const [currentDate, setCurrentDate] = useState('');
   const [isAddingHabit, setIsAddingHabit] = useState(false);
   const [isEditingHabit, setIsEditingHabit] = useState(false);
   const [habitId, setHabitId] = useState('');
   const [habitText, setHabitText] = useState<string>('');
-  const {remainingHabits, finishedHabits, loading, error} = useHabits();
+  const { remainingHabits, finishedHabits, loading, error } = useHabits();
   const colorScheme = useColorScheme();
   const inputRef = useRef(null);
 
   // FIXME: should useLayoutEffect be used for DOM manipulation?
   useEffect(() => {
-    setCurrentDate(getDateString().date);
+    setCurrentDate(getDateString(new Date().toISOString()).date);
     if (isAddingHabit || isEditingHabit) {
       inputRef.current.focus();
     }
@@ -45,6 +48,18 @@ export default function HabitsScreen() {
    */
   function toggleHabit(id: string, checked: boolean): void {
     db.collection(Collections.habits).doc(id).update({ checked: !checked });
+
+    // update redux state
+    let finishedHabitIds = day.finishedHabitIds;
+    let remainingHabitIds = day.remainingHabitIds;
+    if (checked) {
+      finishedHabitIds.delete(id);
+      remainingHabitIds.add(id);
+    } else {
+      remainingHabitIds.delete(id);
+      finishedHabitIds.add(id);
+    }
+    dispatch(setDayInfo({ ...day, remainingHabitIds, finishedHabitIds }));
   }
 
   /**
@@ -91,7 +106,13 @@ export default function HabitsScreen() {
       checked: false,
     };
 
-    db.collection(Collections.habits).add(habit);
+    const habitRef = db.collection(Collections.habits).doc();
+    const id = habitRef.id;
+    habitRef.set(habit);
+
+    const remainingHabitIds = day.remainingHabitIds.add(id);
+    dispatch(setDayInfo({ ...day, remainingHabitIds }));
+
     setIsAddingHabit(false);
     setHabitText('');
   }
@@ -123,8 +144,17 @@ export default function HabitsScreen() {
    */
   function clickDelete(): void {
     db.collection(Collections.habits).doc(habitId).delete();
+    // TODO: how to handle redux for removed ids in day object?
     setIsEditingHabit(false);
     setHabitText('');
+  }
+
+  /**
+   * Click handler for going to the "Finish Day" summary screen
+   * @return {void}
+   */
+  function goToFinishDayScreen() {
+    navigation.navigate('FinishDayScreen', { remainingHabits, finishedHabits });
   }
 
   return (
@@ -157,7 +187,11 @@ export default function HabitsScreen() {
                 <AntDesign
                   name="close"
                   size={24}
-                  color={isEditingHabit ? Colors.sadRed : Colors[colorScheme].mutedText}
+                  color={
+                    isEditingHabit
+                      ? Colors.sadRed
+                      : Colors[colorScheme].mutedText
+                  }
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -179,7 +213,7 @@ export default function HabitsScreen() {
                 {remainingHabits.length ? (
                   <>
                     {remainingHabits.map((habit) => (
-                      <HabitContainer 
+                      <HabitContainer
                         key={habit.id}
                         habit={habit}
                         toggleHabit={toggleHabit}
@@ -200,7 +234,7 @@ export default function HabitsScreen() {
                 {finishedHabits.length !== 0 ? (
                   <>
                     {finishedHabits.map((habit) => (
-                      <HabitContainer 
+                      <HabitContainer
                         key={habit.id}
                         habit={habit}
                         toggleHabit={toggleHabit}
@@ -218,7 +252,7 @@ export default function HabitsScreen() {
             <View style={styles.buttonContainer}>
               <ThemeButton
                 title="Finish Day"
-                onPress={() => console.log('Implement')}
+                onPress={goToFinishDayScreen}
                 testID="finishDay"
               />
             </View>
@@ -233,11 +267,10 @@ export default function HabitsScreen() {
 }
 
 const mapStateToProps = (state) => {
-  const { user } = state;
-  return user;
+  const { user, day } = state;
+  return { user, day };
 };
-
-connect(mapStateToProps)(HabitsScreen);
+export default connect(mapStateToProps)(HabitsScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -300,5 +333,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: '5%',
     aspectRatio: 9 / 1,
-  }
+  },
 });

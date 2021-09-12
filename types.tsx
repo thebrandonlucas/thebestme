@@ -23,6 +23,7 @@ export type BottomTabParamList = {
 
 export type HabitsParamList = {
   HabitsScreen: undefined;
+  FinishDayScreen: undefined;
 };
 
 export type JournalParamList = {

@@ -2,16 +2,20 @@ import firebase from 'firebase';
 import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, useColorScheme } from 'react-native';
+import { connect, useDispatch } from 'react-redux';
+import { setDayInfo } from '../actions';
 import JournalListPage from '../components/JournalListPage';
 import { Collections } from '../constants';
 import { useJournals } from '../hooks/useJournals';
 import getDateString from '../utils/index';
+import CBTAddScreen from './CBTAddScreen';
 
 const db = firebase.firestore();
 
-export default function JournalScreen({ navigation }) {
-  const journalCollection = db.collection(Collections.journal);
+export function JournalScreen({ navigation, day }) {
+  const dispatch = useDispatch();
 
+  const journalCollection = db.collection(Collections.journal);
   const colorScheme = useColorScheme() ?? 'dark';
   const [journalId, setJournalId] = useState<string>('');
   const [text, setText] = useState<string>('');
@@ -41,6 +45,11 @@ export default function JournalScreen({ navigation }) {
     };
 
     journalCollection.add(entry);
+
+    // Set new awareIds entry as date timestamp and update redux day object
+    const journalIds = [...day.journalIds, date];
+    dispatch(setDayInfo({ ...day, journalIds }));
+
     setText('');
   }
 
@@ -52,7 +61,8 @@ export default function JournalScreen({ navigation }) {
   function clickPlus(): void {
     setText('');
     setJournalId('');
-    setDate(getDateString().date);
+    // FIXME: Refactor getDateString and all function calls to it
+    setDate(getDateString(new Date().toISOString()).date);
     setModalVisible(true);
   }
 
@@ -75,7 +85,8 @@ export default function JournalScreen({ navigation }) {
    */
   function upsertAndCloseModal(): void {
     if (journalId === '') {
-      insert(text, date);
+      const isoDate = new Date().toISOString();
+      insert(text, isoDate);
     } else {
       update(journalId, text);
     }
@@ -99,6 +110,12 @@ export default function JournalScreen({ navigation }) {
     />
   );
 }
+
+const mapStateToProps = (state) => {
+  const { day } = state;
+  return { day };
+};
+export default connect(mapStateToProps)(JournalScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -145,3 +162,4 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
+
