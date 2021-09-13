@@ -92,6 +92,19 @@ export type CbtJournalEntryType = {
   alternativeThoughtsText: string
 };
 
+export type DayType = {
+  id: string,
+  date: string,
+  finishedHabitIds: Array<string>,
+  remainingHabitIds: Array<string>,
+  cbtIds: Array<string>,
+  awareIds: Array<string>,
+  journalIds: Array<string>,
+  mood: string,
+  endOfDayNotes: string,
+  isDayFinished: boolean,
+};
+
 export type GetComponentProps<T> = T extends
   | React.ComponentType<infer P>
   | React.Component<infer P>

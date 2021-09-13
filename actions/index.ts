@@ -9,6 +9,7 @@ export const SIGNUP = 'SIGNUP'
 // Firebase Collections
 export const FIRESTORE = 'FIRESTORE'
 export const SET_DAY = 'SET_DAY'
+export const CLEAR_DAY = 'CLEAR_DAY'
 
 export const FINISH_DAY = 'FINISH_DAY'
 export const FINISH_DAY_SUCCESS = 'FINISH_DAY_SUCCESS'
@@ -53,7 +54,6 @@ export const setDayInfo = (dayInfo) => {
 export const uploadDayToFirebase = (dayInfo, daysCollection) => {
     // TODO: should we add FINISH_DAY hook for loading?
     try {
-        console.log(dayInfo);
         daysCollection.add(dayInfo);
         return {
             type: FINISH_DAY_SUCCESS,
@@ -69,5 +69,17 @@ export const uploadDayToFirebase = (dayInfo, daysCollection) => {
 }
 
 export const getDays = (daysCollection) => {
-    
+    // try {
+    //     daysCollection.
+    // } catch (e) {
+    //     return {
+    //         type: 
+    //     }
+    // }
+}
+
+export const clearDay = () => {
+    return {
+        type: CLEAR_DAY
+    }
 }

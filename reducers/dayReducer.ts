@@ -19,10 +19,11 @@ const dayReducer = (state = initialState, action) => {
         case 'FINISH_DAY':
             return action.payload
         case 'FINISH_DAY_SUCCESS':
-            console.log('suc')
             return action.payload
         case 'FINISH_DAY_FAILURE':
             return action.payload
+        case 'CLEAR_DAY':
+            return initialState
         default:
             return state
     }
