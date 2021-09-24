@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Alert, Button, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { login } from '../actions';
+import { login } from '../redux/actions/AuthActions';
 import ThemeButton from '../components/ThemeButton';
 import { Input, View } from '../components/Themed';
 import firebase from '../firebase.js';
@@ -80,7 +80,7 @@ export default function LoginScreen() {
       <View style={styles.buttonContainer}>
         <ThemeButton title="Login" onPress={handleLogin} testID="login" />
         <ThemeButton title="Sign Up" onPress={goToSignUp} testID="signUp" />
-        <Button onPress={() => submit()} title="Forgot Password?" />
+        <Button onPress={() => { console.log('implement')}} title="Forgot Password?" />
       </View>
     </View>
   );

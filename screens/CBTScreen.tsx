@@ -2,6 +2,7 @@ import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Alert, useColorScheme } from 'react-native';
+import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
 import { Collections } from '../constants';
 import { useCbt } from '../hooks/useCbt';
@@ -9,15 +10,17 @@ import getDateString from '../utils/index';
 
 const db = firebase.firestore();
 
-export default function CBTScreen({ navigation }) {
+export function CBTScreen({ navigation, cbtReducer }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
-  const { journals, loading, error } = useCbt();
+  const [cbtJournals, setCbtJournals] = useState({});
 
   useEffect(() => {
-    console.log('adsf', journals);
-  }, []);
+    if (Object.keys(cbtReducer.cbtJournals).length !== 0) {
+      setCbtJournals(cbtReducer.cbtJournals);
+    }
+  }, [cbtReducer]);
 
   /**
    * Click handler for "plus" button to add new journal entry.
@@ -66,11 +69,17 @@ export default function CBTScreen({ navigation }) {
       clickPlus={clickPlus}
       clickPastEntry={clickPastEntry}
       closeModal={closeModal}
-      entries={journals}
-      loading={loading}
+      entries={cbtJournals}
       date={date}
       setDate={setDate}
       modalVisible={modalVisible}
     />
   );
 }
+
+
+const mapStateToProps = (state) => {
+  const { cbtReducer } = state;
+  return { cbtReducer };
+};
+export default connect(mapStateToProps)(CBTScreen);

@@ -1,56 +1,62 @@
 import firebase from 'firebase';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, useColorScheme } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
-import { setDayInfo } from '../actions';
 import JournalListPage from '../components/JournalListPage';
-import { Collections } from '../constants';
-import { useJournals } from '../hooks/useJournals';
 import getDateString from '../utils/index';
-import CBTAddScreen from './CBTAddScreen';
+import { v4 as uuidv4 } from 'uuid';
+import { saveJournal, updateJournal } from '../redux/actions/JournalActions';
 
 const db = firebase.firestore();
 
-export function JournalScreen({ navigation, day }) {
+export function JournalScreen({ navigation, journalReducer }) {
   const dispatch = useDispatch();
 
-  const journalCollection = db.collection(Collections.journal);
   const colorScheme = useColorScheme() ?? 'dark';
   const [journalId, setJournalId] = useState<string>('');
-  const [text, setText] = useState<string>('');
+  const [journalText, setJournalText] = useState<string>('');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isAddingJournal, setIsAddingJournal] = useState<boolean>(false);
+  const [isEditingJournal, setIsEditingJournal] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
-  const { journals, loading, error } = useJournals();
+  const [journals, setJournals] = useState<Object>({});
+
+  useEffect(() => {
+    if (Object.keys(journalReducer.journals).length !== 0) {
+      setJournals(journalReducer.journals);
+    }
+  }, [journalReducer])
 
   /**
    * Save a journal entry
    * @return {void}
    */
-  function update(id: string, text: string): void {
-    journalCollection.doc(id).update({ text: text });
-  }
-
-  /**
-   * Add a new journal entry
-   * @return {void}
-   */
-  function insert(text: string, date: string): void {
-    if (text.length === 0) {
+  function save(): void {
+    // Why is journalText undefined here when blank?
+    if (!journalText || journalText.length === 0) {
       return;
     }
-    const entry = {
-      text,
-      date,
-    };
 
-    journalCollection.add(entry);
+    if (isAddingJournal) {
+      const id = uuidv4();
+      const journal = {
+        [id]: {
+          id,
+          text: journalText,
+          date: new Date().toISOString()
+        },
+      };
 
-    // Set new awareIds entry as date timestamp and update redux day object
-    const journalIds = [...day.journalIds, date];
-    dispatch(setDayInfo({ ...day, journalIds }));
-
-    setText('');
+      dispatch(saveJournal(journal));
+      setJournalText('');
+      setIsAddingJournal(false);
+    } else {
+      dispatch(updateJournal(journalId, journalText));
+      setJournalId('');
+      setJournalText('');
+      setIsEditingJournal(false);
+    }
   }
 
   /**
@@ -59,10 +65,10 @@ export function JournalScreen({ navigation, day }) {
    * @return {void}
    */
   function clickPlus(): void {
-    setText('');
     setJournalId('');
     // FIXME: Refactor getDateString and all function calls to it
     setDate(getDateString(new Date().toISOString()).date);
+    setIsAddingJournal(true);
     setModalVisible(true);
   }
 
@@ -73,8 +79,9 @@ export function JournalScreen({ navigation, day }) {
    */
   function clickPastEntry({ id, text, date }): void {
     setJournalId(id);
-    setText(text);
+    setJournalText(text);
     setDate(date);
+    setIsEditingJournal(true);
     setModalVisible(true);
   }
 
@@ -83,37 +90,33 @@ export function JournalScreen({ navigation, day }) {
    * @param {string} journalId - Optional param, if present, update the text at that id, else, insert new text
    * @return {void}
    */
+  // FIXME: is this method necessary?
   function upsertAndCloseModal(): void {
-    if (journalId === '') {
-      const isoDate = new Date().toISOString();
-      insert(text, isoDate);
-    } else {
-      update(journalId, text);
-    }
+    save();
     setModalVisible(false);
   }
 
   return (
     <JournalListPage
       navigation={navigation}
-      update={update}
-      insert={insert}
+      update={save}
+      save={save}
       clickPlus={clickPlus}
       clickPastEntry={clickPastEntry}
       closeModal={upsertAndCloseModal}
       entries={journals}
       modalVisible={modalVisible}
       date={date}
-      text={text}
-      setText={setText}
+      text={journalText}
+      setText={setJournalText}
       setDate={setDate}
     />
   );
 }
 
 const mapStateToProps = (state) => {
-  const { day } = state;
-  return { day };
+  const { journalReducer } = state;
+  return { journalReducer };
 };
 export default connect(mapStateToProps)(JournalScreen);
 

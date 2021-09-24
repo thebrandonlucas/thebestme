@@ -8,58 +8,66 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
+// NOTE: Required import for uuid to work
+import 'react-native-get-random-values';
 import { connect, useDispatch } from 'react-redux';
-import { setDayInfo } from '../actions';
+import { v4 as uuidv4 } from 'uuid';
 import HabitContainer from '../components/HabitContainer';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Input, Text, View } from '../components/Themed';
 import { Collections, Colors } from '../constants';
 import firebase from '../firebase';
-import { useHabits } from '../hooks/useHabits';
+import { addHabit, deleteHabit, toggleHabit, updateHabit } from '../redux/actions/HabitsActions';
+import { HabitType } from '../types';
 import getDateString from '../utils';
 
 const db = firebase.firestore();
 
-export function HabitsScreen({ user, day, navigation }) {
+export function HabitsScreen({ user, day, habitReducer, error, navigation }) {
   const dispatch = useDispatch();
 
   const [currentDate, setCurrentDate] = useState('');
   const [isAddingHabit, setIsAddingHabit] = useState(false);
   const [isEditingHabit, setIsEditingHabit] = useState(false);
-  const [habitId, setHabitId] = useState('');
+  const [habitId, setHabitId] = useState<string>('');
   const [habitText, setHabitText] = useState<string>('');
-  const { remainingHabits, finishedHabits, loading, error } = useHabits();
+  const [habitChecked, setHabitChecked] = useState<boolean>(false);
+  const [remainingHabits, setRemainingHabits] = useState<Array<HabitType>>([]);
+  const [finishedHabits, setFinishedHabits] = useState<Array<HabitType>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const colorScheme = useColorScheme();
   const inputRef = useRef(null);
 
-  // FIXME: should useLayoutEffect be used for DOM manipulation?
+  // FIXME: should useLayoutEffect be used for DOM manipulation (i.e. inputRef)?
   useEffect(() => {
     setCurrentDate(getDateString(new Date().toISOString()).date);
     if (isAddingHabit || isEditingHabit) {
       inputRef.current.focus();
     }
-  }, [isAddingHabit, isEditingHabit]);
+    let tempRemainingHabits = [], tempFinishedHabits = [];
+    const habits = habitReducer.habits;
+    for (const key in habits) {
+      const currentHabit = habits[key];
+      if (!currentHabit.checked) {
+        tempRemainingHabits.push(currentHabit);
+      } else {
+        tempFinishedHabits.push(currentHabit);
+      }
+    }
+    setRemainingHabits(tempRemainingHabits);
+    setFinishedHabits(tempFinishedHabits);
+    setLoading(false);
+  }, [isAddingHabit, isEditingHabit, habitReducer]);
 
   /**
    * Toggle the habit "checked" status
-   * @param {string} id - The habit id
+   * @param {string} id - The habit uuid
    * @param {boolean} checked - The new status
    * @return {void}
    */
-  function toggleHabit(id: string, checked: boolean): void {
-    db.collection(Collections.habits).doc(id).update({ checked: !checked });
-
-    // update redux state
-    let finishedHabitIds = day.finishedHabitIds;
-    let remainingHabitIds = day.remainingHabitIds;
-    if (checked) {
-      finishedHabitIds.delete(id);
-      remainingHabitIds.add(id);
-    } else {
-      remainingHabitIds.delete(id);
-      finishedHabitIds.add(id);
-    }
-    dispatch(setDayInfo({ ...day, remainingHabitIds, finishedHabitIds }));
+  function clickToggle(id: string, checked: boolean): void {
+    dispatch(toggleHabit(id, checked));
   }
 
   /**
@@ -75,11 +83,24 @@ export function HabitsScreen({ user, day, navigation }) {
    * @return {void}
    */
   function clickCheck(): void {
+    if (habitText.length === 0) {
+      return;
+    }
+
     if (isAddingHabit) {
-      addHabit();
+      const id = uuidv4();
+      const habit = {
+        [id]: {
+          id,
+          text: habitText,
+          checked: false,
+        },
+      };
+      dispatch(addHabit(habit));
       setIsAddingHabit(false);
+      setHabitText('');
     } else {
-      updateHabit();
+      dispatch(updateHabit(habitId, habitText));
       setIsEditingHabit(false);
       setHabitText('');
     }
@@ -94,45 +115,15 @@ export function HabitsScreen({ user, day, navigation }) {
   }
 
   /**
-   * Add a new habit
-   * @return {void}
-   */
-  function addHabit(): void {
-    if (habitText.length === 0) {
-      return;
-    }
-    const habit = {
-      text: habitText,
-      checked: false,
-    };
-
-    const habitRef = db.collection(Collections.habits).doc();
-    const id = habitRef.id;
-    habitRef.set(habit);
-
-    const remainingHabitIds = day.remainingHabitIds.add(id);
-    dispatch(setDayInfo({ ...day, remainingHabitIds }));
-
-    setIsAddingHabit(false);
-    setHabitText('');
-  }
-
-  /**
-   * Update a habit's text
-   * @return {void}
-   */
-  function updateHabit(): void {
-    db.collection(Collections.habits).doc(habitId).update({ text: habitText });
-    setIsEditingHabit(false);
-  }
-
-  /**
-   * Click handler for the "Edit" button
+   * Click handler for the "Edit" icon
    * @param {string} id - The habit id
    * @param {string} text - The edited habit text
    * @return {void}
    */
   function clickEdit(id: string, text: string): void {
+    if (text === habitText) {
+      return;
+    }
     setIsEditingHabit(true);
     setHabitText(text);
     setHabitId(id);
@@ -143,8 +134,9 @@ export function HabitsScreen({ user, day, navigation }) {
    * @return {void}
    */
   function clickDelete(): void {
-    db.collection(Collections.habits).doc(habitId).delete();
+    // db.collection(Collections.habits).doc(habitId).delete();
     // TODO: how to handle redux for removed ids in day object?
+    dispatch(deleteHabit(habitId));
     setIsEditingHabit(false);
     setHabitText('');
   }
@@ -216,7 +208,7 @@ export function HabitsScreen({ user, day, navigation }) {
                       <HabitContainer
                         key={habit.id}
                         habit={habit}
-                        toggleHabit={toggleHabit}
+                        clickToggle={clickToggle}
                         clickEdit={clickEdit}
                         isAddingHabit={isAddingHabit}
                         isEditingHabit={isEditingHabit}
@@ -231,13 +223,13 @@ export function HabitsScreen({ user, day, navigation }) {
             <Card>
               <Text style={styles.title}>Finished</Text>
               <ScrollView style={styles.scrollList}>
-                {finishedHabits.length !== 0 ? (
+                {finishedHabits.length ? (
                   <>
                     {finishedHabits.map((habit) => (
                       <HabitContainer
                         key={habit.id}
                         habit={habit}
-                        toggleHabit={toggleHabit}
+                        clickToggle={clickToggle}
                         clickEdit={clickEdit}
                         isAddingHabit={isAddingHabit}
                         isEditingHabit={isEditingHabit}
@@ -267,8 +259,8 @@ export function HabitsScreen({ user, day, navigation }) {
 }
 
 const mapStateToProps = (state) => {
-  const { user, day } = state;
-  return { user, day };
+  const { user, day, habitReducer } = state;
+  return { user, day, habitReducer };
 };
 export default connect(mapStateToProps)(HabitsScreen);
 

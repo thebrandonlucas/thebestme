@@ -1,18 +1,26 @@
 import firebase from 'firebase';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, StyleSheet, useColorScheme } from 'react-native';
+import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
 import { Collections } from '../constants';
 import { useAware } from '../hooks/useAware';
+import { AwareJournalEntryType } from '../types';
 
 const db = firebase.firestore();
 
-export default function AWAREScreen({ navigation }) {
+export function AWAREScreen({ navigation, awareReducer }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
-  const { journals, loading, error } = useAware();
+  const [awareJournals, setAwareJournals] = useState({});
+
+  useEffect(() => {
+    if (Object.keys(awareReducer.awareJournals).length !== 0) {
+      setAwareJournals(awareReducer.awareJournals);
+    }
+  }, [awareReducer])
 
   /**
    * Click handler for "plus" button to add new journal entry.
@@ -61,13 +69,18 @@ export default function AWAREScreen({ navigation }) {
       clickPlus={clickPlus}
       clickPastEntry={clickPastEntry}
       closeModal={closeModal}
-      entries={journals}
-      loading={loading}
+      entries={awareJournals}
       date={date}
       setDate={setDate}
     />
   );
 }
+
+const mapStateToProps = (state) => {
+  const { awareReducer } = state;
+  return { awareReducer };
+};
+export default connect(mapStateToProps)(AWAREScreen);
 
 const styles = StyleSheet.create({
   container: {

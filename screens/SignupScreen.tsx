@@ -5,7 +5,7 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import { Input } from 'react-native-elements';
 import PassMeter from 'react-native-passmeter';
 import { useDispatch } from 'react-redux';
-import { signup } from '../actions';
+import { signup } from '../redux/actions/AuthActions';
 import ThemeButton from '../components/ThemeButton';
 import firebase from '../firebase.js';
 

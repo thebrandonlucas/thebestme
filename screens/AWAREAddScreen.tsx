@@ -3,22 +3,26 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
-import { setDayInfo } from '../actions';
+import { v4 as uuidv4 } from 'uuid';
 import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
 import { Collections, Colors } from '../constants';
+import {
+  saveAwareJournal,
+  updateAwareJournal,
+} from '../redux/actions/AwareActions';
 import getDateString from '../utils';
 
 const db = firebase.firestore();
 
 export function AWAREAddScreen({ route, navigation, day }) {
   const dispatch = useDispatch();
-  
+
   const awareJournalCollection = db.collection(Collections.awareJournal);
 
   // FIXME: is there a better way to do this? They don't need to be state vars
-  const [id, setId] = useState<string>('');
+  const [awareId, setAwareId] = useState<string>('');
   const [date, setDate] = useState<string>('');
 
   const [acknowledgeAndAcceptText, setAcknowledgeAndAcceptText] =
@@ -27,34 +31,21 @@ export function AWAREAddScreen({ route, navigation, day }) {
   const [actionsText, setActionsText] = useState<string>('');
   const [repeatText, setRepeatText] = useState<string>('');
   const [endText, setEndText] = useState<string>('');
+  const [isAddingJournal, setIsAddingJournal] = useState<boolean>(false);
 
   useEffect(() => {
     if (route.params !== undefined) {
-      setId(route.params.id);
+      setAwareId(route.params.id);
       setDate(getDateString(route.params.date).date);
       setAcknowledgeAndAcceptText(route.params.acknowledgeAndAcceptText);
       setWaitAndWatchText(route.params.waitAndWatchText);
       setActionsText(route.params.actionsText);
       setRepeatText(route.params.repeatText);
       setEndText(route.params.endText);
+    } else {
+      setIsAddingJournal(true);
     }
-  }, []);
-
-  /**
-   * Save a journal entry
-   * @param {string} id
-   * @param {string} text
-   * @return {void}
-   */
-  function update(id: string): void {
-    awareJournalCollection.doc(id).update({
-      acknowledgeAndAcceptText,
-      waitAndWatchText,
-      actionsText,
-      repeatText,
-      endText,
-    });
-  }
+  }, [route]);
 
   /**
    * Add a new journal entry
@@ -62,7 +53,7 @@ export function AWAREAddScreen({ route, navigation, day }) {
    * @param {string} date - ISO datetime string used as ID of journal entry
    * @return {void}
    */
-  function insert(date: string): void {
+  function save(): void {
     // Don't add to firebase if all fields empty
     if (
       acknowledgeAndAcceptText.length === 0 &&
@@ -73,25 +64,40 @@ export function AWAREAddScreen({ route, navigation, day }) {
     ) {
       return;
     }
-    const entry = {
-      acknowledgeAndAcceptText,
-      waitAndWatchText,
-      actionsText,
-      repeatText,
-      endText,
-      date,
-    };
-    awareJournalCollection.doc(date).set(entry);
 
-    // Set new awareIds entry as date timestamp and update redux day object
-    const awareIds = [...day.awareIds, date];
-    dispatch(setDayInfo({ ...day, awareIds }));
-
+    if (isAddingJournal) {
+      const id = uuidv4();
+      const entry = {
+        [id]: {
+          id,
+          date: new Date().toISOString(),
+          acknowledgeAndAcceptText,
+          waitAndWatchText,
+          actionsText,
+          repeatText,
+          endText,
+        },
+      };
+      dispatch(saveAwareJournal(entry));
+    } else {
+      dispatch(
+        updateAwareJournal(
+          awareId,
+          acknowledgeAndAcceptText,
+          waitAndWatchText,
+          actionsText,
+          repeatText,
+          endText
+        )
+      );
+    }
     setAcknowledgeAndAcceptText('');
     setWaitAndWatchText('');
     setRepeatText('');
     setActionsText('');
     setEndText('');
+    setAwareId('');
+    setIsAddingJournal(false);
   }
 
   /**
@@ -100,13 +106,7 @@ export function AWAREAddScreen({ route, navigation, day }) {
    * @return {void}
    */
   function upsertAndCloseModal() {
-    if (id === '') {
-      // timestamp of the ISO timestamp format: '2021-09-11T21:39:41.861Z'
-      // https://greenwichmeantime.com/articles/clocks/iso/
-      insert(new Date().toISOString());
-    } else {
-      update(id);
-    }
+    save();
     navigation.goBack();
   }
 
@@ -185,4 +185,3 @@ const styles = StyleSheet.create({
     aspectRatio: 7 / 2,
   },
 });
-

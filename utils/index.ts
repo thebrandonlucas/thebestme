@@ -41,3 +41,18 @@ export default function getDateString(isoDate: string): DateTime {
   });
   return { date, time };
 }
+
+/**
+ * Gets the date portion of the ISO date string for the current date
+ */
+export function getTodayDateStringISO() {
+  return new Date().toISOString().substring(0, 10);
+}
+
+/**
+ * Gets the date portion of the ISO date string for a given ISO String isoString
+ * @param {string} isoString - string in YYYY-MM-DD format
+ */
+ export function getDateFromISOString(isoString: string) {
+  return isoString.substring(0, 10);
+}

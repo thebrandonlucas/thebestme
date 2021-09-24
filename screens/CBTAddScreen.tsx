@@ -1,23 +1,19 @@
-import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
-import { setDayInfo } from '../actions';
+import { v4 as uuidv4 } from 'uuid';
 import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
-import { Collections, Colors } from '../constants';
+import { Colors } from '../constants';
+import { saveCbtJournal, updateCbtJournal } from '../redux/actions/CbtActions';
 import getDateString from '../utils';
-const db = firebase.firestore();
 
 export function CBTAddScreen({ route, navigation, day }) {
-  // TODO: After login implemented, should we call daysCollection from redux?
   const dispatch = useDispatch();
 
-  const daysCollection = db.collection(Collections.days);
-  const cbtJournalCollection = db.collection(Collections.cbtJournal);
-  const [id, setId] = useState<string>('');
+  const [cbtId, setCbtId] = useState<string>('');
   const [date, setDate] = useState<string>('');
 
   const [situationText, setSituationText] = useState<string>('');
@@ -26,42 +22,28 @@ export function CBTAddScreen({ route, navigation, day }) {
   const [behaviorsText, setBehaviorsText] = useState<string>('');
   const [alternativeThoughtsText, setAlternativeThoughtsText] =
     useState<string>('');
-
+  const [isAddingJournal, setIsAddingJournal] = useState(false);
 
   useEffect(() => {
     if (route.params !== undefined) {
-      setId(route.params.id);
+      setCbtId(route.params.id);
       setDate(getDateString(route.params.date).date);
       setSituationText(route.params.situationText);
       setThoughtsText(route.params.thoughtsText);
-      setEmotionsText(route.params.thoughtsText);
-      setBehaviorsText(route.params.emotionsText);
+      setEmotionsText(route.params.emotionsText);
+      setBehaviorsText(route.params.behaviorsText);
       setAlternativeThoughtsText(route.params.alternativeThoughtsText);
+    } else {
+      setIsAddingJournal(true);
     }
-  }, []);
-
-  /**
-   * Save a journal entry
-   * @param {string} id
-   * @param {string} text
-   * @return {void}
-   */
-  function update(id: string): void {
-    cbtJournalCollection.doc(id).update({
-      situationText,
-      thoughtsText,
-      emotionsText,
-      behaviorsText,
-      alternativeThoughtsText,
-    });
-  }
+  }, [route]);
 
   /**
    * Add a new journal entry
    * @param {string} date - ISO datetime string, used as ID for journals
    * @return {void}
    */
-  function insert(date: string): void {
+  function save(): void {
     // Don't add to firebase if all fields empty
     if (
       situationText.length === 0 &&
@@ -72,25 +54,41 @@ export function CBTAddScreen({ route, navigation, day }) {
     ) {
       return;
     }
-    const entry = {
-      situationText,
-      thoughtsText,
-      emotionsText,
-      behaviorsText,
-      alternativeThoughtsText,
-      date,
-    };
-    cbtJournalCollection.doc(date).set(entry);
 
-    // Set new cbtId entry as date timestamp and update redux day object
-    const cbtIds = [...day.cbtIds, date];
-    dispatch(setDayInfo({ ...day, cbtIds }));
+    if (isAddingJournal) {
+      const id = uuidv4();
+      const entry = {
+        [id]: {
+          id,
+          date: new Date().toISOString(),
+          situationText,
+          thoughtsText,
+          emotionsText,
+          behaviorsText,
+          alternativeThoughtsText,
+        },
+      };
+      dispatch(saveCbtJournal(entry));
+    } else {
+      dispatch(
+        updateCbtJournal(
+          cbtId,
+          situationText,
+          thoughtsText,
+          emotionsText,
+          behaviorsText,
+          alternativeThoughtsText
+        )
+      );
+    }
 
     setSituationText('');
     setThoughtsText('');
     setEmotionsText('');
     setBehaviorsText('');
     setAlternativeThoughtsText('');
+    setCbtId('');
+    setIsAddingJournal(false);
   }
 
   /**
@@ -99,13 +97,7 @@ export function CBTAddScreen({ route, navigation, day }) {
    * @return {void}
    */
   function upsertAndCloseModal() {
-    if (id === '') {
-      // timestamp of the ISO timestamp format: '2021-09-11T21:39:41.861Z'
-      // https://greenwichmeantime.com/articles/clocks/iso/
-      insert(new Date().toISOString());
-    } else {
-      update(id);
-    }
+    save();
     navigation.goBack();
   }
 

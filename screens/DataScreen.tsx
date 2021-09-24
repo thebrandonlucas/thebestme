@@ -4,9 +4,11 @@ import CalendarTestData from '../components/CalendarTestData';
 import { Calendar, Card, Text, View } from '../components/Themed';
 import { Colors } from '../constants';
 import getDateString from '../utils';
+import { useDays } from '../hooks/useDays';
 
 export default function DataScreen() {
-  const { date } = getDateString();
+  const { date } = getDateString(new Date().toISOString());
+  const daysData = useDays();
 
   return (
     <View style={styles.container}>

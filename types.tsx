@@ -61,48 +61,56 @@ export type DateTime = {
 };
 
 export type HabitType = {
-  id: string;
-  checked: boolean;
-  text: string;
+  [id: string]: {
+    id: string;
+    checked: boolean;
+    text: string;
+  };
 };
 
 export type JournalEntryType = {
-  id: string;
-  date: string;
-  text: string;
+  [id: string]: {
+    id: string;
+    date: string;
+    text: string;
+  }
 };
 
 export type AwareJournalEntryType = {
-  id: string,
-  date: string,
-  acknowledgeAndAcceptText: string,
-  waitAndWatchText: string,
-  actionsText: string,
-  repeatText: string,
-  endText: string 
+  [id: string]: {
+    id: string;
+    date: string;
+    acknowledgeAndAcceptText: string;
+    waitAndWatchText: string;
+    actionsText: string;
+    repeatText: string;
+    endText: string;
+  }
 };
 
 export type CbtJournalEntryType = {
-  id: string,
-  date: string,
-  situationText: string,
-  thoughtsText: string,
-  emotionsText: string,
-  behaviorsText: string,
-  alternativeThoughtsText: string
+  [id: string]: {
+    id: string;
+    date: string;
+    situationText: string;
+    thoughtsText: string;
+    emotionsText: string;
+    behaviorsText: string;
+    alternativeThoughtsText: string;
+  }
 };
 
 export type DayType = {
-  id: string,
-  date: string,
-  finishedHabitIds: Array<string>,
-  remainingHabitIds: Array<string>,
-  cbtIds: Array<string>,
-  awareIds: Array<string>,
-  journalIds: Array<string>,
-  mood: string,
-  endOfDayNotes: string,
-  isDayFinished: boolean,
+  id: string;
+  date: string;
+  finishedHabitIds: Array<string>;
+  remainingHabitIds: Array<string>;
+  cbtIds: Array<string>;
+  awareIds: Array<string>;
+  journalIds: Array<string>;
+  mood: string;
+  endOfDayNotes: string;
+  isDayFinished: boolean;
 };
 
 export type GetComponentProps<T> = T extends

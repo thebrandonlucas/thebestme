@@ -1,14 +1,13 @@
 import { AntDesign } from '@expo/vector-icons';
 import firebase from 'firebase';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, useColorScheme } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Colors } from '../constants';
 import getDateString from '../utils';
 import JournalModal from './JournalModal';
 import { Card, Text, View } from './Themed';
-
-const db = firebase.firestore();
 
 /**
  * Template for journal entry list pages: Journal (primary), CBT, and AWARE
@@ -17,6 +16,14 @@ const db = firebase.firestore();
  */
 export default function JournalListPage(props) {
   const colorScheme = useColorScheme() ?? 'dark';
+  const [entryKeys, setEntryKeys] = useState([]);
+
+  useEffect(() => {
+    const keys = Object.keys(props.entries);
+    if (props.entries && keys.length !== 0) {
+      setEntryKeys(keys);
+    }
+  }, [props])
 
   /**
    * Journal entry list item
@@ -34,12 +41,12 @@ export default function JournalListPage(props) {
 
   /**
    * Renders a journal entry list item. Clicking opens a modal containing the editable journal text
-   * @param {object} item - A journal object containing the text and date of the entry
+   * @param {string} item - The key used to access a particular journal entry
    * @return {JSX.Element} - Return the list element
    */
   const renderItem = ({ item }): JSX.Element => (
-    <TouchableOpacity onPress={() => { props.clickPastEntry(item) }}>
-      <JournalItem date={getDateString(item.date).date} text={item.text} />
+    <TouchableOpacity onPress={() => { console.log('jjfjfj', props.entries[item]); props.clickPastEntry(props.entries[item]) }}>
+      <JournalItem date={getDateString(props.entries[item].date).date} text={props.entries[item].text} />
     </TouchableOpacity>
   );
 
@@ -62,12 +69,12 @@ export default function JournalListPage(props) {
           </TouchableOpacity>
         </View>
 
-        {!props.loading && props.entries.length !== 0 ? (
+        {!props.loading && props.entries && entryKeys.length !== 0 ? (
           <FlatList
             style={styles.list}
-            data={props.entries}
+            data={entryKeys}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item}
             ItemSeparatorComponent={renderSpace}
           />
         ) : (

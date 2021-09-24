@@ -12,7 +12,7 @@ export default function HabitContainer(props): JSX.Element {
                 checked={props.habit.checked}
                 checkedTitle={props.habit.text}
                 title={props.habit.text}
-                onPress={() => props.toggleHabit(props.habit.id, props.habit.checked)}
+                onPress={() => props.clickToggle(props.habit.id, props.habit.checked)}
                 onLongPress={() => props.clickEdit(props.habit.id, props.habit.text)}
             />
             {!props.isEditingHabit && !props.isAddingHabit &&

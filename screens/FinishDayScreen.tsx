@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
-import { uploadDayToFirebase } from '../actions';
+import { saveDayToStorage, saveFinishDayCountToStorage } from '../redux/actions/DayActions';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Input, Text, View } from '../components/Themed';
 import { Collections } from '../constants';
@@ -12,7 +12,7 @@ import { HabitType } from '../types';
 
 const db = firebase.firestore();
 
-export function FinishDayScreen({ route, navigation, day }) {
+export function FinishDayScreen({ route, navigation, day, finishDayCount }) {
   const dispatch = useDispatch();
   //   FIXME: should remainingHabits and finishedHabits be state vars? How often do they render?
   const daysCollection = db.collection(Collections.days);
@@ -30,27 +30,26 @@ export function FinishDayScreen({ route, navigation, day }) {
     // Round percent complete to two decimal places
     // @see https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places (comment by Marquizzo)
     setHabitPercentComplete(Math.round(percentComplete * 100) / 100);
-  }, []);
+  }, [day, finishDayCount]);
 
   function finishDay(mood: string) {
-    // NOTE: Firebase doesn't support the Set() type, must convert to array on upload
+    // NOTE: AsyncStorage doesn't support the Set() type, must convert to array on upload
     const remainingHabitIds = [...day.remainingHabitIds];
     const finishedHabitIds = [...day.finishedHabitIds];
-    dispatch(
-      uploadDayToFirebase(
-        {
-          ...day,
-          // TODO: Figure out when to set date
-          date: new Date().toISOString(),
-          remainingHabitIds,
-          finishedHabitIds,
-          mood,
-          endOfDayNotes,
-          isDayFinished: true,
-        },
-        daysCollection
-      )
-    );
+    const date = new Date().toISOString();
+    const dayInfo = {
+      ...day,
+      // TODO: Figure out when to set date
+      date,
+      remainingHabitIds,
+      finishedHabitIds,
+      mood,
+      endOfDayNotes,
+      isDayFinished: true,
+    };
+    const tempFinishDayCount = finishDayCount + 1;
+    dispatch(saveDayToStorage(dayInfo, tempFinishDayCount));
+    dispatch(saveFinishDayCountToStorage(date, tempFinishDayCount));
   }
 
   return (
@@ -104,7 +103,7 @@ export function FinishDayScreen({ route, navigation, day }) {
 }
 
 const mapStateToProps = (state) => {
-  const { user, day } = state;
+  const { user, day, finishDayCount } = state;
   return { user, day };
 };
 export default connect(mapStateToProps)(FinishDayScreen);

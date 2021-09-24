@@ -6,10 +6,10 @@ import { DayType } from '../types';
 
 const db = firebase.firestore();
 /** 
- * hook to get habits from firebase
+ * hook to get data for each day from firebase
  */
 // TODO: implement user id
-export function useHabits() {
+export function useDays() {
     const [days, setDays] = useState<DayType[]>([]);
     const [dbDays, loading, error] = useCollection(firebase.firestore().collection(Collections.days));
 
