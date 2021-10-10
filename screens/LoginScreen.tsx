@@ -1,4 +1,4 @@
-import '@firebase/firestore';
+// import '@firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { useState } from 'react';
@@ -7,8 +7,7 @@ import { useDispatch } from 'react-redux';
 import { login } from '../redux/actions/AuthActions';
 import ThemeButton from '../components/ThemeButton';
 import { Input, View } from '../components/Themed';
-import firebase from '../firebase.js';
-
+// 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,43 +23,43 @@ export default function LoginScreen() {
     setPassword(text);
   }
   function handleLogin() {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email.toLowerCase(), password)
-      .then((response) => {
-        if (response.user.emailVerified) {
-          firebase
-            .firestore()
-            .collection('users')
-            .where('username', '==', response.user.email)
-            .limit(1)
-            .onSnapshot((querySnapshot) => {
-              if (!querySnapshot.empty) {
-                const queryDocumentSnapshot = querySnapshot.docs[0];
-                const queryDocumentSnapshotData = queryDocumentSnapshot.data();
-                dispatch(login(queryDocumentSnapshotData));
-                navigation.navigate('BottomTabNavigator');
-              }
-            });
-        } else {
-          Alert.alert(
-            'Email Unverified',
-            'The email address ' +
-              response.user.email +
-              ' is unverified. Please verify to login.',
-            [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-            { cancelable: false }
-          );
-        }
-      })
-      .catch((error) => {
-        Alert.alert(
-          'Error',
-          error.message,
-          [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-          { cancelable: false }
-        );
-      });
+    // firebase
+      // .auth()
+      // .signInWithEmailAndPassword(email.toLowerCase(), password)
+      // .then((response) => {
+      //   if (response.user.emailVerified) {
+      //     firebase
+      //       .firestore()
+      //       .collection('users')
+      //       .where('username', '==', response.user.email)
+      //       .limit(1)
+      //       .onSnapshot((querySnapshot) => {
+      //         if (!querySnapshot.empty) {
+      //           const queryDocumentSnapshot = querySnapshot.docs[0];
+      //           const queryDocumentSnapshotData = queryDocumentSnapshot.data();
+      //           dispatch(login(queryDocumentSnapshotData));
+      //           navigation.navigate('BottomTabNavigator');
+      //         }
+      //       });
+      //   } else {
+      //     Alert.alert(
+      //       'Email Unverified',
+      //       'The email address ' +
+      //         response.user.email +
+      //         ' is unverified. Please verify to login.',
+      //       [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      //       { cancelable: false }
+      //     );
+      //   }
+      // })
+      // .catch((error) => {
+      //   Alert.alert(
+      //     'Error',
+      //     error.message,
+      //     [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      //     { cancelable: false }
+      //   );
+      // });
   }
   return (
     <View style={styles.container}>

@@ -5,7 +5,7 @@
 import React from 'react';
 
 export type RootStackParamList = {
-  Root: undefined;
+  Home: undefined;
   BottomTabNavigator: undefined;
   Signup: undefined;
   Login: undefined;
@@ -46,6 +46,7 @@ export type DataParamList = {
 
 export type SettingsParamList = {
   SettingsScreen: undefined;
+  ConfigureMyCircleScreen: undefined;
 };
 
 export type CheckBoxType = {
@@ -73,7 +74,7 @@ export type JournalEntryType = {
     id: string;
     date: string;
     text: string;
-  }
+  };
 };
 
 export type AwareJournalEntryType = {
@@ -85,7 +86,7 @@ export type AwareJournalEntryType = {
     actionsText: string;
     repeatText: string;
     endText: string;
-  }
+  };
 };
 
 export type CbtJournalEntryType = {
@@ -97,21 +98,48 @@ export type CbtJournalEntryType = {
     emotionsText: string;
     behaviorsText: string;
     alternativeThoughtsText: string;
-  }
+  };
 };
 
 export type DayType = {
-  id: string;
-  date: string;
-  finishedHabitIds: Array<string>;
-  remainingHabitIds: Array<string>;
-  cbtIds: Array<string>;
-  awareIds: Array<string>;
-  journalIds: Array<string>;
-  mood: string;
-  endOfDayNotes: string;
-  isDayFinished: boolean;
+  [date: string]: {
+    id: string;
+    date: string;
+    finishedHabitIds: Array<string>;
+    remainingHabitIds: Array<string>;
+    cbtIds: Array<string>;
+    awareIds: Array<string>;
+    journalIds: Array<string>;
+    mood: string;
+    endOfDayNotes: string;
+    isDayFinished: boolean;
+  }
 };
+
+export type MyCircleFriend = {
+  id: string;
+  name: string;
+  phoneNumber: string;
+};
+
+export type CalendarDataType = {
+  [date: string]: {
+    marked?: boolean;
+    dotColor?: string;
+    color?: string;
+    startingDay?: boolean;
+    endingDay?: boolean;
+    selected?: boolean;
+  }
+};
+
+export type CalendarDayType = {
+    dateString: string;
+    day: number;
+    month: number;
+    timestamp: number;
+    year: number;
+}
 
 export type GetComponentProps<T> = T extends
   | React.ComponentType<infer P>

@@ -10,22 +10,35 @@ import {
 } from 'react-native';
 // NOTE: Required import for uuid to work
 import 'react-native-get-random-values';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import HabitContainer from '../components/HabitContainer';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Input, Text, View } from '../components/Themed';
-import { Collections, Colors } from '../constants';
-import firebase from '../firebase';
-import { addHabit, deleteHabit, toggleHabit, updateHabit } from '../redux/actions/HabitsActions';
-import { HabitType } from '../types';
+import { Colors } from '../constants';
+import { setDayInfo } from '../redux/actions/DayActions';
+import {
+  addHabit,
+  deleteHabit,
+  toggleHabit,
+  updateHabit,
+} from '../redux/actions/HabitsActions';
+import { DayType, HabitType } from '../types';
 import getDateString from '../utils';
 
-const db = firebase.firestore();
-
-export function HabitsScreen({ user, day, habitReducer, error, navigation }) {
-  const dispatch = useDispatch();
-
+export function HabitsScreen({
+  user,
+  day,
+  habitReducer,
+  dayReducer,
+  error,
+  navigation,
+  addHabit,
+  deleteHabit,
+  toggleHabit,
+  updateHabit,
+  setDayInfo
+}) {
   const [currentDate, setCurrentDate] = useState('');
   const [isAddingHabit, setIsAddingHabit] = useState(false);
   const [isEditingHabit, setIsEditingHabit] = useState(false);
@@ -45,7 +58,8 @@ export function HabitsScreen({ user, day, habitReducer, error, navigation }) {
     if (isAddingHabit || isEditingHabit) {
       inputRef.current.focus();
     }
-    let tempRemainingHabits = [], tempFinishedHabits = [];
+    let tempRemainingHabits = [],
+      tempFinishedHabits = [];
     const habits = habitReducer.habits;
     for (const key in habits) {
       const currentHabit = habits[key];
@@ -67,7 +81,11 @@ export function HabitsScreen({ user, day, habitReducer, error, navigation }) {
    * @return {void}
    */
   function clickToggle(id: string, checked: boolean): void {
-    dispatch(toggleHabit(id, checked));
+    toggleHabit(id, checked);
+    const tempRemainingHabitIds = dayReducer.today.remainingHabitIds.filter((tempId) => tempId !== id);
+    const tempFinishedHabitIds = [...dayReducer.today.finishedHabitIds, id];
+    setDayInfo({ ...dayReducer.today, remainingHabitIds: tempRemainingHabitIds, finishedHabitIds: tempFinishedHabitIds });
+    setHabitChecked(checked);
   }
 
   /**
@@ -96,11 +114,14 @@ export function HabitsScreen({ user, day, habitReducer, error, navigation }) {
           checked: false,
         },
       };
-      dispatch(addHabit(habit));
+      addHabit(habit);
+      const tempRemainingHabitIds = [...dayReducer.today.remainingHabitIds, id];
+      setDayInfo({ ...dayReducer.today, remainingHabitIds: tempRemainingHabitIds });
       setIsAddingHabit(false);
       setHabitText('');
+      setHabitChecked(false);
     } else {
-      dispatch(updateHabit(habitId, habitText));
+      updateHabit(habitId, habitText);
       setIsEditingHabit(false);
       setHabitText('');
     }
@@ -134,9 +155,14 @@ export function HabitsScreen({ user, day, habitReducer, error, navigation }) {
    * @return {void}
    */
   function clickDelete(): void {
-    // db.collection(Collections.habits).doc(habitId).delete();
-    // TODO: how to handle redux for removed ids in day object?
-    dispatch(deleteHabit(habitId));
+    deleteHabit(habitId);
+    if (habitChecked) {
+      const tempFinishedHabitIds = dayReducer.today.finishedHabitIds.filter((tempId) => tempId !== habitId);
+      setDayInfo({ ...dayReducer.today, remainingHabitIds: tempFinishedHabitIds });
+    } else {
+      const tempRemainingHabitIds = dayReducer.today.remainingHabitIds.filter((tempId) => tempId !== habitId);
+      setDayInfo({ ...dayReducer.today, remainingHabitIds: tempRemainingHabitIds });
+    }
     setIsEditingHabit(false);
     setHabitText('');
   }
@@ -258,11 +284,40 @@ export function HabitsScreen({ user, day, habitReducer, error, navigation }) {
   );
 }
 
-const mapStateToProps = (state) => {
-  const { user, day, habitReducer } = state;
-  return { user, day, habitReducer };
+const mapStateToProps = (state: { user: any; day: any; habitReducer: any, dayReducer: any }) => {
+  const { user, day, habitReducer, dayReducer } = state; 
+  return { user, day, habitReducer, dayReducer };
 };
-export default connect(mapStateToProps)(HabitsScreen);
+const mapDispatchToProps = (
+  dispatch: (arg0: {
+    type: string;
+    payload:
+      | HabitType
+      | { id: string; checked: boolean }
+      | { id: string; text: string }
+      | { id: string }
+      | DayType;
+  }) => void
+) => {
+  return {
+    addHabit: (habit: HabitType) => {
+      dispatch(addHabit(habit));
+    },
+    toggleHabit: (id: string, checked: boolean) => {
+      dispatch(toggleHabit(id, checked));
+    },
+    updateHabit: (id: string, text: string) => {
+      dispatch(updateHabit(id, text));
+    },
+    deleteHabit: (id: string) => {
+      dispatch(deleteHabit(id));
+    },
+    setDayInfo: (dayInfo: DayType) => {
+      dispatch(setDayInfo(dayInfo));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(HabitsScreen);
 
 const styles = StyleSheet.create({
   container: {

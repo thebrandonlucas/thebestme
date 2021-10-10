@@ -7,7 +7,6 @@ import { SAVE_AWARE_JOURNAL, DELETE_AWARE_JOURNAL, UPDATE_AWARE_JOURNAL } from "
  * @returns
  */
 export function saveAwareJournal(awareJournal: AwareJournalEntryType) {
-    console.log('aware', awareJournal)
     return {
         type: SAVE_AWARE_JOURNAL,
         payload: awareJournal

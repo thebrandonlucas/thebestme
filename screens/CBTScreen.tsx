@@ -1,14 +1,11 @@
-import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Alert, useColorScheme } from 'react-native';
 import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
 import { Collections } from '../constants';
-import { useCbt } from '../hooks/useCbt';
 import getDateString from '../utils/index';
 
-const db = firebase.firestore();
 
 export function CBTScreen({ navigation, cbtReducer }) {
   const colorScheme = useColorScheme() ?? 'dark';

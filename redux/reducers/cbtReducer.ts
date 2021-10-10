@@ -7,7 +7,6 @@ const initialState = {
 
 const cbtJournalReducer = (state = initialState, action) => {
     let tempCbtJournals = state.cbtJournals;
-    console.log('action', action)
     switch (action.type) {
         case SAVE_CBT_JOURNAL:
             tempCbtJournals = { ...tempCbtJournals, ...action.payload};

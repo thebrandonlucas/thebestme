@@ -9,10 +9,14 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 // Modify to add persistor
 import { store, persistor } from './redux/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+
+  // TODO: remove after dev
+  AsyncStorage.clear();
 
   if (!isLoadingComplete) {
     return null;

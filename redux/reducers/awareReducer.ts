@@ -7,7 +7,6 @@ const initialState = {
 
 const awareJournalReducer = (state = initialState, action) => {
     let tempAwareJournals = state.awareJournals;
-    console.log('action', action)
     switch (action.type) {
         case SAVE_AWARE_JOURNAL:
             tempAwareJournals = { ...tempAwareJournals, ...action.payload};

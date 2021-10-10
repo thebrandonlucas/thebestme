@@ -1,4 +1,3 @@
-import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
@@ -14,12 +13,9 @@ import {
 } from '../redux/actions/AwareActions';
 import getDateString from '../utils';
 
-const db = firebase.firestore();
 
 export function AWAREAddScreen({ route, navigation, day }) {
   const dispatch = useDispatch();
-
-  const awareJournalCollection = db.collection(Collections.awareJournal);
 
   // FIXME: is there a better way to do this? They don't need to be state vars
   const [awareId, setAwareId] = useState<string>('');

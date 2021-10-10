@@ -1,14 +1,15 @@
-import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet, useColorScheme } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
-import JournalListPage from '../components/JournalListPage';
-import getDateString from '../utils/index';
 import { v4 as uuidv4 } from 'uuid';
-import { saveJournal, updateJournal } from '../redux/actions/JournalActions';
-
-const db = firebase.firestore();
+import JournalListPage from '../components/JournalListPage';
+import {
+  deleteJournal,
+  saveJournal,
+  updateJournal,
+} from '../redux/actions/JournalActions';
+import getDateString from '../utils/index';
 
 export function JournalScreen({ navigation, journalReducer }) {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ export function JournalScreen({ navigation, journalReducer }) {
     if (Object.keys(journalReducer.journals).length !== 0) {
       setJournals(journalReducer.journals);
     }
-  }, [journalReducer])
+  }, [journalReducer]);
 
   /**
    * Save a journal entry
@@ -44,7 +45,7 @@ export function JournalScreen({ navigation, journalReducer }) {
         [id]: {
           id,
           text: journalText,
-          date: new Date().toISOString()
+          date: new Date().toISOString(),
         },
       };
 
@@ -85,7 +86,7 @@ export function JournalScreen({ navigation, journalReducer }) {
     setModalVisible(true);
   }
 
-  /** 
+  /**
    * Close the journal modal
    * @param {string} journalId - Optional param, if present, update the text at that id, else, insert new text
    * @return {void}
@@ -118,7 +119,22 @@ const mapStateToProps = (state) => {
   const { journalReducer } = state;
   return { journalReducer };
 };
-export default connect(mapStateToProps)(JournalScreen);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    saveJournal: (journal) => {
+      dispatch(saveJournal(journal));
+    },
+    deleteJournal: (id) => {
+      dispatch(deleteJournal(id));
+    },
+    updateJournal: (id, text) => {
+      dispatch(updateJournal(id, text));
+    },
+    // Can add more functions to dispatch if necessary
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(JournalScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -165,4 +181,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
-

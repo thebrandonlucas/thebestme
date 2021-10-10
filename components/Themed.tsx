@@ -172,7 +172,7 @@ export const Input = forwardRef((props: InputProps, ref: React.ForwardedRef<any>
 });
 
 export const Calendar = (props: any) => {
-  const { markedDates, markingType, style, lightColor, darkColor } = props;
+  const { markedDates, markingType, style, lightColor, darkColor, onDayPress } = props;
   const calendarBackground = useThemeColor(
     { light: lightColor, dark: darkColor },
     'background'
@@ -200,6 +200,7 @@ export const Calendar = (props: any) => {
       }}
       markedDates={markedDates}
       markingType={markingType}
+      onDayPress={onDayPress}
     />
   );
 };

@@ -1,22 +1,16 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { connect, useDispatch } from 'react-redux';
-import { saveDayToStorage, saveFinishDayCountToStorage } from '../redux/actions/DayActions';
+import { connect } from 'react-redux';
+import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
-import { Card, Input, Text, View } from '../components/Themed';
-import { Collections } from '../constants';
+import { Card, Text, View } from '../components/Themed';
 import Colors from '../constants/Colors';
-import firebase from '../firebase';
-import { HabitType } from '../types';
+import { saveDay, setDayInfo } from '../redux/actions/DayActions';
+import { DayType, HabitType } from '../types';
+import { getDateFromISOString } from '../utils';
 
-const db = firebase.firestore();
-
-export function FinishDayScreen({ route, navigation, day, finishDayCount }) {
-  const dispatch = useDispatch();
-  //   FIXME: should remainingHabits and finishedHabits be state vars? How often do they render?
-  const daysCollection = db.collection(Collections.days);
-
+function FinishDayScreen({ route, navigation, today, saveDay }) {
   const remainingHabits: HabitType[] = route.params.remainingHabits;
   const finishedHabits: HabitType[] = route.params.finishedHabits;
   const [totalHabitCount, setTotalHabitCount] = useState<number>(0);
@@ -30,27 +24,40 @@ export function FinishDayScreen({ route, navigation, day, finishDayCount }) {
     // Round percent complete to two decimal places
     // @see https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places (comment by Marquizzo)
     setHabitPercentComplete(Math.round(percentComplete * 100) / 100);
-  }, [day, finishDayCount]);
+  }, [today]);
 
   function finishDay(mood: string) {
-    // NOTE: AsyncStorage doesn't support the Set() type, must convert to array on upload
-    const remainingHabitIds = [...day.remainingHabitIds];
-    const finishedHabitIds = [...day.finishedHabitIds];
-    const date = new Date().toISOString();
+    const date = getDateFromISOString(new Date().toISOString());
+    const finishedHabitIds = today.finishedHabitIds;
+    const remainingHabitIds = today.remainingHabitIds;
     const dayInfo = {
-      ...day,
-      // TODO: Figure out when to set date
-      date,
-      remainingHabitIds,
-      finishedHabitIds,
-      mood,
-      endOfDayNotes,
-      isDayFinished: true,
+      [date]: {
+        ...today,
+        // TODO: Figure out when to set date
+        date,
+        finishedHabitIds,
+        remainingHabitIds,
+        mood: [...today.mood, mood],
+        endOfDayNotes: [...today.endOfDayNotes, endOfDayNotes],
+      }
     };
-    const tempFinishDayCount = finishDayCount + 1;
-    dispatch(saveDayToStorage(dayInfo, tempFinishDayCount));
-    dispatch(saveFinishDayCountToStorage(date, tempFinishDayCount));
+    setDayInfo(dayInfo);
+    saveDay();
+    navigation.navigate('HabitsScreen');
   }
+
+  const HabitCard = ({ title, habits }) => {
+    return (
+      <>
+        <Text>{title}</Text>
+        <Card>
+          {habits.map((habit: { id: React.Key; text: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal; }) => {
+            return <Text key={habit.id}>{habit.text}</Text>;
+          })}
+        </Card>
+      </>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -61,24 +68,12 @@ export function FinishDayScreen({ route, navigation, day, finishDayCount }) {
         </Text>
         <Text>% Complete: {habitPercentComplete}</Text>
       </Card>
-      <Text>Remaining</Text>
-      <Card>
-        {remainingHabits.map((habit) => {
-          return <Text>{habit.text}</Text>;
-        })}
-      </Card>
-      <Text>Finished</Text>
-      <Card>
-        {finishedHabits.map((habit) => {
-          return <Text>{habit.text}</Text>;
-        })}
-      </Card>
-      <Text>End of day notes</Text>
-      <Input
-        containerStyle={styles.addHabitInputContainer}
-        placeholder="What are your thoughts about today?"
-        onChangeText={setEndOfDayNotes}
-        value={endOfDayNotes}
+      <HabitCard title="Remaining" habits={remainingHabits} />
+      <HabitCard title="Finished" habits={finishedHabits} />
+      <TextInputModal
+        text={endOfDayNotes}
+        setText={setEndOfDayNotes}
+        label="End of Day Notes"
       />
       <ThemeButton
         title="Happy"
@@ -102,11 +97,18 @@ export function FinishDayScreen({ route, navigation, day, finishDayCount }) {
   );
 }
 
-const mapStateToProps = (state) => {
-  const { user, day, finishDayCount } = state;
-  return { user, day };
+const mapStateToProps = (state: { dayReducer: { today: any; }; }) => {
+  const { today } = state.dayReducer;
+  return { today };
 };
-export default connect(mapStateToProps)(FinishDayScreen);
+const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: DayType; }) => void) => {
+  return {
+    saveDay: () => {
+      dispatch(saveDay());
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(FinishDayScreen);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,14 +1,11 @@
-import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Alert, StyleSheet, useColorScheme } from 'react-native';
 import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
 import { Collections } from '../constants';
-import { useAware } from '../hooks/useAware';
 import { AwareJournalEntryType } from '../types';
 
-const db = firebase.firestore();
 
 export function AWAREScreen({ navigation, awareReducer }) {
   const colorScheme = useColorScheme() ?? 'dark';

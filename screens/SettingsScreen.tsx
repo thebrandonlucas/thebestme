@@ -9,31 +9,7 @@ export default function SettingsScreen() {
   const navigation = useNavigation();
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === 'granted') {
-        await Contacts.presentFormAsync();
-        const { data } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.Emails],
-        });
-
-        if (data.length > 0) {
-        
-          const contact = data[0];
-          for (let i = 0; i < data.length; i++) {
-            if (data[i].name === 'Sam') {
-              console.log(data[i])
-            }
-          }
-          console.log(contact);
-        }
-      }
-    })();
   }, []);
-
-  function getContacts() {
-
-  }
 
   return (
     <View style={styles.container}>
@@ -46,7 +22,7 @@ export default function SettingsScreen() {
       />
       <Button
         title="Configure MyCircle Friends"
-        onPress={getContacts}
+        onPress={() => navigation.navigate('ConfigureMyCircleScreen')}
       />
     </View>
   );

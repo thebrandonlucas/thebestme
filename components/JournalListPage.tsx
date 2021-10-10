@@ -1,5 +1,5 @@
 import { AntDesign } from '@expo/vector-icons';
-import firebase from 'firebase';
+// import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, useColorScheme } from 'react-native';
