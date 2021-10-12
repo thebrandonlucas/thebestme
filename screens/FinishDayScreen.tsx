@@ -6,30 +6,36 @@ import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
 import Colors from '../constants/Colors';
-import { clearDay, saveDay, setDayInfo } from '../redux/actions/DayActions';
+import { saveDay } from '../redux/actions/DayActions';
 import { DayType, HabitType } from '../types';
 import { getDateFromISOString } from '../utils';
 
-function FinishDayScreen({ route, navigation, today, days, saveDay }) {
-  const remainingHabits: HabitType[] = route.params.remainingHabits;
-  const finishedHabits: HabitType[] = route.params.finishedHabits;
-  const [totalHabitCount, setTotalHabitCount] = useState<number>(0);
+function FinishDayScreen({ route, navigation, today, days, habits, saveDay }) {
+  const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
+  const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
+  const [habitCount, setHabitCount] = useState<number>(0);
   const [habitPercentComplete, setHabitPercentComplete] = useState<number>(0);
   const [endOfDayNotes, setEndOfDayNotes] = useState<string>('');
 
   useEffect(() => {
-    const habitCount = remainingHabits.length + finishedHabits.length;
-    setTotalHabitCount(habitCount);
-    const percentComplete = 100 * (finishedHabits.length / habitCount);
+    const tempRemainingHabits = today.remainingHabitIds.map((id) => habits[id]);
+    const tempFinishedHabits = today.finishedHabitIds.map((id) => habits[id]);
+    const tempHabitCount =
+      tempRemainingHabits.length + tempFinishedHabits.length;
+    setHabitCount(tempHabitCount);
+    const percentComplete = 100 * (tempFinishedHabits.length / tempHabitCount);
     // Round percent complete to two decimal places
     // @see https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places (comment by Marquizzo)
     setHabitPercentComplete(Math.round(percentComplete * 100) / 100);
-  }, [today]);
+    setRemainingHabits(tempRemainingHabits);
+    setFinishedHabits(tempFinishedHabits);
+  }, [today, days]);
 
   function finishDay(mood: string) {
     const date = getDateFromISOString(new Date().toISOString());
     const finishedHabitIds = today.finishedHabitIds;
     const remainingHabitIds = today.remainingHabitIds;
+
     const dayInfo = {
       [date]: {
         ...today,
@@ -37,9 +43,13 @@ function FinishDayScreen({ route, navigation, today, days, saveDay }) {
         date,
         finishedHabitIds,
         remainingHabitIds,
+        habitCount,
+        habitPercentComplete,
         mood: days[date] ? [...days[date].mood, mood] : [mood],
-        endOfDayNotes: days[date] ? [...today.endOfDayNotes, endOfDayNotes] : [endOfDayNotes],
-      }
+        endOfDayNotes: days[date]
+          ? [...today.endOfDayNotes, endOfDayNotes]
+          : [endOfDayNotes],
+      },
     };
     saveDay(dayInfo);
     navigation.navigate('HabitsScreen');
@@ -50,9 +60,18 @@ function FinishDayScreen({ route, navigation, today, days, saveDay }) {
       <>
         <Text>{title}</Text>
         <Card>
-          {habits.map((habit: { id: React.Key; text: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal; }) => {
-            return <Text key={habit.id}>{habit.text}</Text>;
-          })}
+          {habits.map(
+            (habit: {
+              id: React.Key;
+              text:
+                | boolean
+                | React.ReactChild
+                | React.ReactFragment
+                | React.ReactPortal;
+            }) => {
+              return <Text key={habit.id}>{habit.text}</Text>;
+            }
+          )}
         </Card>
       </>
     );
@@ -63,7 +82,7 @@ function FinishDayScreen({ route, navigation, today, days, saveDay }) {
       <Text>Summary</Text>
       <Card>
         <Text>
-          Completed: {finishedHabits.length} / {totalHabitCount}
+          Completed: {finishedHabits.length} / {habitCount}
         </Text>
         <Text>% Complete: {habitPercentComplete}</Text>
       </Card>
@@ -96,11 +115,17 @@ function FinishDayScreen({ route, navigation, today, days, saveDay }) {
   );
 }
 
-const mapStateToProps = (state: { dayReducer: { today: any; days: any }; }) => {
+const mapStateToProps = (state: {
+  dayReducer: { today: any; days: any };
+  habitReducer: { habits: {} };
+}) => {
   const { today, days } = state.dayReducer;
-  return { today, days };
+  const { habits } = state.habitReducer;
+  return { today, days, habits };
 };
-const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: DayType }) => void) => {
+const mapDispatchToProps = (
+  dispatch: (arg0: { type: string; payload: DayType }) => void
+) => {
   return {
     saveDay: (dayInfo: DayType) => {
       dispatch(saveDay(dayInfo));

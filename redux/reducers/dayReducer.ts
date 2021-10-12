@@ -22,6 +22,8 @@ const initialState = {
         awareIds: [],
         journalIds: [],
         // Array of 'mood' chars: ['happy', 'neutral', 'sad', ...]
+        habitCount: 0,
+        habitPercentComplete: 0,
         mood: [],
         // String Array of EOD Notes
         endOfDayNotes: [],

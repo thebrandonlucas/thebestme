@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { Calendar, Card, Text, View } from '../components/Themed';
 import { Colors } from '../constants';
@@ -13,7 +13,7 @@ const moodToColor = {
   Sad: Colors.sadRed,
 };
 
-function DataScreen({ days }) {
+function DataScreen({ habits, days }) {
   const currentDate = new Date().toISOString();
   const formattedDate = getDateString(currentDate).date;
   const isoDate = getDateFromISOString(currentDate);
@@ -36,8 +36,7 @@ function DataScreen({ days }) {
           color:
             dateString === selectedDay
               ? Colors.iosBlue
-              : // TODO: get avg mood
-                moodToColor[currentDay.mood[0]],
+              : moodToColor[currentDay.mood[0]],
           startingDay: true,
           endingDay: true,
         },
@@ -59,9 +58,8 @@ function DataScreen({ days }) {
       };
     }
     tempCalendarData = { ...tempCalendarData, ...currentCalendarData };
-
     setCalendarData(tempCalendarData);
-  }, [days, selectedDay]);
+  }, [days, selectedDay, habits]);
 
   return (
     <View style={styles.container}>
@@ -78,24 +76,56 @@ function DataScreen({ days }) {
         }}
       />
       <Card style={styles.cardContainer}>
-        {/* <View style */}
-        {days[selectedDay] ? (
-          <Text>
-            {days[selectedDay].mood.map((m) => (
-              <Text>{m}, </Text>
-            ))}
-          </Text>
-        ) : (
-          <Text>No data to display for this day</Text>
-        )}
+        <ScrollView style={{ height: '100%' }}>
+          {days[selectedDay] ? (
+            <>
+              <Text>
+                Mood:{' '}
+                {days[selectedDay].mood.map((m: string) => (
+                  <Text>{m}, </Text>
+                ))}{' '}
+              </Text>
+              <Text>Habit Count: {days[selectedDay].habitCount}</Text>
+              <Text>
+                Habits Complete: {days[selectedDay].habitPercentComplete}%
+              </Text>
+              <Text></Text>
+              <Text style={styles.label}>Remaining Habits: </Text>
+              <Text>
+                {days[selectedDay].remainingHabitIds.length ? (
+                  days[selectedDay].remainingHabitIds.map(
+                    (id: string) => habits[id].text
+                  )
+                ) : (
+                  <Text>No incomplete habits</Text>
+                )}
+              </Text>
+              <Text style={styles.label}>Completed Habits: </Text>
+              <Text>{'\t'}
+                {days[selectedDay].finishedHabitIds ? (
+                  days[selectedDay].finishedHabitIds.map(
+                    (id: string) => habits[id].text
+                  )
+                ) : (
+                  <Text>No finished habits</Text>
+                )}
+              </Text>
+
+              <Text>End of Day Notes</Text>
+            </>
+          ) : (
+            <Text>No data to display for this day</Text>
+          )}
+        </ScrollView>
       </Card>
     </View>
   );
 }
 
 const mapStateToProps = (state) => {
+  const { habits } = state.habitReducer;
   const { days } = state.dayReducer;
-  return { days };
+  return { habits, days };
 };
 export default connect(mapStateToProps)(DataScreen);
 
@@ -117,5 +147,8 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: '100%',
     aspectRatio: 2 / 1,
+  },
+  label: {
+    fontWeight: 'bold'
   },
 });
