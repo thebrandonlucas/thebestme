@@ -6,11 +6,11 @@ import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
 import Colors from '../constants/Colors';
-import { saveDay, setDayInfo } from '../redux/actions/DayActions';
+import { clearDay, saveDay, setDayInfo } from '../redux/actions/DayActions';
 import { DayType, HabitType } from '../types';
 import { getDateFromISOString } from '../utils';
 
-function FinishDayScreen({ route, navigation, today, saveDay }) {
+function FinishDayScreen({ route, navigation, today, days, saveDay }) {
   const remainingHabits: HabitType[] = route.params.remainingHabits;
   const finishedHabits: HabitType[] = route.params.finishedHabits;
   const [totalHabitCount, setTotalHabitCount] = useState<number>(0);
@@ -37,12 +37,11 @@ function FinishDayScreen({ route, navigation, today, saveDay }) {
         date,
         finishedHabitIds,
         remainingHabitIds,
-        mood: [...today.mood, mood],
-        endOfDayNotes: [...today.endOfDayNotes, endOfDayNotes],
+        mood: days[date] ? [...days[date].mood, mood] : [mood],
+        endOfDayNotes: days[date] ? [...today.endOfDayNotes, endOfDayNotes] : [endOfDayNotes],
       }
     };
-    setDayInfo(dayInfo);
-    saveDay();
+    saveDay(dayInfo);
     navigation.navigate('HabitsScreen');
   }
 
@@ -78,33 +77,33 @@ function FinishDayScreen({ route, navigation, today, saveDay }) {
       <ThemeButton
         title="Happy"
         color={Colors.happyGreen}
-        onPress={() => finishDay('H')}
+        onPress={() => finishDay('Happy')}
         testID="happyBtn"
       />
       <ThemeButton
         title="Neutral"
         color={Colors.neutralYellow}
-        onPress={() => finishDay('N')}
+        onPress={() => finishDay('Neutral')}
         testID="neutralBtn"
       />
       <ThemeButton
         title="Sad"
         color={Colors.sadRed}
-        onPress={() => finishDay('S')}
+        onPress={() => finishDay('Sad')}
         testID="sadBtn"
       />
     </View>
   );
 }
 
-const mapStateToProps = (state: { dayReducer: { today: any; }; }) => {
-  const { today } = state.dayReducer;
-  return { today };
+const mapStateToProps = (state: { dayReducer: { today: any; days: any }; }) => {
+  const { today, days } = state.dayReducer;
+  return { today, days };
 };
-const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: DayType; }) => void) => {
+const mapDispatchToProps = (dispatch: (arg0: { type: string; payload: DayType }) => void) => {
   return {
-    saveDay: () => {
-      dispatch(saveDay());
+    saveDay: (dayInfo: DayType) => {
+      dispatch(saveDay(dayInfo));
     },
   };
 };

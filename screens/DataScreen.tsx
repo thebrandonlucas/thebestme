@@ -8,9 +8,9 @@ import { CalendarDataType } from '../types';
 import getDateString, { getDateFromISOString } from '../utils';
 
 const moodToColor = {
-  H: Colors.happyGreen,
-  N: Colors.neutralYellow,
-  S: Colors.sadRed,
+  Happy: Colors.happyGreen,
+  Neutral: Colors.neutralYellow,
+  Sad: Colors.sadRed,
 };
 
 function DataScreen({ days }) {
@@ -36,8 +36,8 @@ function DataScreen({ days }) {
           color:
             dateString === selectedDay
               ? Colors.iosBlue
-              // TODO: get avg mood
-              : moodToColor[currentDay.mood[0]],
+              : // TODO: get avg mood
+                moodToColor[currentDay.mood[0]],
           startingDay: true,
           endingDay: true,
         },
@@ -48,16 +48,15 @@ function DataScreen({ days }) {
 
     // If the selected day is not a day with info
     if (!(selectedDay in days)) {
-      currentCalendarData = 
-      {
+      currentCalendarData = {
         [selectedDay]: {
           selected: true,
           // Blue color if current day is selectedDay
           color: Colors.iosBlue,
           startingDay: true,
           endingDay: true,
-        }
-      }
+        },
+      };
     }
     tempCalendarData = { ...tempCalendarData, ...currentCalendarData };
 
@@ -79,11 +78,15 @@ function DataScreen({ days }) {
         }}
       />
       <Card style={styles.cardContainer}>
-        <Text>More Coming Soon!</Text>
+        {/* <View style */}
         {days[selectedDay] ? (
-          <Text>{days[selectedDay].mood}</Text>
+          <Text>
+            {days[selectedDay].mood.map((m) => (
+              <Text>{m}, </Text>
+            ))}
+          </Text>
         ) : (
-          <Text>None</Text>
+          <Text>No data to display for this day</Text>
         )}
       </Card>
     </View>

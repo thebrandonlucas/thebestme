@@ -16,7 +16,7 @@ export default function App() {
   const colorScheme = useColorScheme();
 
   // TODO: remove after dev
-  AsyncStorage.clear();
+  // AsyncStorage.clear();
 
   if (!isLoadingComplete) {
     return null;

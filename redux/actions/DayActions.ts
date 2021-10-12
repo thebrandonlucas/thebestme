@@ -2,21 +2,18 @@ import { DayType } from './../../types';
 import {SET_DAY, FINISH_DAY, CLEAR_DAY} from './types/DayActions.types';
 
 export const setDayInfo = (dayInfo: DayType) => {
+    console.log('dayhere')
     return {
         type: SET_DAY,
         payload: dayInfo
     }
 }
 
-export function saveDay() {
+export function saveDay(dayInfo: DayType) {
     return {
         type: FINISH_DAY,
-        payload: {}
+        payload: dayInfo
     }
-}
-
-export async function getDayFromStorage() {
-
 }
 
 /**

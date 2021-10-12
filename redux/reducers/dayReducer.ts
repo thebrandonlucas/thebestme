@@ -21,7 +21,7 @@ const initialState = {
         cbtIds: [],
         awareIds: [],
         journalIds: [],
-        // Array of 'mood' chars: ['h', 'n', 's', ...]
+        // Array of 'mood' chars: ['happy', 'neutral', 'sad', ...]
         mood: [],
         // String Array of EOD Notes
         endOfDayNotes: [],
@@ -35,8 +35,8 @@ const dayReducer = (state = initialState, action) => {
         case SET_DAY:
             return { ...state, today: action.payload }
         case FINISH_DAY:
-            const tempDays = { ...state.days, [state.today.date]: { ...state.today }};
-            return { ...state, days: tempDays }
+            const tempDays = { ...state.days, ...action.payload };
+            return { ...state, days: tempDays, today: initialState.today }
         case CLEAR_DAY:
             return initialState
         default:
