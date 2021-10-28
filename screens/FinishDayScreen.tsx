@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
@@ -8,9 +9,8 @@ import { Card, Text, View } from '../components/Themed';
 import Colors from '../constants/Colors';
 import { saveDay } from '../redux/actions/DayActions';
 import { DayType, HabitType } from '../types';
-import { getDateFromISOString } from '../utils';
 
-function FinishDayScreen({ route, navigation, today, days, habits, saveDay }) {
+function FinishDayScreen({ route, navigation, dayReducer, habitReducer, saveDay }) {
   const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
   const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
   const [habitCount, setHabitCount] = useState<number>(0);
@@ -18,8 +18,17 @@ function FinishDayScreen({ route, navigation, today, days, habits, saveDay }) {
   const [endOfDayNotes, setEndOfDayNotes] = useState<string>('');
 
   useEffect(() => {
-    const tempRemainingHabits = today.remainingHabitIds.map((id) => habits[id]);
-    const tempFinishedHabits = today.finishedHabitIds.map((id) => habits[id]);
+    const { habits } = habitReducer, { today } = dayReducer;
+    let tempRemainingHabits = [], tempFinishedHabits = [];
+    for (let i = 0; i < today.habitIds.length; i++) {
+      const id = today.habitIds[i];
+      if (habits[id].checked) {
+        tempFinishedHabits.push(habits[id])
+      } else {
+        tempRemainingHabits.push(habits[id]);
+      }
+    }
+    // console.log('tempfin', tempFinishedHabits)
     const tempHabitCount =
       tempRemainingHabits.length + tempFinishedHabits.length;
     setHabitCount(tempHabitCount);
@@ -29,25 +38,25 @@ function FinishDayScreen({ route, navigation, today, days, habits, saveDay }) {
     setHabitPercentComplete(Math.round(percentComplete * 100) / 100);
     setRemainingHabits(tempRemainingHabits);
     setFinishedHabits(tempFinishedHabits);
-  }, [today, days]);
+  }, [dayReducer, habitReducer]);
 
   function finishDay(mood: string) {
-    const date = getDateFromISOString(new Date().toISOString());
-    const finishedHabitIds = today.finishedHabitIds;
-    const remainingHabitIds = today.remainingHabitIds;
+    const date = DateTime.now().toISODate();
+    const finishedHabitIds = finishedHabits.map(habit => habit.id);
+    const remainingHabitIds = remainingHabits.map(habit => habit.id);
 
     const dayInfo = {
       [date]: {
-        ...today,
+        ...dayReducer.today,
         // TODO: Figure out when to set date
         date,
         finishedHabitIds,
         remainingHabitIds,
         habitCount,
         habitPercentComplete,
-        mood: days[date] ? [...days[date].mood, mood] : [mood],
-        endOfDayNotes: days[date]
-          ? [...today.endOfDayNotes, endOfDayNotes]
+        mood: dayReducer.days[date] ? [...dayReducer.days[date].mood, mood] : [mood],
+        endOfDayNotes: dayReducer.days[date]
+          ? [...dayReducer.today.endOfDayNotes, endOfDayNotes]
           : [endOfDayNotes],
       },
     };
@@ -119,9 +128,8 @@ const mapStateToProps = (state: {
   dayReducer: { today: any; days: any };
   habitReducer: { habits: {} };
 }) => {
-  const { today, days } = state.dayReducer;
-  const { habits } = state.habitReducer;
-  return { today, days, habits };
+  const { habitReducer, dayReducer } = state;
+  return { dayReducer, habitReducer };
 };
 const mapDispatchToProps = (
   dispatch: (arg0: { type: string; payload: DayType }) => void

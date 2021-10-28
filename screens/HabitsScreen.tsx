@@ -27,17 +27,16 @@ import { DayType, HabitType } from '../types';
 import getDateString from '../utils';
 
 export function HabitsScreen({
-  user,
-  day,
+  // user,
   habitReducer,
-  dayReducer,
+  today,
   error,
   navigation,
   addHabit,
   deleteHabit,
   toggleHabit,
   updateHabit,
-  setDayInfo
+  setDayInfo,
 }) {
   const [currentDate, setCurrentDate] = useState('');
   const [isAddingHabit, setIsAddingHabit] = useState(false);
@@ -60,7 +59,7 @@ export function HabitsScreen({
     }
     let tempRemainingHabits = [],
       tempFinishedHabits = [];
-    const habits = habitReducer.habits;
+    const { habits } = habitReducer;
     for (const key in habits) {
       const currentHabit = habits[key];
       if (!currentHabit.checked) {
@@ -82,9 +81,6 @@ export function HabitsScreen({
    */
   function clickToggle(id: string, checked: boolean): void {
     toggleHabit(id, checked);
-    const tempRemainingHabitIds = dayReducer.today.remainingHabitIds.filter((tempId) => tempId !== id);
-    const tempFinishedHabitIds = [...dayReducer.today.finishedHabitIds, id];
-    setDayInfo({ ...dayReducer.today, remainingHabitIds: tempRemainingHabitIds, finishedHabitIds: tempFinishedHabitIds });
     setHabitChecked(checked);
   }
 
@@ -115,12 +111,15 @@ export function HabitsScreen({
         },
       };
       addHabit(habit);
-      const tempRemainingHabitIds = [...dayReducer.today.remainingHabitIds, id];
-      setDayInfo({ ...dayReducer.today, remainingHabitIds: tempRemainingHabitIds });
+      const tempHabitIds = [...today.habitIds, id];
+      setDayInfo({ ...today, habitIds: tempHabitIds });
       setIsAddingHabit(false);
       setHabitText('');
       setHabitChecked(false);
     } else {
+      // TODO: make all habit ids one property in day object
+      // Replace habit id in array
+      // let tempRemainingHabitIds =
       updateHabit(habitId, habitText);
       setIsEditingHabit(false);
       setHabitText('');
@@ -156,13 +155,8 @@ export function HabitsScreen({
    */
   function clickDelete(): void {
     deleteHabit(habitId);
-    if (habitChecked) {
-      const tempFinishedHabitIds = dayReducer.today.finishedHabitIds.filter((tempId) => tempId !== habitId);
-      setDayInfo({ ...dayReducer.today, remainingHabitIds: tempFinishedHabitIds });
-    } else {
-      const tempRemainingHabitIds = dayReducer.today.remainingHabitIds.filter((tempId) => tempId !== habitId);
-      setDayInfo({ ...dayReducer.today, remainingHabitIds: tempRemainingHabitIds });
-    }
+    const tempHabitIds = today.habitIds.filter((tempId) => tempId !== habitId);
+    setDayInfo({ ...today, habitIds: tempHabitIds });
     setIsEditingHabit(false);
     setHabitText('');
   }
@@ -177,7 +171,6 @@ export function HabitsScreen({
 
   return (
     <View style={styles.container}>
-      {/* <Text>Welcome, {props.user.username}</Text> */}
       <View style={styles.headerContainer}>
         {!isAddingHabit && !isEditingHabit ? (
           <>
@@ -284,9 +277,10 @@ export function HabitsScreen({
   );
 }
 
-const mapStateToProps = (state: { user: any; day: any; habitReducer: any, dayReducer: any }) => {
-  const { user, day, habitReducer, dayReducer } = state; 
-  return { user, day, habitReducer, dayReducer };
+const mapStateToProps = (state: { habitReducer: any; dayReducer: any }) => {
+  const { habitReducer } = state;
+  const { today } = state.dayReducer;
+  return { habitReducer, today };
 };
 const mapDispatchToProps = (
   dispatch: (arg0: {

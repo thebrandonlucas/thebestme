@@ -1,22 +1,22 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
-import { Collections, Colors } from '../constants';
+import { Colors } from '../constants';
 import {
   saveAwareJournal,
   updateAwareJournal,
 } from '../redux/actions/AwareActions';
+import { setDayInfo } from '../redux/actions/DayActions';
+import { AwareJournalEntryType, DayType } from '../types';
 import getDateString from '../utils';
+import { DateTime } from 'luxon';
 
-
-export function AWAREAddScreen({ route, navigation, day }) {
-  const dispatch = useDispatch();
-
+export function AWAREAddScreen({ route, navigation, day, today, setDayInfo, saveAwareJournal, updateAwareJournal }) {
   // FIXME: is there a better way to do this? They don't need to be state vars
   const [awareId, setAwareId] = useState<string>('');
   const [date, setDate] = useState<string>('');
@@ -66,7 +66,7 @@ export function AWAREAddScreen({ route, navigation, day }) {
       const entry = {
         [id]: {
           id,
-          date: new Date().toISOString(),
+          date: DateTime.now().toISODate(),
           acknowledgeAndAcceptText,
           waitAndWatchText,
           actionsText,
@@ -74,18 +74,20 @@ export function AWAREAddScreen({ route, navigation, day }) {
           endText,
         },
       };
-      dispatch(saveAwareJournal(entry));
+      saveAwareJournal(entry);
+      const tempAwareIds = [...today.awareIds, id];
+      setDayInfo({ ...today, awareIds: tempAwareIds });
     } else {
-      dispatch(
-        updateAwareJournal(
-          awareId,
-          acknowledgeAndAcceptText,
-          waitAndWatchText,
-          actionsText,
-          repeatText,
-          endText
-        )
+      updateAwareJournal(
+        awareId,
+        acknowledgeAndAcceptText,
+        waitAndWatchText,
+        actionsText,
+        repeatText,
+        endText
       );
+      const tempAwareIds = [...today.awareIds, awareId];
+      setDayInfo({ ...today, awareIds: tempAwareIds });
     }
     setAcknowledgeAndAcceptText('');
     setWaitAndWatchText('');
@@ -153,10 +155,54 @@ export function AWAREAddScreen({ route, navigation, day }) {
 }
 
 const mapStateToProps = (state) => {
-  const { day } = state;
-  return { day };
+  const { day, today } = state.dayReducer;
+  return { day, today };
 };
-export default connect(mapStateToProps)(AWAREAddScreen);
+const mapDispatchToProps = (
+  dispatch: (arg0: {
+    type: string;
+    payload:
+      | DayType
+      | AwareJournalEntryType
+      | {
+          id: string;
+          acknowledgeAndAcceptText: string;
+          waitAndWatchText: string;
+          actionsText: string;
+          repeatText: string;
+          endText: string;
+        };
+  }) => void
+) => {
+  return {
+    saveAwareJournal: (entry: AwareJournalEntryType) => {
+      dispatch(saveAwareJournal(entry));
+    },
+    updateAwareJournal: (
+      id: string,
+      acknowledgeAndAcceptText: string,
+      waitAndWatchText: string,
+      actionsText: string,
+      repeatText: string,
+      endText: string
+    ) => {
+      dispatch(
+        updateAwareJournal(
+          id,
+          acknowledgeAndAcceptText,
+          waitAndWatchText,
+          actionsText,
+          repeatText,
+          endText
+        )
+      );
+    },
+    setDayInfo: (dayInfo: DayType) => {
+      dispatch(setDayInfo(dayInfo));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(AWAREAddScreen);
 
 const styles = StyleSheet.create({
   container: {

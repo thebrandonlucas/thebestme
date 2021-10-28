@@ -1,6 +1,9 @@
 {
   "strict": true,
   "extends": "expo/tsconfig.base",
+  "forceConsistentCasingInFileNames": true,
+  "noImplicitReturns": true,
+  "noUnusedLocals": true,
   "compilerOptions": {
     "jsx": "react",
     "alwaysStrict": true,

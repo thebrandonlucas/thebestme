@@ -2,7 +2,7 @@ const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
 
 export default {
-  // themeColor: '#36c9ab',
+  // themeColor: '#82f5A8',
   themeColor: '#039678',
   translucentThemeColor: '#9ed3c9',
   happyGreen: '#3eb489',

@@ -10,6 +10,7 @@ export type RootStackParamList = {
   Signup: undefined;
   Login: undefined;
   Settings: undefined;
+  ConfigureMyCircle: undefined;
   NotFound: undefined;
 };
 
@@ -46,8 +47,11 @@ export type DataParamList = {
 
 export type SettingsParamList = {
   SettingsScreen: undefined;
-  ConfigureMyCircleScreen: undefined;
 };
+
+export type ConfigureMyCircleParamList = {
+  ConfigureMyCircleScreen: undefined;
+}
 
 export type CheckBoxType = {
   id: number;
@@ -105,8 +109,7 @@ export type DayType = {
   [date: string]: {
     id: string;
     date: string;
-    finishedHabitIds: Array<string>;
-    remainingHabitIds: Array<string>;
+    habitIds: Array<string>;
     cbtIds: Array<string>;
     awareIds: Array<string>;
     journalIds: Array<string>;

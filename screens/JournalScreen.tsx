@@ -1,19 +1,21 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet, useColorScheme } from 'react-native';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import JournalListPage from '../components/JournalListPage';
+import { setDayInfo } from '../redux/actions/DayActions';
 import {
   deleteJournal,
   saveJournal,
   updateJournal,
 } from '../redux/actions/JournalActions';
+import { DayType } from '../types';
 import getDateString from '../utils/index';
+import { DateTime } from 'luxon';
 
-export function JournalScreen({ navigation, journalReducer }) {
-  const dispatch = useDispatch();
 
+export function JournalScreen({ navigation, journalReducer, setDayInfo, saveJournal, updateJournal, today }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [journalId, setJournalId] = useState<string>('');
   const [journalText, setJournalText] = useState<string>('');
@@ -45,15 +47,18 @@ export function JournalScreen({ navigation, journalReducer }) {
         [id]: {
           id,
           text: journalText,
-          date: new Date().toISOString(),
+          date: DateTime.now().toISODate(),
         },
       };
 
-      dispatch(saveJournal(journal));
+      saveJournal(journal);
       setJournalText('');
       setIsAddingJournal(false);
+
+      const tempJournalIds = [...today.journalIds, id];
+      setDayInfo({ ...today, journalIds: tempJournalIds });
     } else {
-      dispatch(updateJournal(journalId, journalText));
+      updateJournal(journalId, journalText);
       setJournalId('');
       setJournalText('');
       setIsEditingJournal(false);
@@ -92,7 +97,7 @@ export function JournalScreen({ navigation, journalReducer }) {
    * @return {void}
    */
   // FIXME: is this method necessary?
-  function upsertAndCloseModal(): void {
+  function upsertAndCloseModal(): void { 
     save();
     setModalVisible(false);
   }
@@ -117,7 +122,8 @@ export function JournalScreen({ navigation, journalReducer }) {
 
 const mapStateToProps = (state) => {
   const { journalReducer } = state;
-  return { journalReducer };
+  const { today } = state.dayReducer;
+  return { journalReducer, today };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -130,7 +136,9 @@ const mapDispatchToProps = (dispatch) => {
     updateJournal: (id, text) => {
       dispatch(updateJournal(id, text));
     },
-    // Can add more functions to dispatch if necessary
+    setDayInfo: (dayInfo: DayType) => {
+      dispatch(setDayInfo(dayInfo));
+    },
   };
 };
 

@@ -4,9 +4,13 @@ import { Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
 import * as SMS from 'expo-sms';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { setIsSendingPanicMessage } from '../../redux/actions/MyCircleActions';
 
 export function MyCircleButton({ myCircleReducer }) {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   async function sendSMS() {
     const isAvailable = await SMS.isAvailableAsync();
@@ -18,6 +22,12 @@ export function MyCircleButton({ myCircleReducer }) {
     } else {
       // TODO: Implement Error checking
     }
+  }
+
+  function clickChooseFriends() {
+    setIsSendingPanicMessage(true);
+    // console.log('hello')
+    navigation.navigate('ConfigureMyCircle', { isSendingPanicMessage: true });
   }
   
   function myCircleAlert() {
@@ -32,7 +42,7 @@ export function MyCircleButton({ myCircleReducer }) {
         },
         {
           text: 'Choose Friends',
-          onPress: () => console.log('Choose Friends Pressed'),
+          onPress: () => clickChooseFriends(),
           style: 'cancel',
         },
         {
@@ -44,8 +54,6 @@ export function MyCircleButton({ myCircleReducer }) {
       { cancelable: false }
     );
   }
-
-
 
   return (
     <TouchableOpacity onPress={myCircleAlert}>

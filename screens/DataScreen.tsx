@@ -6,6 +6,8 @@ import { Calendar, Card, Text, View } from '../components/Themed';
 import { Colors } from '../constants';
 import { CalendarDataType } from '../types';
 import getDateString, { getDateFromISOString } from '../utils';
+import { v4 as uuidv4 } from 'uuid';
+import { DateTime } from 'luxon'
 
 const moodToColor = {
   Happy: Colors.happyGreen,
@@ -13,7 +15,7 @@ const moodToColor = {
   Sad: Colors.sadRed,
 };
 
-function DataScreen({ habits, days }) {
+function DataScreen({ habitReducer, dayReducer }) {
   const currentDate = new Date().toISOString();
   const formattedDate = getDateString(currentDate).date;
   const isoDate = getDateFromISOString(currentDate);
@@ -22,13 +24,12 @@ function DataScreen({ habits, days }) {
   const [selectedDay, setSelectedDay] = useState<string>('');
 
   useEffect(() => {
-    // TODO: format days data
     let tempCalendarData = {};
 
     let currentCalendarData: CalendarDataType = {};
-    for (const date in days) {
-      const currentDay = days[date];
-      const dateString = getDateFromISOString(date);
+    for (const date in dayReducer.days) {
+      const currentDay = dayReducer.days[date];
+      const dateString = DateTime.now().toISODate();
       currentCalendarData = {
         [dateString]: {
           selected: true,
@@ -46,7 +47,7 @@ function DataScreen({ habits, days }) {
     }
 
     // If the selected day is not a day with info
-    if (!(selectedDay in days)) {
+    if (!(selectedDay in dayReducer.days)) {
       currentCalendarData = {
         [selectedDay]: {
           selected: true,
@@ -59,7 +60,7 @@ function DataScreen({ habits, days }) {
     }
     tempCalendarData = { ...tempCalendarData, ...currentCalendarData };
     setCalendarData(tempCalendarData);
-  }, [days, selectedDay, habits]);
+  }, [dayReducer, selectedDay, habitReducer]);
 
   return (
     <View style={styles.container}>
@@ -77,40 +78,42 @@ function DataScreen({ habits, days }) {
       />
       <Card style={styles.cardContainer}>
         <ScrollView style={{ height: '100%' }}>
-          {days[selectedDay] ? (
+          {dayReducer.days[selectedDay] ? (
             <>
               <Text>
                 Mood:{' '}
-                {days[selectedDay].mood.map((m: string) => (
-                  <Text>{m}, </Text>
+                {dayReducer.days[selectedDay].mood.map((m: string) => (
+                  <Text key={uuidv4()}>{m}, </Text>
                 ))}{' '}
               </Text>
-              <Text>Habit Count: {days[selectedDay].habitCount}</Text>
+              <Text>Habit Count: {dayReducer.days[selectedDay].habitCount}</Text>
               <Text>
-                Habits Complete: {days[selectedDay].habitPercentComplete}%
+                Habits Complete: {dayReducer.days[selectedDay].habitPercentComplete}%
+                {'\n'}
               </Text>
-              <Text></Text>
               <Text style={styles.label}>Remaining Habits: </Text>
               <Text>
-                {days[selectedDay].remainingHabitIds.length ? (
-                  days[selectedDay].remainingHabitIds.map(
-                    (id: string) => habits[id].text
+                {dayReducer.days[selectedDay].remainingHabitIds.length ? (
+                  dayReducer.days[selectedDay].remainingHabitIds.map(
+                    (id: string) => <Text key={uuidv4()}>{habitReducer.habits[id].text}</Text>
                   )
                 ) : (
                   <Text>No incomplete habits</Text>
                 )}
               </Text>
               <Text style={styles.label}>Completed Habits: </Text>
-              <Text>{'\t'}
-                {days[selectedDay].finishedHabitIds ? (
-                  days[selectedDay].finishedHabitIds.map(
-                    (id: string) => habits[id].text
+              <Text>
+                {dayReducer.days[selectedDay].finishedHabitIds ? (
+                  dayReducer.days[selectedDay].finishedHabitIds.map(
+                    (id: string) => habitReducer.habits[id].text
                   )
                 ) : (
                   <Text>No finished habits</Text>
                 )}
               </Text>
-
+              <Text>Journal Entries: {dayReducer.days[selectedDay].journalIds.length}</Text>
+              <Text>CBT Entries: {dayReducer.days[selectedDay].cbtIds.length}</Text>
+              <Text>AWARE Entries: {dayReducer.days[selectedDay].awareIds.length}</Text>
               <Text>End of Day Notes</Text>
             </>
           ) : (
@@ -123,9 +126,8 @@ function DataScreen({ habits, days }) {
 }
 
 const mapStateToProps = (state) => {
-  const { habits } = state.habitReducer;
-  const { days } = state.dayReducer;
-  return { habits, days };
+  const { dayReducer, habitReducer } = state;
+  return { dayReducer, habitReducer };
 };
 export default connect(mapStateToProps)(DataScreen);
 

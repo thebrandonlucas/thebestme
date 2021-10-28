@@ -1,5 +1,5 @@
 import { MyCircleFriend } from './../../types';
-import { SET_MYCIRCLE_FRIENDS } from './types/MyCircleActions.types';
+import { SET_MYCIRCLE_FRIENDS, SET_SENDING_PANIC_MESSAGE } from './types/MyCircleActions.types';
 
 /**
  * Save friend info (with phone number) to MyCircle Object
@@ -11,5 +11,12 @@ export function setMyCircleFriends(friends: MyCircleFriend[]) {
     return {
         type: SET_MYCIRCLE_FRIENDS,
         payload: friends
+    }
+}
+
+export function setIsSendingPanicMessage(isSendingPanicMessage: boolean) {
+    return {
+        type: SET_SENDING_PANIC_MESSAGE,
+        payload: isSendingPanicMessage
     }
 }

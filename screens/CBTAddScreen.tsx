@@ -1,18 +1,26 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
 import { Colors } from '../constants';
 import { saveCbtJournal, updateCbtJournal } from '../redux/actions/CbtActions';
+import { setDayInfo } from '../redux/actions/DayActions';
+import { CbtJournalEntryType, DayType } from '../types';
 import getDateString from '../utils';
+import { DateTime } from 'luxon';
 
-export function CBTAddScreen({ route, navigation, day }) {
-  const dispatch = useDispatch();
-
+export function CBTAddScreen({
+  route,
+  navigation,
+  today,
+  saveCbtJournal,
+  updateCbtJournal,
+  setDayInfo
+}) {
   const [cbtId, setCbtId] = useState<string>('');
   const [date, setDate] = useState<string>('');
 
@@ -60,7 +68,7 @@ export function CBTAddScreen({ route, navigation, day }) {
       const entry = {
         [id]: {
           id,
-          date: new Date().toISOString(),
+          date: DateTime.now().toISODate(),
           situationText,
           thoughtsText,
           emotionsText,
@@ -68,18 +76,23 @@ export function CBTAddScreen({ route, navigation, day }) {
           alternativeThoughtsText,
         },
       };
-      dispatch(saveCbtJournal(entry));
+      saveCbtJournal(entry);
+      const tempCbtIds = [...today.cbtIds, id];
+      setDayInfo({ ...today, cbtIds: tempCbtIds });
     } else {
-      dispatch(
-        updateCbtJournal(
-          cbtId,
-          situationText,
-          thoughtsText,
-          emotionsText,
-          behaviorsText,
-          alternativeThoughtsText
-        )
+      updateCbtJournal(
+        cbtId,
+        situationText,
+        thoughtsText,
+        emotionsText,
+        behaviorsText,
+        alternativeThoughtsText
       );
+      const tempCbtIds = [...today.cbtIds, cbtId];
+      setDayInfo({
+        ...today,
+        cbtIds: tempCbtIds,
+      });
     }
 
     setSituationText('');
@@ -150,10 +163,54 @@ export function CBTAddScreen({ route, navigation, day }) {
 }
 
 const mapStateToProps = (state) => {
-  const { day } = state;
-  return { day };
+  const { today, day } = state.dayReducer;
+  return { today, day };
 };
-export default connect(mapStateToProps)(CBTAddScreen);
+const mapDispatchToProps = (
+  dispatch: (arg0: {
+    type: string;
+    payload:
+      | DayType
+      | CbtJournalEntryType
+      | {
+          id: string;
+          situationText: string;
+          thoughtsText: string;
+          emotionsText: string;
+          behaviorsText: string;
+          alternativeThoughtsText: string;
+        };
+  }) => void
+) => {
+  return {
+    saveCbtJournal: (entry: CbtJournalEntryType) => {
+      dispatch(saveCbtJournal(entry));
+    },
+    updateCbtJournal: (
+      id: string,
+      situationText: string,
+      thoughtsText: string,
+      emotionsText: string,
+      behaviorsText: string,
+      alternativeThoughtsText: string
+    ) => {
+      dispatch(
+        updateCbtJournal(
+          id,
+          situationText,
+          thoughtsText,
+          emotionsText,
+          behaviorsText,
+          alternativeThoughtsText
+        )
+      );
+    },
+    setDayInfo: (dayInfo: DayType) => {
+      dispatch(setDayInfo(dayInfo));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CBTAddScreen);
 
 const styles = StyleSheet.create({
   container: {

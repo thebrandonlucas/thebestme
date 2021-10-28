@@ -10,15 +10,17 @@ import {
 } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { ColorSchemeName } from 'react-native';
+import ConfigureMyCircleScreen from '../screens/ConfigureMyCircleScreen';
 import LoginScreen from '../screens/LoginScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SignupScreen from '../screens/SignupScreen';
-import ConfigureMyCircleScreen from '../screens/ConfigureMyCircleScreen';
-import { RootStackParamList, SettingsParamList } from '../types';
+import { ConfigureMyCircleParamList, RootStackParamList, SettingsParamList } from '../types';
 import BottomTabNavigator from './BottomTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
+import { RootState } from '../redux/store';
 
 export default function Navigation({
   colorScheme,
@@ -48,6 +50,7 @@ function RootNavigator() {
       <Stack.Screen name="Signup" component={SignupScreen} />
       <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
       <Stack.Screen name="Settings" component={SettingsNavigator} />
+      <Stack.Screen name="ConfigureMyCircle" component={ConfigureMyCircleNavigator} />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
@@ -69,13 +72,26 @@ function SettingsNavigator() {
           return { headerTitle: 'Settings' };
         }}
       />
-      <SettingsStack.Screen
+    </SettingsStack.Navigator>
+  );
+}
+
+const ConfigureMyCircleStack = createStackNavigator<ConfigureMyCircleParamList>();
+function ConfigureMyCircleNavigator({ route }) {
+  console.log('props', route.params.isSendingPanicMessage)
+  const isSendingPanicMessage: boolean = route.params.isSendingPanicMessage;
+  const headerTitle: string = isSendingPanicMessage
+    ? 'Choose Friends'
+    : 'Configure MyCircle Friends';
+  return (
+    <ConfigureMyCircleStack.Navigator>
+      <ConfigureMyCircleStack.Screen
         name="ConfigureMyCircleScreen"
         component={ConfigureMyCircleScreen}
         options={() => {
-          return { headerTitle: 'Choose MyCircle Friends' };
+          return { headerTitle: headerTitle };
         }}
       />
-    </SettingsStack.Navigator>
+    </ConfigureMyCircleStack.Navigator>
   );
 }

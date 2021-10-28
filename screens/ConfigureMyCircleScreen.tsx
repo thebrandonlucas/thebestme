@@ -4,7 +4,7 @@ import * as React from 'react';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, TextInput } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Text, View } from '../components/Themed';
 import { setMyCircleFriends } from '../redux/actions/MyCircleActions';
 import { MyCircleFriend } from '../types';
@@ -12,8 +12,13 @@ import { MyCircleFriend } from '../types';
 type MyCircleFriendChecked = MyCircleFriend & { checked?: boolean };
 type MyCircleFriendDict = { [id: string]: MyCircleFriendChecked };
 
-export function ConfigureMyCircleScreen({ myCircleReducer, setMyCircleFriends }) {
+export function ConfigureMyCircleScreen({
+  myCircleReducer,
+  setMyCircleFriends,
+  route
+}) {
   const navigation = useNavigation();
+  // const { isSendingPanicMessage } = route.params;
   const [contacts, setContacts] = useState<MyCircleFriendChecked[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<
     MyCircleFriendChecked[]
@@ -23,8 +28,8 @@ export function ConfigureMyCircleScreen({ myCircleReducer, setMyCircleFriends })
   );
   const [loading, setLoading] = useState(true);
 
-  
   useEffect(() => {
+    // console.log('issend', isSendingPanicMessage)
     loadContacts();
     setSelectedContacts(myCircleReducer.myCircle);
   }, []);
@@ -41,15 +46,19 @@ export function ConfigureMyCircleScreen({ myCircleReducer, setMyCircleFriends })
         });
       let tempData: MyCircleFriendChecked[] = [];
       for (let i = 0; i < data.length; i++) {
-        const currentContact = data[i];
+        const { id, name, phoneNumbers } = data[i];
         // Skip contacts without phone numbers
-        if (currentContact.phoneNumbers === undefined) {
+        if (phoneNumbers === undefined) {
           continue;
         }
+        // FIXME: REMOVE IN PRODUCTION
+        if (!name.includes('Lala') && !name.includes('Russell')) {
+          continue
+        }
         tempData.push({
-          id: currentContact.id,
-          name: currentContact.name,
-          phoneNumber: currentContact.phoneNumbers[0].digits,
+          id,
+          name,
+          phoneNumber: phoneNumbers[0].digits,
           checked: false,
         });
       }
@@ -131,7 +140,7 @@ export function ConfigureMyCircleScreen({ myCircleReducer, setMyCircleFriends })
 
   const submitMyCircleFriends = () => {
     setMyCircleFriends(selectedContacts);
-    navigation.navigate('Home')
+    navigation.navigate('Home');
   };
 
   // FIXME: Figure out why this is causing choppy behavior

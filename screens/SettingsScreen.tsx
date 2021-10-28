@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { Button, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
-import * as Contacts from 'expo-contacts';
 import { useEffect } from 'react';
 
 export default function SettingsScreen() {
@@ -22,7 +21,7 @@ export default function SettingsScreen() {
       />
       <Button
         title="Configure MyCircle Friends"
-        onPress={() => navigation.navigate('ConfigureMyCircleScreen')}
+        onPress={() => navigation.navigate('ConfigureMyCircle', { isSendingPanicMessage: false })}
       />
     </View>
   );

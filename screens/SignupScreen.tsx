@@ -7,7 +7,7 @@ import PassMeter from 'react-native-passmeter';
 import { useDispatch } from 'react-redux';
 import { signup } from '../redux/actions/AuthActions';
 import ThemeButton from '../components/ThemeButton';
-// import firebase from '../firebase.js';
+import firebase from '../firebase.js';
 
 const MIN_PASSWORD_LEN = 6,
   MAX_PASSWORD_LEN = 15,
@@ -41,29 +41,29 @@ export default function SignupScreen() {
       );
       return;
     }
-    // console.log('signed');
-    // firebase
-    //   .auth()
-    //   .createUserWithEmailAndPassword(email.toLowerCase(), password)
-    //   .then((response) => {
-    //     setUser(email);
-    //     dispatch(signup(response.user));
-    //     response.user.sendEmailVerification();
-    //     Alert.alert(
-    //       'Check your email',
-    //       'To finish the signup process, please follow the instructions in the email. Thank you!',
-    //       [{ text: 'OK' }],
-    //       { cancelable: false }
-    //     );
-    //   })
-    //   .catch((error) => {
-    //     Alert.alert(
-    //       'Error',
-    //       error.message,
-    //       [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-    //       { cancelable: false }
-    //     );
-    //   });
+    console.log('signed');
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email.toLowerCase(), password)
+      .then((response) => {
+        setUser(email);
+        dispatch(signup(response.user));
+        response.user.sendEmailVerification();
+        Alert.alert(
+          'Check your email',
+          'To finish the signup process, please follow the instructions in the email. Thank you!',
+          [{ text: 'OK' }],
+          { cancelable: false }
+        );
+      })
+      .catch((error) => {
+        Alert.alert(
+          'Error',
+          error.message,
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+          { cancelable: false }
+        );
+      });
   }
 
   return (

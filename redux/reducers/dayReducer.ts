@@ -1,7 +1,7 @@
 // This object should reinitialize at the start of the next day (user's local time),
 
 import { CLEAR_DAY, FINISH_DAY, SET_DAY } from "../actions/types/DayActions.types"
-
+import { DateTime } from 'luxon';
 // Key value pairing
 // 'isoDateString.finishDayCount': dayInfo
 // days: { '2021-01-01.2': day }
@@ -11,13 +11,12 @@ const initialState = {
     days: {},
     today: {
         // ISO string YYYY-MM-DD (in local time) representing the date
-        date: null,
+        date: DateTime.now().toISODate(),
         // ISO timestamp (via new Date().toISOString()) holding the exact time the user finishDay (append new timestamp for each press)
         datetimes: [],
         // FIXME: AsyncStorage doesn't recognize set objects, should we use array instead or convert to array upon upload
         // then back to set when downloading?
-        finishedHabitIds: [],
-        remainingHabitIds: [],
+        habitIds: [],
         cbtIds: [],
         awareIds: [],
         journalIds: [],
@@ -38,9 +37,9 @@ const dayReducer = (state = initialState, action) => {
             return { ...state, today: action.payload }
         case FINISH_DAY:
             const tempDays = { ...state.days, ...action.payload };
-            return { ...state, days: tempDays, today: initialState.today }
+            return { ...state, days: tempDays }
         case CLEAR_DAY:
-            return initialState
+            return { ...state, today: initialState.today}
         default:
             return state
     }
