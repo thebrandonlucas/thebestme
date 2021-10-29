@@ -68,7 +68,7 @@ export default function SignupScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>The Best Me</Text>
+      <Text>The Best Me</Text>
       <>
         <Input
           keyboardType="email-address"

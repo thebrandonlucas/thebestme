@@ -10,30 +10,52 @@ import {
 } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { ColorSchemeName } from 'react-native';
+import firebase from '../firebase';
 import ConfigureMyCircleScreen from '../screens/ConfigureMyCircleScreen';
 import LoginScreen from '../screens/LoginScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SignupScreen from '../screens/SignupScreen';
-import { ConfigureMyCircleParamList, RootStackParamList, SettingsParamList } from '../types';
+import {
+  ConfigureMyCircleParamList,
+  RootStackParamList,
+  SettingsParamList,
+} from '../types';
 import BottomTabNavigator from './BottomTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
-import { RootState } from '../redux/store';
 
 export default function Navigation({
   colorScheme,
 }: {
   colorScheme: ColorSchemeName;
 }) {
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      // If user not null, user is logged in
+      setLoggedIn(user !== null ? true : false);
+    });
+  }, [loggedIn]);
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
     >
-      <RootNavigator />
+      {loggedIn ? <RootNavigator /> : <AuthNavigator />}
     </NavigationContainer>
+  );
+}
+
+// TODO: add typing
+const AuthStack = createStackNavigator();
+function AuthNavigator() {
+  return (
+    <AuthStack.Navigator screenOptions={{ headerShown: true }}>
+      <AuthStack.Screen name="Login" component={LoginScreen} />
+      <AuthStack.Screen name="Signup" component={SignupScreen} />
+    </AuthStack.Navigator>
   );
 }
 
@@ -44,13 +66,13 @@ const Stack = createStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* TODO: change to LoginScreen after development */}
       <Stack.Screen name="Home" component={BottomTabNavigator} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Signup" component={SignupScreen} />
-      <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
+      {/* <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} /> */}
       <Stack.Screen name="Settings" component={SettingsNavigator} />
-      <Stack.Screen name="ConfigureMyCircle" component={ConfigureMyCircleNavigator} />
+      <Stack.Screen
+        name="ConfigureMyCircle"
+        component={ConfigureMyCircleNavigator}
+      />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
@@ -76,9 +98,9 @@ function SettingsNavigator() {
   );
 }
 
-const ConfigureMyCircleStack = createStackNavigator<ConfigureMyCircleParamList>();
+const ConfigureMyCircleStack =
+  createStackNavigator<ConfigureMyCircleParamList>();
 function ConfigureMyCircleNavigator({ route }) {
-  console.log('props', route.params.isSendingPanicMessage)
   const isSendingPanicMessage: boolean = route.params.isSendingPanicMessage;
   const headerTitle: string = isSendingPanicMessage
     ? 'Choose Friends'

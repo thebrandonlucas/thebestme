@@ -3,12 +3,19 @@ import * as React from 'react';
 import { Button, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { useEffect } from 'react';
+import firebase from '../firebase';
 
 export default function SettingsScreen() {
   const navigation = useNavigation();
 
   useEffect(() => {
   }, []);
+
+  async function signOut() {
+    const response = await firebase.auth().signOut();
+    navigation.navigate('Login');
+    console.log('asdf', response)
+  }
 
   return (
     <View style={styles.container}>
@@ -23,6 +30,10 @@ export default function SettingsScreen() {
         title="Configure MyCircle Friends"
         onPress={() => navigation.navigate('ConfigureMyCircle', { isSendingPanicMessage: false })}
       />
+      <Button
+        title="Sign Out"
+        onPress={signOut}
+      ></Button>
     </View>
   );
 }

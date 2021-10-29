@@ -30,19 +30,8 @@ export default function LoginScreen() {
       .signInWithEmailAndPassword(email.toLowerCase(), password)
       .then((response) => {
         if (response.user.emailVerified) {
-          firebase
-            .firestore()
-            .collection('users')
-            .where('username', '==', response.user.email)
-            .limit(1)
-            .onSnapshot((querySnapshot) => {
-              if (!querySnapshot.empty) {
-                const queryDocumentSnapshot = querySnapshot.docs[0];
-                const queryDocumentSnapshotData = queryDocumentSnapshot.data();
-                dispatch(login(queryDocumentSnapshotData));
-                navigation.navigate('BottomTabNavigator');
-              }
-            });
+          navigation.navigate('Home');
+          // dispatch(login())
         } else {
           Alert.alert(
             'Email Unverified',
