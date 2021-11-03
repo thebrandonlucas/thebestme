@@ -6,17 +6,29 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { PersistGate } from 'redux-persist/integration/react';
-
+import { Platform } from 'react-native';
 // Modify to add persistor
 import { store, persistor } from './redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+async function clearAppData() {
+    // TODO: remove after dev
+    const asyncStorageKeys = await AsyncStorage.getAllKeys();
+    if (asyncStorageKeys.length > 0) {
+      if (Platform.OS === 'android') {
+       await AsyncStorage.clear();
+      }
+      if (Platform.OS === 'ios') {
+        await AsyncStorage.multiRemove(asyncStorageKeys);
+      }
+    }
+}
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-  // TODO: remove after dev
-  // AsyncStorage.clear();
+  // clearAppData();
 
   if (!isLoadingComplete) {
     return null;

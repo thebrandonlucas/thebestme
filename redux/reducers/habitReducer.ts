@@ -10,7 +10,7 @@ const habitReducer = (state = initialState, action) => {
             tempHabits = { ...tempHabits, ...action.payload};
             return { ...state, habits: tempHabits }
         case DELETE_HABIT:
-            delete tempHabits[action.payload.id];
+            tempHabits[action.payload.id].deleted = true;
             return { ...state, habits: tempHabits }
         case UPDATE_HABIT:
             tempHabits[action.payload.id].text = action.payload.text;

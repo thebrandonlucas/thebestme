@@ -23,7 +23,7 @@ export default function JournalListPage(props) {
     if (props.entries && keys.length !== 0) {
       setEntryKeys(keys);
     }
-  }, [props])
+  }, [props]);
 
   /**
    * Journal entry list item
@@ -32,7 +32,6 @@ export default function JournalListPage(props) {
   const JournalItem = ({ date, text }) => (
     <Card>
       <Text>{getDateString(date).date}</Text>
-      {/* FIXME: why does ellipses effect not work for multiline strings? */}
       <Text numberOfLines={1} ellipsizeMode="tail">
         {text}
       </Text>
@@ -45,8 +44,15 @@ export default function JournalListPage(props) {
    * @return {JSX.Element} - Return the list element
    */
   const renderItem = ({ item }): JSX.Element => (
-    <TouchableOpacity onPress={() => { console.log('jjfjfj', props.entries[item]); props.clickPastEntry(props.entries[item]) }}>
-      <JournalItem date={getDateString(props.entries[item].date).date} text={props.entries[item].text} />
+    <TouchableOpacity
+      onPress={() => {
+        props.clickPastEntry(props.entries[item]);
+      }}
+    >
+      <JournalItem
+        date={getDateString(props.entries[item].date).date}
+        text={props.entries[item].text}
+      />
     </TouchableOpacity>
   );
 

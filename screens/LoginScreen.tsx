@@ -6,7 +6,7 @@ import { Alert, Button, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { login } from '../redux/actions/AuthActions';
 import ThemeButton from '../components/ThemeButton';
-import { Input, View } from '../components/Themed';
+import { Input, View, Text } from '../components/Themed';
 import firebase from '../firebase.js';
 
 // 
@@ -30,7 +30,7 @@ export default function LoginScreen() {
       .signInWithEmailAndPassword(email.toLowerCase(), password)
       .then((response) => {
         if (response.user.emailVerified) {
-          navigation.navigate('Home');
+          // navigation.navigate('Home');
           // dispatch(login())
         } else {
           Alert.alert(

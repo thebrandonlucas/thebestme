@@ -1,13 +1,13 @@
+import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 import { Calendar, Card, Text, View } from '../components/Themed';
 import { Colors } from '../constants';
 import { CalendarDataType } from '../types';
 import getDateString, { getDateFromISOString } from '../utils';
-import { v4 as uuidv4 } from 'uuid';
-import { DateTime } from 'luxon'
 
 const moodToColor = {
   Happy: Colors.happyGreen,
@@ -21,46 +21,60 @@ function DataScreen({ habitReducer, dayReducer }) {
   const isoDate = getDateFromISOString(currentDate);
 
   const [calendarData, setCalendarData] = useState<CalendarDataType>({});
-  const [selectedDay, setSelectedDay] = useState<string>('');
+  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedDayData, setSelectedDayData] = useState({});
 
   useEffect(() => {
     let tempCalendarData = {};
 
-    let currentCalendarData: CalendarDataType = {};
+    let currentCalendarData = {};
+    let dateIsEmpty = true;
+    // Set calendar display data according to dates
     for (const date in dayReducer.days) {
       const currentDay = dayReducer.days[date];
-      const dateString = DateTime.now().toISODate();
+      if (selectedDay === date) {
+        dateIsEmpty = false;
+      }
       currentCalendarData = {
-        [dateString]: {
-          selected: true,
-          // Blue color if current day is selectedDay
-          color:
-            dateString === selectedDay
-              ? Colors.iosBlue
-              : moodToColor[currentDay.mood[0]],
-          startingDay: true,
-          endingDay: true,
-        },
+        selected: true,
+        color:
+          selectedDay === date
+            ? Colors.iosBlue
+            : moodToColor[currentDay.mood[0]],
+        startingDay: true,
+        endingDay: true,
       };
-
-      tempCalendarData = { ...tempCalendarData, ...currentCalendarData };
+      tempCalendarData[date] = currentCalendarData;
     }
 
-    // If the selected day is not a day with info
-    if (!(selectedDay in dayReducer.days)) {
-      currentCalendarData = {
-        [selectedDay]: {
-          selected: true,
-          // Blue color if current day is selectedDay
-          color: Colors.iosBlue,
-          startingDay: true,
-          endingDay: true,
-        },
+    // Check if the selected date has no data associated with it
+    if (dateIsEmpty) {
+      tempCalendarData[selectedDay] = currentCalendarData = {
+        selected: true,
+        color: Colors.iosBlue,
+        startingDay: true,
+        endingDay: true,
       };
     }
-    tempCalendarData = { ...tempCalendarData, ...currentCalendarData };
     setCalendarData(tempCalendarData);
   }, [dayReducer, selectedDay, habitReducer]);
+
+  // function selectDay(newSelectedDay) {
+  //   setSelectedDay(newSelectedDay);
+  //   setSelectedDayData(dayReducer.days[newSelectedDay]);
+
+  //   // const dateString = DateTime.now().toISODate();
+
+  //   const currentCalendarData = {
+  //     selected: true,
+  //     // Blue color if current day is selectedDay
+  //     color: Colors.iosBlue,
+  //     startingDay: true,
+  //     endingDay: true,
+  //   };
+  //   setCalendarData({ ...calendarData, [selectedDay]: currentCalendarData });
+
+  // }
 
   return (
     <View style={styles.container}>
@@ -86,16 +100,20 @@ function DataScreen({ habitReducer, dayReducer }) {
                   <Text key={uuidv4()}>{m}, </Text>
                 ))}{' '}
               </Text>
-              <Text>Habit Count: {dayReducer.days[selectedDay].habitCount}</Text>
               <Text>
-                Habits Complete: {dayReducer.days[selectedDay].habitPercentComplete}%
-                {'\n'}
+                Habit Count: {dayReducer.days[selectedDay].habitCount}
+              </Text>
+              <Text>
+                Habits Complete:{' '}
+                {dayReducer.days[selectedDay].habitPercentComplete}%{'\n'}
               </Text>
               <Text style={styles.label}>Remaining Habits: </Text>
               <Text>
                 {dayReducer.days[selectedDay].remainingHabitIds.length ? (
                   dayReducer.days[selectedDay].remainingHabitIds.map(
-                    (id: string) => <Text key={uuidv4()}>{habitReducer.habits[id].text}</Text>
+                    (id: string) => (
+                      <Text key={uuidv4()}>{habitReducer.habits[id].text}</Text>
+                    )
                   )
                 ) : (
                   <Text>No incomplete habits</Text>
@@ -111,9 +129,16 @@ function DataScreen({ habitReducer, dayReducer }) {
                   <Text>No finished habits</Text>
                 )}
               </Text>
-              <Text>Journal Entries: {dayReducer.days[selectedDay].journalIds.length}</Text>
-              <Text>CBT Entries: {dayReducer.days[selectedDay].cbtIds.length}</Text>
-              <Text>AWARE Entries: {dayReducer.days[selectedDay].awareIds.length}</Text>
+              <Text>
+                Journal Entries:{' '}
+                {dayReducer.days[selectedDay].journalIds.length}
+              </Text>
+              <Text>
+                CBT Entries: {dayReducer.days[selectedDay].cbtIds.length}
+              </Text>
+              <Text>
+                AWARE Entries: {dayReducer.days[selectedDay].awareIds.length}
+              </Text>
               <Text>End of Day Notes</Text>
             </>
           ) : (
@@ -151,6 +176,6 @@ const styles = StyleSheet.create({
     aspectRatio: 2 / 1,
   },
   label: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 });

@@ -62,10 +62,12 @@ export function HabitsScreen({
     const { habits } = habitReducer;
     for (const key in habits) {
       const currentHabit = habits[key];
-      if (!currentHabit.checked) {
-        tempRemainingHabits.push(currentHabit);
-      } else {
-        tempFinishedHabits.push(currentHabit);
+      if (!currentHabit.deleted) {
+        if (!currentHabit.checked) {
+          tempRemainingHabits.push(currentHabit);
+        } else {
+          tempFinishedHabits.push(currentHabit);
+        }
       }
     }
     setRemainingHabits(tempRemainingHabits);
@@ -108,6 +110,7 @@ export function HabitsScreen({
           id,
           text: habitText,
           checked: false,
+          deleted: false,
         },
       };
       addHabit(habit);

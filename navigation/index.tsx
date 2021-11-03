@@ -67,7 +67,6 @@ function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={BottomTabNavigator} />
-      {/* <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} /> */}
       <Stack.Screen name="Settings" component={SettingsNavigator} />
       <Stack.Screen
         name="ConfigureMyCircle"

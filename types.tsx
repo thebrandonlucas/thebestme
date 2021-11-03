@@ -6,9 +6,6 @@ import React from 'react';
 
 export type RootStackParamList = {
   Home: undefined;
-  BottomTabNavigator: undefined;
-  Signup: undefined;
-  Login: undefined;
   Settings: undefined;
   ConfigureMyCircle: undefined;
   NotFound: undefined;
@@ -70,6 +67,7 @@ export type HabitType = {
     id: string;
     checked: boolean;
     text: string;
+    deleted: boolean;
   };
 };
 

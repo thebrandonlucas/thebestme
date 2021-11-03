@@ -43,10 +43,10 @@ export type CheckBoxProps = ThemeProps &
 export type InputProps = ThemeProps & GetComponentProps<typeof DefaultInput>;
 
 export function Text(props: TextProps) {
-  const { children, style, lightColor, darkColor } = props;
+  const { children, style, lightColor, darkColor, ...other } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
-  return <DefaultText style={[{ color }, style]}>{children}</DefaultText>;
+  return <DefaultText style={[{ color }, style]} {...other}>{children}</DefaultText>;
 }
 
 export function View(props: ViewProps) {
@@ -62,7 +62,7 @@ export function View(props: ViewProps) {
 }
 
 export function Card(props: ViewProps) {
-  const { children, style, lightColor, darkColor } = props;
+  const { children, style, lightColor, darkColor, ...other } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'card'
@@ -75,6 +75,7 @@ export function Card(props: ViewProps) {
         { borderWidth: 0, width: '95%', borderRadius: 10, alignSelf: 'center', margin: 0 },
         style,
       ]}
+      {...other}
     >
       {children}
     </DefaultCard>
@@ -82,7 +83,7 @@ export function Card(props: ViewProps) {
 }
 
 export function Separator(props: ViewProps) {
-  const { children, style, lightColor, darkColor } = props;
+  const { children, style, lightColor, darkColor, ...other } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'separator'
@@ -98,6 +99,7 @@ export function Separator(props: ViewProps) {
         },
         style,
       ]}
+      { ...other }
     >
       {children}
     </View>
@@ -105,7 +107,7 @@ export function Separator(props: ViewProps) {
 }
 
 export function CheckBox(props: CheckBoxProps) {
-  const { checked, checkedTitle, title, style, lightColor, darkColor, onPress } = props;
+  const { style, lightColor, darkColor, ...other } = props;
   const textColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'text'
@@ -120,10 +122,7 @@ export function CheckBox(props: CheckBoxProps) {
       ]}
       textStyle={{ color: textColor }}
       checkedColor={Colors.themeColor}
-      checked={checked}
-      checkedTitle={checkedTitle}
-      title={title}
-      onPress={onPress}
+      {...other}
     />
   );
 }
