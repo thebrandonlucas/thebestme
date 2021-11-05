@@ -6,6 +6,7 @@ const initialState = {
 }
 
 const journalReducer = (state = initialState, action) => {
+    console.log('action', action);
     let tempJournals = state.journals;
     switch (action.type) {
         case SAVE_JOURNAL:

@@ -4,10 +4,10 @@ import { Alert, StyleSheet, useColorScheme } from 'react-native';
 import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
 import { Collections } from '../constants';
+import { deleteAwareJournal } from '../redux/actions/AwareActions';
 import { AwareJournalEntryType } from '../types';
 
-
-export function AWAREScreen({ navigation, awareReducer }) {
+export function AWAREScreen({ navigation, awareReducer, deleteAwareJournal }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
@@ -69,6 +69,8 @@ export function AWAREScreen({ navigation, awareReducer }) {
       entries={awareJournals}
       date={date}
       setDate={setDate}
+      deleteJournal={deleteAwareJournal}
+      journalType={'AWARE'}
     />
   );
 }
@@ -77,7 +79,14 @@ const mapStateToProps = (state) => {
   const { awareReducer } = state;
   return { awareReducer };
 };
-export default connect(mapStateToProps)(AWAREScreen);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteAwareJournal: (id) => {
+      dispatch(deleteAwareJournal(id));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(AWAREScreen);
 
 const styles = StyleSheet.create({
   container: {

@@ -4,10 +4,11 @@ import { Alert, useColorScheme } from 'react-native';
 import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
 import { Collections } from '../constants';
+import { deleteCbtJournal } from '../redux/actions/CbtActions';
 import getDateString from '../utils/index';
 
 
-export function CBTScreen({ navigation, cbtReducer }) {
+export function CBTScreen({ navigation, cbtReducer, deleteCbtJournal }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
@@ -70,6 +71,8 @@ export function CBTScreen({ navigation, cbtReducer }) {
       date={date}
       setDate={setDate}
       modalVisible={modalVisible}
+      journalType={'CBT'}
+      deleteJournal={deleteCbtJournal}
     />
   );
 }
@@ -79,4 +82,11 @@ const mapStateToProps = (state) => {
   const { cbtReducer } = state;
   return { cbtReducer };
 };
-export default connect(mapStateToProps)(CBTScreen);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteCbtJournal: (id) => {
+      dispatch(deleteCbtJournal(id));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CBTScreen);

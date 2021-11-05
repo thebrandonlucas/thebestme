@@ -2,7 +2,7 @@ import { AntDesign } from '@expo/vector-icons';
 // import firebase from 'firebase';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, useColorScheme } from 'react-native';
+import { Alert, FlatList, StyleSheet, useColorScheme } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Colors } from '../constants';
 import getDateString from '../utils';
@@ -23,6 +23,7 @@ export default function JournalListPage(props) {
     if (props.entries && keys.length !== 0) {
       setEntryKeys(keys);
     }
+    console.log('rp', Object.entries(props.entries).length === 0)
   }, [props]);
 
   /**
@@ -44,9 +45,29 @@ export default function JournalListPage(props) {
    * @return {JSX.Element} - Return the list element
    */
   const renderItem = ({ item }): JSX.Element => (
+    props.entries[item] && 
     <TouchableOpacity
       onPress={() => {
         props.clickPastEntry(props.entries[item]);
+      }}
+      onLongPress={() => {
+        Alert.alert(
+          props.journalType ? `Delete ${props.journalType} Journal` : 'Delete Journal',
+          'Are you sure you want to delete this journal entry?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {
+              text: 'Delete',
+              onPress: () => props.deleteJournal(item),
+              style: 'destructive',
+            },
+          ],
+          { cancelable: false }
+        );
       }}
     >
       <JournalItem
@@ -75,7 +96,7 @@ export default function JournalListPage(props) {
           </TouchableOpacity>
         </View>
 
-        {!props.loading && props.entries && entryKeys.length !== 0 ? (
+        {!props.loading &&  Object.entries(props.entries).length !== 0 && entryKeys.length !== 0 ? (
           <FlatList
             style={styles.list}
             data={entryKeys}

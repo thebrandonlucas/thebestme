@@ -59,23 +59,6 @@ function DataScreen({ habitReducer, dayReducer }) {
     setCalendarData(tempCalendarData);
   }, [dayReducer, selectedDay, habitReducer]);
 
-  // function selectDay(newSelectedDay) {
-  //   setSelectedDay(newSelectedDay);
-  //   setSelectedDayData(dayReducer.days[newSelectedDay]);
-
-  //   // const dateString = DateTime.now().toISODate();
-
-  //   const currentCalendarData = {
-  //     selected: true,
-  //     // Blue color if current day is selectedDay
-  //     color: Colors.iosBlue,
-  //     startingDay: true,
-  //     endingDay: true,
-  //   };
-  //   setCalendarData({ ...calendarData, [selectedDay]: currentCalendarData });
-
-  // }
-
   return (
     <View style={styles.container}>
       <Text style={[styles.date, { color: Colors.themeColor }]}>

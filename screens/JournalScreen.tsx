@@ -15,7 +15,7 @@ import getDateString from '../utils/index';
 import { DateTime } from 'luxon';
 
 
-export function JournalScreen({ navigation, journalReducer, setDayInfo, saveJournal, updateJournal, today }) {
+export function JournalScreen({ navigation, journalReducer, setDayInfo, saveJournal, updateJournal, deleteJournal, today }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [journalId, setJournalId] = useState<string>('');
   const [journalText, setJournalText] = useState<string>('');
@@ -116,10 +116,13 @@ export function JournalScreen({ navigation, journalReducer, setDayInfo, saveJour
       text={journalText}
       setText={setJournalText}
       setDate={setDate}
+      deleteJournal={deleteJournal}
+      // journalType={''}
     />
   );
 }
 
+// TODO: refactor to useDispatch for simplicity
 const mapStateToProps = (state) => {
   const { journalReducer } = state;
   const { today } = state.dayReducer;
