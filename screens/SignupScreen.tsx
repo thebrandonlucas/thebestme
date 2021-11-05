@@ -41,7 +41,6 @@ export default function SignupScreen() {
       );
       return;
     }
-    console.log('signed');
     firebase
       .auth()
       .createUserWithEmailAndPassword(email.toLowerCase(), password)

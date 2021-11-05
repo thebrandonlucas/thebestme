@@ -6,16 +6,16 @@ import { ActivityIndicator, Button, StyleSheet, TextInput } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { Text, View } from '../components/Themed';
+import { Colors } from '../constants';
 import { setMyCircleFriends } from '../redux/actions/MyCircleActions';
 import { MyCircleFriend } from '../types';
 
 type MyCircleFriendChecked = MyCircleFriend & { checked?: boolean };
-type MyCircleFriendDict = { [id: string]: MyCircleFriendChecked };
 
 export function ConfigureMyCircleScreen({
   myCircleReducer,
   setMyCircleFriends,
-  route
+  route,
 }) {
   const navigation = useNavigation();
   // const { isSendingPanicMessage } = route.params;
@@ -29,7 +29,6 @@ export function ConfigureMyCircleScreen({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // console.log('issend', isSendingPanicMessage)
     loadContacts();
     setSelectedContacts(myCircleReducer.myCircle);
   }, []);
@@ -44,6 +43,8 @@ export function ConfigureMyCircleScreen({
           // Fixme: For some reason this returns all info, not just only that listed
           fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Name],
         });
+      // Get the currently selected contacts (if any)
+      const selectedContactIds = myCircleReducer.myCircle.map(({ id }) => id);
       let tempData: MyCircleFriendChecked[] = [];
       for (let i = 0; i < data.length; i++) {
         const { id, name, phoneNumbers } = data[i];
@@ -52,23 +53,24 @@ export function ConfigureMyCircleScreen({
           continue;
         }
         // FIXME: REMOVE IN PRODUCTION
-        if (!name.includes('Lala') && !name.includes('Russell')) {
-          continue
-        }
+        // if (!name.includes('Lala') && !name.includes('Russell')) {
+        //   continue;
+        // }
         tempData.push({
           id,
           name,
           phoneNumber: phoneNumbers[0].digits,
-          checked: false,
+          checked: selectedContactIds.includes(id) ? true : false,
         });
       }
+      // setSelectedContacts(tempData);
       setContacts(tempData);
       setFilteredContacts(tempData);
       setLoading(false);
     }
   };
 
-  const searchContacts = useCallback((value) => {
+  function searchContacts(value) {
     // Isn't this O(n^2)? How to make more efficient?
     const searchTermLowerCase = value.toLowerCase();
     const tempFilteredContacts = contacts.filter((contact) => {
@@ -76,7 +78,7 @@ export function ConfigureMyCircleScreen({
       return contactLowerCase.indexOf(searchTermLowerCase) > -1;
     });
     setFilteredContacts(tempFilteredContacts);
-  }, []);
+  }
 
   const addSelectedContact = useCallback(
     (newContact) => {
@@ -124,7 +126,9 @@ export function ConfigureMyCircleScreen({
       const { id, name, phoneNumber } = item;
       return (
         <TouchableOpacity
-          onPress={() => addSelectedContact({ id, name, phoneNumber })}
+          onPress={() =>
+            addSelectedContact({ id, name, phoneNumber, checked: true })
+          }
           style={
             item.checked ? [styles.item, styles.selectedItem] : styles.item
           }
@@ -158,9 +162,7 @@ export function ConfigureMyCircleScreen({
       <TextInput
         placeholder="Search"
         placeholderTextColor="#444"
-        style={{
-          color: 'white',
-        }}
+        style={styles.searchBar}
         onChangeText={(value) => searchContacts(value)}
       />
       <View lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
@@ -205,6 +207,8 @@ export default connect(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     // marginTop: StatusBar.currentHeight || 0,
   },
   item: {
@@ -212,11 +216,20 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    borderRadius: 10,
   },
   selectedItem: {
-    backgroundColor: 'green',
+    backgroundColor: Colors.themeColor,
   },
   title: {
     fontSize: 32,
   },
+  searchBar: {
+    color: 'white',
+    backgroundColor: Colors.dark.card,
+    width: '80%',
+    padding: 10,
+    margin: 10,
+    borderRadius: 10,
+  }
 });

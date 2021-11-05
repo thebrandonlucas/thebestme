@@ -23,7 +23,6 @@ export default function JournalListPage(props) {
     if (props.entries && keys.length !== 0) {
       setEntryKeys(keys);
     }
-    console.log('rp', Object.entries(props.entries).length === 0)
   }, [props]);
 
   /**

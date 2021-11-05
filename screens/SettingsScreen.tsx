@@ -12,9 +12,8 @@ export default function SettingsScreen() {
   }, []);
 
   async function signOut() {
-    const response = await firebase.auth().signOut();
+    await firebase.auth().signOut();
     navigation.navigate('Login');
-    console.log('asdf', response)
   }
 
   return (
