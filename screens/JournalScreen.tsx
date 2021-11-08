@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet, useColorScheme } from 'react-native';
@@ -12,10 +13,16 @@ import {
 } from '../redux/actions/JournalActions';
 import { DayType } from '../types';
 import getDateString from '../utils/index';
-import { DateTime } from 'luxon';
 
-
-export function JournalScreen({ navigation, journalReducer, setDayInfo, saveJournal, updateJournal, deleteJournal, today }) {
+export function JournalScreen({
+  navigation,
+  journalReducer,
+  setDayInfo,
+  saveJournal,
+  updateJournal,
+  deleteJournal,
+  today,
+}) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [journalId, setJournalId] = useState<string>('');
   const [journalText, setJournalText] = useState<string>('');
@@ -97,7 +104,7 @@ export function JournalScreen({ navigation, journalReducer, setDayInfo, saveJour
    * @return {void}
    */
   // FIXME: is this method necessary?
-  function upsertAndCloseModal(): void { 
+  function upsertAndCloseModal(): void {
     save();
     setModalVisible(false);
   }

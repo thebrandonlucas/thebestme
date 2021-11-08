@@ -14,6 +14,7 @@ import { createStore, combineReducers,
 // Only needed for middleware
 import thunk from 'redux-thunk'; 
 import dayReducer from '../reducers/dayReducer';
+import descriptionReducer from '../reducers/descriptionReducer';
 
 const persistConfig = {
   key: 'root',
@@ -28,7 +29,8 @@ const rootReducer = combineReducers({
   cbtReducer,
   awareReducer,
   myCircleReducer,
-  dayReducer
+  dayReducer,
+  descriptionReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -2,11 +2,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
-import { Input } from 'react-native-elements';
 import PassMeter from 'react-native-passmeter';
-import { useDispatch } from 'react-redux';
-import { signup } from '../redux/actions/AuthActions';
 import ThemeButton from '../components/ThemeButton';
+import { Input } from '../components/Themed';
 import firebase from '../firebase.js';
 
 const MIN_PASSWORD_LEN = 6,
@@ -22,15 +20,11 @@ export default function SignupScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const dispatch = useDispatch();
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   const goToLogin = () => {
     navigation.navigate('Login');
   };
-  async function setUser(email: String) {
-    // await firebase.firestore().collection('users').add({
-    //   username: email,
-    // });
-  }
   function handleSignUp() {
     if (password.length < 6) {
       Alert.alert(
@@ -41,12 +35,19 @@ export default function SignupScreen() {
       );
       return;
     }
+    if (password !== confirmPassword) {
+      Alert.alert(
+        'Oops!',
+        'Passwords do not match',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+        { cancelable: false }
+      );
+      return;
+    }
     firebase
       .auth()
       .createUserWithEmailAndPassword(email.toLowerCase(), password)
       .then((response) => {
-        setUser(email);
-        dispatch(signup(response.user));
         response.user.sendEmailVerification();
         Alert.alert(
           'Check your email',
@@ -54,6 +55,7 @@ export default function SignupScreen() {
           [{ text: 'OK' }],
           { cancelable: false }
         );
+        navigation.navigate('Login');
       })
       .catch((error) => {
         Alert.alert(
@@ -67,32 +69,30 @@ export default function SignupScreen() {
 
   return (
     <View style={styles.container}>
-      <Text>The Best Me</Text>
+      <Text>TheBestMe</Text>
       <>
         <Input
+          label="Email"
+          placeholder="thebestme@example.com"
           keyboardType="email-address"
           autoCapitalize="none"
-          placeholder="Email..."
-          placeholderTextColor="white"
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={setEmail}
         />
         <Input
           keyboardType="visible-password"
           secureTextEntry
           maxLength={MAX_PASSWORD_LEN}
           placeholder="New Password..."
-          placeholderTextColor="white"
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={setPassword}
         />
         <Input
           keyboardType="visible-password"
           secureTextEntry
           maxLength={MAX_PASSWORD_LEN}
           placeholder="Confirm New Password..."
-          placeholderTextColor="white"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
         />
         <View>
           {password.length > 0 ? (
@@ -106,9 +106,10 @@ export default function SignupScreen() {
           ) : null}
         </View>
       </>
-
-      <ThemeButton title="Sign up" onPress={handleSignUp} />
-      <ThemeButton title="Go Back" onPress={goToLogin} />
+      <View style={styles.buttonContainer}>
+        <ThemeButton title="Sign up" onPress={handleSignUp} />
+        <ThemeButton title="Go Back" onPress={goToLogin} />
+      </View>
     </View>
   );
 }
@@ -127,5 +128,12 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  buttonContainer: {
+    justifyContent: 'space-between',
+    width: '100%',
+    alignItems: 'center',
+    top: '5%',
+    aspectRatio: 11 / 3,
   },
 });

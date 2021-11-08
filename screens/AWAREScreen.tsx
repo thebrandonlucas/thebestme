@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Alert, StyleSheet, useColorScheme } from 'react-native';
+import { StyleSheet, useColorScheme } from 'react-native';
 import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
-import { Collections } from '../constants';
 import { deleteAwareJournal } from '../redux/actions/AwareActions';
-import { AwareJournalEntryType } from '../types';
 
 export function AWAREScreen({ navigation, awareReducer, deleteAwareJournal }) {
   const colorScheme = useColorScheme() ?? 'dark';
@@ -17,7 +15,7 @@ export function AWAREScreen({ navigation, awareReducer, deleteAwareJournal }) {
     if (Object.keys(awareReducer.awareJournals).length !== 0) {
       setAwareJournals(awareReducer.awareJournals);
     }
-  }, [awareReducer])
+  }, [awareReducer]);
 
   /**
    * Click handler for "plus" button to add new journal entry.

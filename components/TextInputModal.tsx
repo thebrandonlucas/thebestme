@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '../constants';
+import { Styles } from '../types';
 import JournalModal from './JournalModal';
 import { Input } from './Themed';
 
@@ -11,6 +12,10 @@ interface TextInputModalProps {
   label: string;
   lightColor?: string;
   darkColor?: string;
+  buttonStyle?: Styles['viewStyle'];
+  textInputStyle?: Styles['viewStyle'];
+  journalModalStyle?: Styles['viewStyle'];
+  labelStyle?: Styles['textStyle'];
 }
 
 TextInputModal.defaultProps = {
@@ -24,7 +29,18 @@ TextInputModal.defaultProps = {
  * @return {JSX.Element}
  */
 export default function TextInputModal(props: TextInputModalProps) {
-  const { label, lightColor, darkColor, text, setText } = props;
+  const {
+    label,
+    lightColor,
+    darkColor,
+    text,
+    setText,
+    buttonStyle,
+    textInputStyle,
+    journalModalStyle,
+    labelStyle,
+    ...other
+  } = props;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   /**
@@ -45,12 +61,13 @@ export default function TextInputModal(props: TextInputModalProps) {
 
   return (
     <>
-      <TouchableOpacity onPress={openModal}>
+      <TouchableOpacity onPress={openModal} style={buttonStyle}>
         <Input
           label={label}
           placeholder="Press to Enter"
           pointerEvents="none"
           value={text}
+          style={textInputStyle}
         />
       </TouchableOpacity>
       <JournalModal
@@ -60,6 +77,8 @@ export default function TextInputModal(props: TextInputModalProps) {
         modalVisible={modalVisible}
         text={text}
         setText={setText}
+        // style={journalModalStyle}
+        {...other}
       />
     </>
   );

@@ -12,14 +12,21 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { ColorSchemeName } from 'react-native';
+import { useDispatch } from 'react-redux';
+import Descriptions from '../constants/Descriptions';
 import firebase from '../firebase';
+import { setDescription } from '../redux/actions/DescriptionActions';
 import ConfigureMyCircleScreen from '../screens/ConfigureMyCircleScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import InfoScreen from '../screens/InfoScreen';
 import LoginScreen from '../screens/LoginScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SignupScreen from '../screens/SignupScreen';
 import {
   ConfigureMyCircleParamList,
+  DescriptionType,
+  InfoParamList,
   RootStackParamList,
   SettingsParamList,
 } from '../types';
@@ -31,19 +38,22 @@ export default function Navigation({
 }: {
   colorScheme: ColorSchemeName;
 }) {
-  const [loggedIn, setLoggedIn] = useState(false);
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      // If user not null, user is logged in
-      setLoggedIn(user !== null ? true : false);
-    });
-  }, [loggedIn]);
+  // const [loggedIn, setLoggedIn] = useState(false);
+  // useEffect(() => {
+  //   firebase.auth().onAuthStateChanged((user) => {
+  //     // If user not null, user is logged in
+  //     setLoggedIn(user !== null ? true : false);
+  //   });
+  // }, [loggedIn]);
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
     >
-      {loggedIn ? <RootNavigator /> : <AuthNavigator />}
+      <RootNavigator />
+      {/* {loggedIn ? 
+      <RootNavigator />
+      : <AuthNavigator />} */}
     </NavigationContainer>
   );
 }
@@ -66,12 +76,16 @@ const Stack = createStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={LoginScreen}/>
+      <Stack.Screen name="Signup" component={SignupScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="Home" component={BottomTabNavigator} />
       <Stack.Screen name="Settings" component={SettingsNavigator} />
       <Stack.Screen
         name="ConfigureMyCircle"
         component={ConfigureMyCircleNavigator}
       />
+      <Stack.Screen name="Info" component={InfoNavigator} />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
@@ -110,9 +124,27 @@ function ConfigureMyCircleNavigator({ route }) {
         name="ConfigureMyCircleScreen"
         component={ConfigureMyCircleScreen}
         options={() => {
-          return { headerTitle: headerTitle };
+          return { headerTitle };
         }}
       />
     </ConfigureMyCircleStack.Navigator>
+  );
+}
+
+const InfoStack = createStackNavigator<InfoParamList>();
+
+function InfoNavigator({ route }) {
+  const infoType: DescriptionType = route.params.infoType;
+  const headerTitle = Descriptions[infoType].title;
+  return (
+    <InfoStack.Navigator>
+      <InfoStack.Screen
+        name="InfoScreen"
+        component={InfoScreen}
+        options={() => {
+          return { headerTitle };
+        }}
+      />
+    </InfoStack.Navigator>
   );
 }

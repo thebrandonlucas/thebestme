@@ -18,7 +18,7 @@ export function MyCircleButton({ myCircleReducer }) {
       const phoneNumbers = myCircleReducer.myCircle.map(friend => friend.phoneNumber);
       const { result } = await SMS.sendSMSAsync(
         phoneNumbers,
-        'Hello! This is a sample test message from TheBestMe (Test by Brandon Lucas)');
+        "I'm feeling a bit down right now, would you mind reaching out to talk for a bit?");
     } else {
       // TODO: Implement Error checking
     }
@@ -26,7 +26,6 @@ export function MyCircleButton({ myCircleReducer }) {
 
   function clickChooseFriends() {
     setIsSendingPanicMessage(true);
-    // console.log('hello')
     navigation.navigate('ConfigureMyCircle', { isSendingPanicMessage: true });
   }
   

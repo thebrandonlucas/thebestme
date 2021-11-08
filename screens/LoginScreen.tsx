@@ -2,36 +2,35 @@
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { useState } from 'react';
-import { Alert, Button, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { login } from '../redux/actions/AuthActions';
+import { Alert, Button, StyleSheet, Image } from 'react-native';
 import ThemeButton from '../components/ThemeButton';
-import { Input, View, Text } from '../components/Themed';
+import { Input, View } from '../components/Themed';
 import firebase from '../firebase.js';
 
-// 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
-  const dispatch = useDispatch();
+
   function goToSignUp() {
     navigation.navigate('Signup');
   }
+
   function handleInputEmailChange(text) {
     setEmail(text);
   }
+
   function handlePasswordInputChange(text) {
     setPassword(text);
   }
+
   function handleLogin() {
     firebase
       .auth()
       .signInWithEmailAndPassword(email.toLowerCase(), password)
       .then((response) => {
         if (response.user.emailVerified) {
-          // navigation.navigate('Home');
-          // dispatch(login())
+          navigation.navigate('Home');
         } else {
           Alert.alert(
             'Email Unverified',
@@ -52,8 +51,13 @@ export default function LoginScreen() {
         );
       });
   }
+
   return (
     <View style={styles.container}>
+      <Image
+        style={styles.logo}
+        source={require('../assets/images/thebestme-logo.jpg')}
+      />
       <Input
         label="Email"
         placeholder="thebestme@example.com"
@@ -70,7 +74,10 @@ export default function LoginScreen() {
       <View style={styles.buttonContainer}>
         <ThemeButton title="Login" onPress={handleLogin} testID="login" />
         <ThemeButton title="Sign Up" onPress={goToSignUp} testID="signUp" />
-        <Button onPress={() => { console.log('implement')}} title="Forgot Password?" />
+        <Button
+          onPress={() => navigation.navigate('ForgotPassword')}
+          title="Forgot Password?"
+        />
       </View>
     </View>
   );
@@ -98,4 +105,8 @@ const styles = StyleSheet.create({
     top: '5%',
     aspectRatio: 7 / 3,
   },
+  logo: {
+    width: '100%',
+    height: 200,
+  }
 });

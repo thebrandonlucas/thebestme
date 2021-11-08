@@ -23,7 +23,7 @@ import {
   toggleHabit,
   updateHabit,
 } from '../redux/actions/HabitsActions';
-import { DayType, HabitType } from '../types';
+import { DayType, HabitType, IHabitType } from '../types';
 import getDateString from '../utils';
 
 export function HabitsScreen({
@@ -105,7 +105,7 @@ export function HabitsScreen({
 
     if (isAddingHabit) {
       const id = uuidv4();
-      const habit = {
+      const habit: IHabitType = {
         [id]: {
           id,
           text: habitText,
@@ -114,7 +114,8 @@ export function HabitsScreen({
         },
       };
       addHabit(habit);
-      const tempHabitIds = [...today.habitIds, id];
+      const tempHabitIds: string[] = [...today.habitIds, id];
+      console.log('tempHabitIds', tempHabitIds);
       setDayInfo({ ...today, habitIds: tempHabitIds });
       setIsAddingHabit(false);
       setHabitText('');
@@ -238,7 +239,9 @@ export function HabitsScreen({
                     ))}
                   </>
                 ) : (
-                  <Text>You've completed all your habits today! Hooray!</Text>
+                  <Text style={styles.habitCardEmptyMessage}>
+                    You've completed all your habits today!
+                  </Text>
                 )}
               </ScrollView>
             </Card>
@@ -259,7 +262,9 @@ export function HabitsScreen({
                     ))}
                   </>
                 ) : (
-                  <Text>When you've finished a habit, bring it on down!</Text>
+                  <Text style={styles.habitCardEmptyMessage}>
+                    When you've finished a habit, bring it on down!
+                  </Text>
                 )}
               </ScrollView>
             </Card>
@@ -331,6 +336,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'flex-start',
     marginLeft: 20,
+  },
+  habitCardEmptyMessage: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginLeft: 20,
+    alignSelf: 'center',
+    marginVertical: 20,
   },
   date: {
     fontSize: 15,

@@ -5,7 +5,7 @@ import { Text, View } from '../components/Themed';
 import { useEffect } from 'react';
 import firebase from '../firebase';
 
-export default function SettingsScreen() {
+export default function SettingsScreen({ route }) {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -18,7 +18,6 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
-      <Button onPress={() => navigation.goBack()} title="Go Back" />
       <Text style={styles.title}>Settings</Text>
       <View
         style={styles.separator}

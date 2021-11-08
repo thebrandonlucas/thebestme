@@ -14,13 +14,16 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { Icon } from 'react-native-elements';
 import MyCircleButton from '../components/HeaderButtons/MyCircleButton';
+import QuestionButton from '../components/HeaderButtons/QuestionButton';
 import SettingsButton from '../components/HeaderButtons/SettingsButton';
+import { View } from '../components/Themed';
 import { Colors } from '../constants';
 import AWAREAddScreen from '../screens/AWAREAddScreen';
 import AWAREScreen from '../screens/AWAREScreen';
 import CBTAddScreen from '../screens/CBTAddScreen';
 import CBTScreen from '../screens/CBTScreen';
 import DataScreen from '../screens/DataScreen';
+import DayMetricsScreen from '../screens/DayMetricsScreen';
 import FinishDayScreen from '../screens/FinishDayScreen';
 import HabitsScreen from '../screens/HabitsScreen';
 import JournalScreen from '../screens/JournalScreen';
@@ -178,11 +181,19 @@ TabBarIcon.defaultProps = {
   iconComponent: Icon,
 };
 
-function headerOptions(title: string) {
+function headerOptions(
+  title: string,
+  infoType?: 'data' | 'habits' | 'journal' | 'cbtJournal' | 'awareJournal'
+) {
   return {
     headerTitle: title,
     headerLeft: () => <MyCircleButton />,
-    headerRight: () => <SettingsButton />,
+    headerRight: () => (
+      <View style={{ flexDirection: 'row', backgroundColor: 'transparent' }}>
+        <QuestionButton infoType={infoType} />
+        <SettingsButton />
+      </View>
+    ),
   };
 }
 
@@ -196,7 +207,7 @@ function HabitsNavigator() {
       <HabitsStack.Screen
         name="HabitsScreen"
         component={HabitsScreen}
-        options={() => headerOptions('My Habits')}
+        options={() => headerOptions('My Habits', 'habits')}
       />
       <HabitsStack.Screen
         name="FinishDayScreen"
@@ -215,7 +226,7 @@ function JournalNavigator() {
       <JournalStack.Screen
         name="JournalScreen"
         component={JournalScreen}
-        options={() => headerOptions('Journal')}
+        options={() => headerOptions('Journal', 'journal')}
       />
     </JournalStack.Navigator>
   );
@@ -229,12 +240,12 @@ function CBTNavigator() {
       <CBTStack.Screen
         name="CBTScreen"
         component={CBTScreen}
-        options={() => headerOptions('CBT')}
+        options={() => headerOptions('CBT', 'cbtJournal')}
       />
       <CBTStack.Screen
         name="CBTAddScreen"
         component={CBTAddScreen}
-        options={() => headerOptions('CBT - Add Entry')}
+        options={() => headerOptions('CBT - Add Entry', 'cbtJournal')}
       />
     </CBTStack.Navigator>
   );
@@ -248,12 +259,12 @@ function AWARENavigator() {
       <AWAREStack.Screen
         name="AWAREScreen"
         component={AWAREScreen}
-        options={() => headerOptions('AWARE')}
+        options={() => headerOptions('AWARE', 'awareJournal')}
       />
       <AWAREStack.Screen
         name="AWAREAddScreen"
         component={AWAREAddScreen}
-        options={() => headerOptions('AWARE - Add Entry')}
+        options={() => headerOptions('AWARE - Add Entry', 'awareJournal')}
       />
     </AWAREStack.Navigator>
   );
@@ -267,7 +278,12 @@ function DataNavigator() {
       <DataStack.Screen
         name="DataScreen"
         component={DataScreen}
-        options={() => headerOptions('My Data')}
+        options={() => headerOptions('My Data', 'data')}
+      />
+      <DataStack.Screen
+        name="DayMetricsScreen"
+        component={DayMetricsScreen}
+        options={() => headerOptions('Day Metrics', 'data')}
       />
     </DataStack.Navigator>
   );

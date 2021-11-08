@@ -1,4 +1,4 @@
-import { DayType } from './../../types';
+import { DayType, IDayType } from './../../types';
 import {SET_DAY, FINISH_DAY, CLEAR_DAY} from './types/DayActions.types';
 
 export const setDayInfo = (dayInfo: DayType) => {
@@ -8,7 +8,7 @@ export const setDayInfo = (dayInfo: DayType) => {
     }
 }
 
-export function saveDay(dayInfo: DayType) {
+export function saveDay(dayInfo: IDayType) {
     return {
         type: FINISH_DAY,
         payload: dayInfo

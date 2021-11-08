@@ -10,7 +10,7 @@ export default function SettingsButton() {
   const navigation = useNavigation();
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+    <TouchableOpacity onPress={() => navigation.navigate('Settings', { test: 1})}>
       <Ionicons
         name="settings-sharp"
         size={27}

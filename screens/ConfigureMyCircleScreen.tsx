@@ -52,10 +52,6 @@ export function ConfigureMyCircleScreen({
         if (phoneNumbers === undefined) {
           continue;
         }
-        // FIXME: REMOVE IN PRODUCTION
-        // if (!name.includes('Lala') && !name.includes('Russell')) {
-        //   continue;
-        // }
         tempData.push({
           id,
           name,
@@ -63,7 +59,6 @@ export function ConfigureMyCircleScreen({
           checked: selectedContactIds.includes(id) ? true : false,
         });
       }
-      // setSelectedContacts(tempData);
       setContacts(tempData);
       setFilteredContacts(tempData);
       setLoading(false);
@@ -102,7 +97,6 @@ export function ConfigureMyCircleScreen({
         }
       }
 
-      // Else, add
       setSelectedContacts((prevState) => [...prevState, { ...newContact }]);
       tempContacts[contactIndex] = {
         ...tempContacts[contactIndex],
@@ -147,16 +141,6 @@ export function ConfigureMyCircleScreen({
     navigation.navigate('Home');
   };
 
-  // FIXME: Figure out why this is causing choppy behavior
-  // const ITEM_HEIGHT = 200;
-  // // NOTE: used for performance boost, since the height of the list item is static
-  // // this removes the need for flatlist to measure the list item layout itself
-  // const getItemLayout = useCallback((data, index) => ({
-  //   length: ITEM_HEIGHT,
-  //   offset: ITEM_HEIGHT * index,
-  //   index,
-  // }), []);
-
   return (
     <View style={styles.container}>
       <TextInput
@@ -172,14 +156,15 @@ export function ConfigureMyCircleScreen({
         <ActivityIndicator />
       ) : (
         <FlatList
+          style={styles.contactList}
           data={filteredContacts}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
-          // getItemLayout={getItemLayout}
-          // ItemSeparatorComponent={}
           ListEmptyComponent={<Text>No Contacts</Text>}
-          initialNumToRender={30}
-          maxToRenderPerBatch={20}
+          initialNumToRender={100}
+          maxToRenderPerBatch={40}
+          // Fixes the following issue: https://github.com/facebook/react-native/issues/28085
+          scrollIndicatorInsets={{ right: 1 }}
         />
       )}
     </View>
@@ -231,5 +216,8 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     borderRadius: 10,
-  }
+  },
+  contactList: {
+    width: '100%',
+  },
 });

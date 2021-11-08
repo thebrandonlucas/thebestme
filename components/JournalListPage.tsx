@@ -104,7 +104,7 @@ export default function JournalListPage(props) {
             ItemSeparatorComponent={renderSpace}
           />
         ) : (
-          <Text>No journal entries yet!</Text>
+          <Text style={styles.noJournalsMessage}>No journal entries yet!</Text>
         )}
       </View>
 
@@ -145,6 +145,11 @@ const styles = StyleSheet.create({
     aspectRatio: 9 / 1,
   },
   title: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    margin: 10,
+  },
+  noJournalsMessage: {
     fontSize: 15,
     fontWeight: 'bold',
     margin: 10,
