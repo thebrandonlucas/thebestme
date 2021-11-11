@@ -12,10 +12,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { ColorSchemeName } from 'react-native';
-import { useDispatch } from 'react-redux';
 import Descriptions from '../constants/Descriptions';
 import firebase from '../firebase';
-import { setDescription } from '../redux/actions/DescriptionActions';
 import ConfigureMyCircleScreen from '../screens/ConfigureMyCircleScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import InfoScreen from '../screens/InfoScreen';
@@ -38,13 +36,6 @@ export default function Navigation({
 }: {
   colorScheme: ColorSchemeName;
 }) {
-  // const [loggedIn, setLoggedIn] = useState(false);
-  // useEffect(() => {
-  //   firebase.auth().onAuthStateChanged((user) => {
-  //     // If user not null, user is logged in
-  //     setLoggedIn(user !== null ? true : false);
-  //   });
-  // }, [loggedIn]);
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
@@ -74,11 +65,22 @@ function AuthNavigator() {
 const Stack = createStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      // If user not null, user is logged in
+      setLoggedIn(user !== null ? true : false);
+    });
+  }, [loggedIn]);
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={LoginScreen}/>
-      <Stack.Screen name="Signup" component={SignupScreen} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      {!loggedIn && (
+        <>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        </>
+      )}
       <Stack.Screen name="Home" component={BottomTabNavigator} />
       <Stack.Screen name="Settings" component={SettingsNavigator} />
       <Stack.Screen
