@@ -122,11 +122,11 @@ export type DayType = {
   awareIds: Array<string>;
   journalIds: Array<string>;
   mood: Array<string>;
-  endOfDayNotes: string;
-  isDayFinished: boolean;
+  endOfDayNotes: string[];
   finishedHabitCount: number;
   habitCount: number;
   habitPercentComplete: number;
+  finishDayClickedCount: number;
 };
 
 export type IDayType = { [date: string]: DayType };

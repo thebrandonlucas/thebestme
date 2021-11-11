@@ -115,7 +115,6 @@ export function HabitsScreen({
       };
       addHabit(habit);
       const tempHabitIds: string[] = [...today.habitIds, id];
-      console.log('tempHabitIds', tempHabitIds);
       setDayInfo({ ...today, habitIds: tempHabitIds });
       setIsAddingHabit(false);
       setHabitText('');

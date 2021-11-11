@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet } from 'react-native';
@@ -5,12 +6,18 @@ import { connect } from 'react-redux';
 import { Calendar, Card, Text, View } from '../components/Themed';
 import { Colors } from '../constants';
 import { MoodToColor } from '../constants/MoodToColor';
-import { CalendarDataType, DayType, ICalendarDataType } from '../types';
+import {
+  CalendarDataType,
+  ICalendarDataType,
+  IDayType,
+  IHabitType,
+} from '../types';
 import getDateString, { getDateFromISOString } from '../utils';
+import getCalendarData from '../utils/getCalendarData';
 import { getMoodMode } from '../utils/mood';
 
 function DataScreen({ habits, days, navigation }) {
-  const currentDate = new Date().toISOString();
+  const currentDate = DateTime.now().toISODate();
   const formattedDate = getDateString(currentDate).date;
   const isoDate = getDateFromISOString(currentDate);
 
@@ -19,37 +26,10 @@ function DataScreen({ habits, days, navigation }) {
   const [moodMode, setMoodMode] = useState('');
 
   useEffect(() => {
-    let tempCalendarData: ICalendarDataType = {};
-    let currentCalendarData: CalendarDataType = {};
-    let dateIsEmpty = true;
-    // Set calendar display data according to dates
-    for (const date in days) {
-      const currentDay: DayType = days[date];
-
-      if (selectedDay === date) {
-        dateIsEmpty = false;
-      }
-      currentCalendarData = {
-        selected: true,
-        color:
-          selectedDay === date
-            ? Colors.iosBlue
-            : MoodToColor[getMoodMode(currentDay.mood)],
-        startingDay: true,
-        endingDay: true,
-      };
-      tempCalendarData[date] = currentCalendarData;
-    }
-
-    // Check if the selected date has no data associated with it
-    if (dateIsEmpty) {
-      tempCalendarData[selectedDay] = currentCalendarData = {
-        selected: true,
-        color: Colors.iosBlue,
-        startingDay: true,
-        endingDay: true,
-      };
-    }
+    let tempCalendarData: ICalendarDataType = getCalendarData(
+      selectedDay,
+      days
+    );
     setCalendarData(tempCalendarData);
 
     if (days[selectedDay]) {
@@ -79,7 +59,10 @@ function DataScreen({ habits, days, navigation }) {
       <Card style={styles.cardContainer}>
         {days[selectedDay] ? (
           <>
-            <Text style={styles.title}>Most common mood: <Text style={[{ color: MoodToColor[moodMode] }]}>{moodMode}</Text></Text>
+            <Text style={styles.title}>
+              Most common mood:{' '}
+              <Text style={[{ color: MoodToColor[moodMode] }]}>{moodMode}</Text>
+            </Text>
             <Text style={styles.title}>
               Habits Completed: {days[selectedDay].finishedHabitCount} /{' '}
               {days[selectedDay].habitCount},{' '}
@@ -95,9 +78,9 @@ function DataScreen({ habits, days, navigation }) {
   );
 }
 
-const mapStateToProps = (state) => {
-  const { days } = state.dayReducer;
-  const { habits } = state.habitReducer;
+const mapStateToProps = (state: { dayReducer; habitReducer }) => {
+  const { days }: IDayType = state.dayReducer;
+  const { habits }: IHabitType = state.habitReducer;
   return { days, habits };
 };
 export default connect(mapStateToProps)(DataScreen);
