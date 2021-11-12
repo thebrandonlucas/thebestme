@@ -12,7 +12,7 @@ export default function getCalendarData(
   selectedDay: string,
   days: IDayType
 ): ICalendarDataType {
-  let tempCalendarData: ICalendarDataType = {};
+  let calendarData: ICalendarDataType = {};
   let currentCalendarData: CalendarDataType = {};
   let isSelectedDateInDays = false;
   // Set calendar display data according to dates
@@ -30,17 +30,15 @@ export default function getCalendarData(
       startingDay: true,
       endingDay: true,
     };
-    tempCalendarData[date] = currentCalendarData;
+    calendarData[date] = currentCalendarData;
   }
 
-  // Check if the selected date has data associated with it
-  if (isSelectedDateInDays) {
-    tempCalendarData[selectedDay] = {
+  // If selectedDate has data associated with it, add it to calendar data
+    calendarData[selectedDay] = {
       selected: true,
       color: Colors.iosBlue,
       startingDay: true,
       endingDay: true,
     };
-  }
-  return tempCalendarData;
+  return calendarData;
 }
