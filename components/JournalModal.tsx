@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Button,
+  InputAccessoryView,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import Modal from 'react-native-modal';
 import { Colors } from '../constants';
-import { Card, Input, Text, useThemeColor } from './Themed';
+import { Card, Input, Text, useThemeColor, View } from './Themed';
 
 interface JournalModalProps {
   modalVisible: boolean;
@@ -14,6 +19,7 @@ interface JournalModalProps {
   setText: (text: string) => void;
   onBackdropPress: () => void;
   onSwipeComplete: () => void;
+  onClickSave: () => void;
 }
 
 JournalModal.defaultProps = {
@@ -37,17 +43,21 @@ export default function JournalModal(props: JournalModalProps) {
     'separator'
   );
 
-//   const [text, setText] = useState<string>('');
+  //   const [text, setText] = useState<string>('');
+  const [inputAccessoryViewId, setInputAccessoryViewId] = useState(
+    'journalModalKeyboardToolbar'
+  );
   const [height, setHeight] = useState(0);
 
   return (
     <>
       <Modal
         isVisible={props.modalVisible}
-        // onBackdropPress={props.onBackdropPress}
+        onBackdropPress={props.onBackdropPress}
         onSwipeComplete={props.onSwipeComplete}
         swipeDirection="down"
         avoidKeyboard
+        style={styles.modal}
       >
         <Card>
           <Text style={[styles.journalHeaderLabel, { color: mutedTextColor }]}>
@@ -72,8 +82,12 @@ export default function JournalModal(props: JournalModalProps) {
               multiline
               onChangeText={props.setText}
               value={props.text}
+              inputAccessoryViewID={inputAccessoryViewId}
             />
           </ScrollView>
+          {/* <InputAccessoryView nativeID={inputAccessoryViewId}>
+            <View style={styles.saveBtnContainer}><Button style={styles.saveBtn} title="Save" onPress={props.onClickSave} /></View>
+          </InputAccessoryView> */}
         </Card>
       </Modal>
     </>
@@ -84,6 +98,9 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  modal: {
+    height: '20%'
   },
   inputLabel: {
     fontSize: 15,
@@ -136,5 +153,12 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 20,
     alignItems: 'center',
+  },
+  saveBtnContainer: {
+    backgroundColor: Colors.dark.card,
+    
+  },
+  saveBtn: {
+    color: Colors.themeColor
   },
 });

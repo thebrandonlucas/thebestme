@@ -2,7 +2,7 @@
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { useState } from 'react';
-import { Alert, Button, StyleSheet, Image } from 'react-native';
+import { Alert, Button, StyleSheet, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import ThemeButton from '../components/ThemeButton';
 import { Input, View } from '../components/Themed';
 import firebase from '../firebase.js';
@@ -53,7 +53,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <Image
         style={styles.logo}
         source={require('../assets/images/thebestme-logo.jpg')}
@@ -70,7 +70,6 @@ export default function LoginScreen() {
         placeholder="Keep it secret! Keep it safe!"
         onChangeText={handlePasswordInputChange}
       />
-
       <View style={styles.buttonContainer}>
         <ThemeButton title="Login" onPress={handleLogin} testID="login" />
         <ThemeButton title="Sign Up" onPress={goToSignUp} testID="signUp" />
@@ -79,7 +78,7 @@ export default function LoginScreen() {
           title="Forgot Password?"
         />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

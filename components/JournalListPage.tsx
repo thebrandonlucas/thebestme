@@ -1,11 +1,18 @@
 import { AntDesign } from '@expo/vector-icons';
-// import firebase from 'firebase';
+import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Alert, FlatList, StyleSheet, useColorScheme } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Colors } from '../constants';
+import {
+  AwareJournalEntryType,
+  CbtJournalEntryType,
+  JournalEntryType,
+  JournalListPageType,
+} from '../types';
 import getDateString from '../utils';
+import { getGuidedJournalDisplayText } from '../utils/getGuidedJournalDisplayText';
 import JournalModal from './JournalModal';
 import { Card, Text, View } from './Themed';
 
@@ -14,14 +21,16 @@ import { Card, Text, View } from './Themed';
  * @param navigation - Navigator object for app
  * @return {JSX.Element}
  */
-export default function JournalListPage(props) {
+export default function JournalListPage(props: JournalListPageType) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [entryKeys, setEntryKeys] = useState([]);
 
   useEffect(() => {
-    const keys = Object.keys(props.entries);
-    if (props.entries && keys.length !== 0) {
-      setEntryKeys(keys);
+    if (!props.loading) {
+      const keys = Object.keys(props.entries);
+      if (props.entries && keys.length !== 0) {
+        setEntryKeys(keys);
+      }
     }
   }, [props]);
 
@@ -31,7 +40,7 @@ export default function JournalListPage(props) {
    */
   const JournalItem = ({ date, text }) => (
     <Card>
-      <Text>{getDateString(date).date}</Text>
+      <Text>{DateTime.fromISO(date).toLocaleString(DateTime.DATE_HUGE)}</Text>
       <Text numberOfLines={1} ellipsizeMode="tail">
         {text}
       </Text>
@@ -43,38 +52,50 @@ export default function JournalListPage(props) {
    * @param {string} item - The key used to access a particular journal entry
    * @return {JSX.Element} - Return the list element
    */
-  const renderItem = ({ item }): JSX.Element => (
-    props.entries[item] && 
-    <TouchableOpacity
-      onPress={() => {
-        props.clickPastEntry(props.entries[item]);
-      }}
-      onLongPress={() => {
-        Alert.alert(
-          props.journalType ? `Delete ${props.journalType} Journal` : 'Delete Journal',
-          'Are you sure you want to delete this journal entry?',
-          [
-            {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
-            },
-            {
-              text: 'Delete',
-              onPress: () => props.deleteJournal(item),
-              style: 'destructive',
-            },
-          ],
-          { cancelable: false }
-        );
-      }}
-    >
-      <JournalItem
-        date={getDateString(props.entries[item].date).date}
-        text={props.entries[item].text}
-      />
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item }: { item: string }): JSX.Element => {
+    let displayText = '';
+    if (props.journalType !== 'primary') {
+      const guidedJournal: CbtJournalEntryType | AwareJournalEntryType =
+        props.entries[item];
+      displayText = getGuidedJournalDisplayText(guidedJournal);
+    } else {
+      const primaryJournal: JournalEntryType = props.entries[item];
+      displayText = primaryJournal.text;
+    }
+
+    return (
+      props.entries[item] && (
+        <TouchableOpacity
+          onPress={() => {
+            props.clickPastEntry(props.entries[item]);
+          }}
+          onLongPress={() => {
+            Alert.alert(
+              props.journalType
+                ? `Delete ${props.journalType} Journal`
+                : 'Delete Journal',
+              'Are you sure you want to delete this journal entry?',
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => console.log('Cancel Pressed'),
+                  style: 'cancel',
+                },
+                {
+                  text: 'Delete',
+                  onPress: () => props.deleteJournal(item),
+                  style: 'destructive',
+                },
+              ],
+              { cancelable: false }
+            );
+          }}
+        >
+          <JournalItem date={props.entries[item].date} text={displayText} />
+        </TouchableOpacity>
+      )
+    );
+  };
 
   /**
    * FIXME: Is there an easier way to do this via another prop or style on the flatlist itself?
@@ -95,7 +116,9 @@ export default function JournalListPage(props) {
           </TouchableOpacity>
         </View>
 
-        {!props.loading &&  Object.entries(props.entries).length !== 0 && entryKeys.length !== 0 ? (
+        {!props.loading &&
+        Object.entries(props.entries).length !== 0 &&
+        entryKeys.length !== 0 ? (
           <FlatList
             style={styles.list}
             data={entryKeys}
@@ -112,6 +135,7 @@ export default function JournalListPage(props) {
         label={getDateString(props.date).date}
         onBackdropPress={props.closeModal}
         onSwipeComplete={props.closeModal}
+        onClickSave={props.closeModal}
         modalVisible={props.modalVisible}
         text={props.text}
         setText={props.setText}

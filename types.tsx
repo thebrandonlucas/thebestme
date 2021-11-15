@@ -9,7 +9,8 @@ import { ViewProps } from './components/Themed';
 export type RootStackParamList = {
   Home: undefined;
   Settings: undefined;
-  ConfigureMyCircle: undefined;
+  ConfigureMyCircleFriends: undefined;
+  ConfigureMyCircleMessage: undefined;
   Info: undefined;
   NotFound: undefined;
   Login: undefined;
@@ -53,8 +54,12 @@ export type SettingsParamList = {
   SettingsScreen: undefined;
 };
 
-export type ConfigureMyCircleParamList = {
-  ConfigureMyCircleScreen: undefined;
+export type ConfigureMyCircleFriendsParamList = {
+  ConfigureMyCircleFriendsScreen: undefined;
+};
+
+export type ConfigureMyCircleMessageParamList = {
+  ConfigureMyCircleMessageScreen: undefined;
 };
 
 export type InfoParamList = {
@@ -113,6 +118,21 @@ export type CbtJournalEntryType = {
 };
 
 export type ICbtJournalEntryType = { [id: string]: CbtJournalEntryType };
+
+export type OnlyIJournalType = {
+  primary: IJournalEntryType;
+  guided?: never;
+};
+
+export type OnlyIGuidedJournalType = {
+  primary?: never;
+  guided: ICbtJournalEntryType | IAwareJournalEntryType;
+};
+
+export type UnionJournalEntryType =
+  | JournalEntryType
+  | CbtJournalEntryType
+  | AwareJournalEntryType;
 
 export type DayType = {
   id: string;
@@ -176,6 +196,52 @@ export type QuestionButtonType = {
 export type InfoScreenType = {
   infoType?: DescriptionType;
 };
+
+export type JournalListPageType = {
+  navigation: any;
+  update?: () => void;
+  save?: () => void;
+  clickPlus: () => void;
+  clickPastEntry: (
+    props: JournalEntryType | CbtJournalEntryType | AwareJournalEntryType
+  ) => void;
+  closeModal: () => void;
+  entries: UnionJournalEntryType;
+  modalVisible?: boolean;
+  date: string;
+  text?: string;
+  setText?: React.Dispatch<React.SetStateAction<string>>;
+  setDate: React.Dispatch<React.SetStateAction<string>>;
+  deleteJournal: (id: string) => void;
+  journalType: 'primary' | 'cbt' | 'aware';
+  loading: boolean;
+};
+
+export type MyCircleFriendType = {
+  checked: boolean;
+  id: string;
+  name: string;
+  phoneNumber: string;
+};
+
+export type MyCircleReducerType = {
+  myCircle: Array<MyCircleFriendType>;
+  isSendingPanicMessage: boolean;
+  panicMessage: string;
+};
+
+export type HabitReducerType = {
+  habits: IHabitType;
+};
+
+export type DayReducerType = {
+  days: IDayType;
+  today: DayType;
+};
+
+export type IRootState = {
+  
+}
 
 export type Styles = {
   viewStyle?: StyleProp<ViewProps>;

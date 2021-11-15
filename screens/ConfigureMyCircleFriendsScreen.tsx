@@ -12,7 +12,7 @@ import { MyCircleFriend } from '../types';
 
 type MyCircleFriendChecked = MyCircleFriend & { checked?: boolean };
 
-export function ConfigureMyCircleScreen({
+export function ConfigureMyCircleFriendsScreen({
   myCircleReducer,
   setMyCircleFriends,
   route,
@@ -187,7 +187,7 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(memo(ConfigureMyCircleScreen));
+)(memo(ConfigureMyCircleFriendsScreen));
 
 const styles = StyleSheet.create({
   container: {

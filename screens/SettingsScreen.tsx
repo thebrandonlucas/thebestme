@@ -26,7 +26,11 @@ export default function SettingsScreen({ route }) {
       />
       <Button
         title="Configure MyCircle Friends"
-        onPress={() => navigation.navigate('ConfigureMyCircle', { isSendingPanicMessage: false })}
+        onPress={() => navigation.navigate('ConfigureMyCircleFriends', { isSendingPanicMessage: false })}
+      />
+      <Button
+        title="Configure MyCircle Message"
+        onPress={() => navigation.navigate('ConfigureMyCircleMessage')}
       />
       <Button
         title="Sign Out"

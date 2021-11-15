@@ -1,13 +1,44 @@
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 import HabitsScreen from '../../screens/HabitsScreen';
-import {rest} from 'msw'
-import {setupServer} from 'msw/node'
+import { habits } from '../../__fixtures__/habits';
+import { today } from '../../__fixtures__/today';
+
+const mockStore = configureStore();
 
 describe('HabitsScreen', () => {
-  it('should render buttons', () => {
-    const { queryByTestId } = render(<HabitsScreen error={undefined} navigation={undefined} />);
-    expect(queryByTestId('finishDay')).not.toBeNull();
+  let store;
+  let habitScreenComponent;
+
+  store = mockStore({
+    habitReducer: { habits },
+    dayReducer: { today },
+  });
+  store.dispatch = jest.fn();
+
+  habitScreenComponent = (
+    <Provider store={store}>
+      <HabitsScreen error={undefined} navigation={undefined} />
+    </Provider>
+  );
+
+  test('should render buttons', () => {
+    const { getByTestId } = render(habitScreenComponent);
+    expect(getByTestId('finishDay')).not.toBeNull();
+  });
+
+  test('should toggle a remaining habit to a finished habit', () => {
+    const { getByText } = render(habitScreenComponent);
+    const habitText = 'Get lunch with a friend'
+    const habitToToggle = getByText(habitText);
+    const habits = store.getState().habitReducer.habits;
+    // expect();
+    fireEvent.press(habitToToggle);
+    const newHabits = store.getState().habitReducer.habits;
+
+    // expect(remainingHabits.length === 1);
   });
 
   // it('should display date', () => {

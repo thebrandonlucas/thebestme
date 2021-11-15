@@ -28,7 +28,7 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-  // clearAppData();
+  clearAppData();
 
   if (!isLoadingComplete) {
     return null;

@@ -14,7 +14,8 @@ import { useEffect, useState } from 'react';
 import { ColorSchemeName } from 'react-native';
 import Descriptions from '../constants/Descriptions';
 import firebase from '../firebase';
-import ConfigureMyCircleScreen from '../screens/ConfigureMyCircleScreen';
+import ConfigureMyCircleFriendsScreen from '../screens/ConfigureMyCircleFriendsScreen';
+import ConfigureMyCircleMessageScreen from '../screens/ConfigureMyCircleMessageScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import InfoScreen from '../screens/InfoScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -22,7 +23,8 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SignupScreen from '../screens/SignupScreen';
 import {
-  ConfigureMyCircleParamList,
+  ConfigureMyCircleFriendsParamList,
+  ConfigureMyCircleMessageParamList,
   DescriptionType,
   InfoParamList,
   RootStackParamList,
@@ -42,9 +44,6 @@ export default function Navigation({
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
     >
       <RootNavigator />
-      {/* {loggedIn ? 
-      <RootNavigator />
-      : <AuthNavigator />} */}
     </NavigationContainer>
   );
 }
@@ -78,14 +77,21 @@ function RootNavigator() {
         <>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Signup" component={SignupScreen} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+          />
         </>
       )}
       <Stack.Screen name="Home" component={BottomTabNavigator} />
       <Stack.Screen name="Settings" component={SettingsNavigator} />
       <Stack.Screen
-        name="ConfigureMyCircle"
-        component={ConfigureMyCircleNavigator}
+        name="ConfigureMyCircleFriends"
+        component={ConfigureMyCircleFriendsNavigator}
+      />
+      <Stack.Screen
+        name="ConfigureMyCircleMessage"
+        component={ConfigureMyCircleMessageNavigator}
       />
       <Stack.Screen name="Info" component={InfoNavigator} />
       <Stack.Screen
@@ -113,23 +119,39 @@ function SettingsNavigator() {
   );
 }
 
-const ConfigureMyCircleStack =
-  createStackNavigator<ConfigureMyCircleParamList>();
-function ConfigureMyCircleNavigator({ route }) {
+const ConfigureMyCircleFriendsStack =
+  createStackNavigator<ConfigureMyCircleFriendsParamList>();
+function ConfigureMyCircleFriendsNavigator({ route }) {
   const isSendingPanicMessage: boolean = route.params.isSendingPanicMessage;
   const headerTitle: string = isSendingPanicMessage
     ? 'Choose Friends'
     : 'Configure MyCircle Friends';
   return (
-    <ConfigureMyCircleStack.Navigator>
-      <ConfigureMyCircleStack.Screen
-        name="ConfigureMyCircleScreen"
-        component={ConfigureMyCircleScreen}
+    <ConfigureMyCircleFriendsStack.Navigator>
+      <ConfigureMyCircleFriendsStack.Screen
+        name="ConfigureMyCircleFriendsScreen"
+        component={ConfigureMyCircleFriendsScreen}
         options={() => {
           return { headerTitle };
         }}
       />
-    </ConfigureMyCircleStack.Navigator>
+    </ConfigureMyCircleFriendsStack.Navigator>
+  );
+}
+
+const ConfigureMyCircleMessageStack =
+  createStackNavigator<ConfigureMyCircleMessageParamList>();
+function ConfigureMyCircleMessageNavigator() {
+  return (
+    <ConfigureMyCircleMessageStack.Navigator>
+      <ConfigureMyCircleMessageStack.Screen
+        name="ConfigureMyCircleMessageScreen"
+        component={ConfigureMyCircleMessageScreen}
+        options={() => {
+          return { headerTitle: 'Configure MyCircle Message' };
+        }}
+      />
+    </ConfigureMyCircleMessageStack.Navigator>
   );
 }
 

@@ -1,38 +1,51 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import * as SMS from 'expo-sms';
 import React, { memo } from 'react';
 import { Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
-import * as SMS from 'expo-sms';
-import { connect, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
 import { setIsSendingPanicMessage } from '../../redux/actions/MyCircleActions';
+import { RootState } from '../../redux/store';
+import { MyCircleFriendType, MyCircleReducerType } from '../../types';
 
-export function MyCircleButton({ myCircleReducer }) {
+export default function MyCircleButton() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const myCircle = useSelector<RootState, MyCircleFriendType[]>(
+    (state) => state.myCircleReducer.myCircle
+  );
+  const panicMessage = useSelector<RootState, string>(
+    (state) => state.myCircleReducer.panicMessage
+  );
 
   async function sendSMS() {
     const isAvailable = await SMS.isAvailableAsync();
     if (isAvailable) {
-      const phoneNumbers = myCircleReducer.myCircle.map(friend => friend.phoneNumber);
-      const { result } = await SMS.sendSMSAsync(
-        phoneNumbers,
-        "I'm feeling a bit down right now, would you mind reaching out to talk for a bit?");
+      const phoneNumbers = myCircle.map((friend) => friend.phoneNumber);
+      await SMS.sendSMSAsync(phoneNumbers, panicMessage).catch((err) => {
+        Alert.alert('Error', JSON.stringify(err));
+      });
     } else {
-      // TODO: Implement Error checking
+      Alert.alert(
+        'Error',
+        'Sorry, but this device is not capable of retrieving contacts'
+      );
     }
   }
 
   function clickChooseFriends() {
     setIsSendingPanicMessage(true);
-    navigation.navigate('ConfigureMyCircle', { isSendingPanicMessage: true });
+    navigation.navigate('ConfigureMyCircleFriends', {
+      isSendingPanicMessage: true,
+    });
   }
-  
+
   function myCircleAlert() {
     Alert.alert(
       'MyCircle',
-      'Send Help alert to all your friends?',
+      'Send help alert to all your friends?',
       [
         {
           text: 'Cancel',
@@ -66,11 +79,4 @@ export function MyCircleButton({ myCircleReducer }) {
   );
 }
 
-const mapStateToProps = (state) => {
-  const { myCircleReducer } = state;
-  return { myCircleReducer };
-};
-
-export default connect(
-  mapStateToProps,
-)(memo(MyCircleButton));
+// export default MyCircleButton;

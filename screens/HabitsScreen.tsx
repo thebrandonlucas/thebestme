@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 // NOTE: Required import for uuid to work
 import 'react-native-get-random-values';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import HabitContainer from '../components/HabitContainer';
 import ThemeButton from '../components/ThemeButton';
@@ -23,13 +23,13 @@ import {
   toggleHabit,
   updateHabit,
 } from '../redux/actions/HabitsActions';
+import { RootState } from '../redux/store';
 import { DayType, HabitType, IHabitType } from '../types';
 import getDateString from '../utils';
 
 export function HabitsScreen({
-  // user,
   habitReducer,
-  today,
+  dayReducer,
   error,
   navigation,
   addHabit,
@@ -51,6 +51,13 @@ export function HabitsScreen({
   const colorScheme = useColorScheme();
   const inputRef = useRef(null);
 
+  const habits = useSelector<RootState, IHabitType>(
+    (state) => state.habitReducer.habits
+  );
+  const today = useSelector<RootState, DayType>(
+    (state) => state.dayReducer.today
+  );
+
   // FIXME: should useLayoutEffect be used for DOM manipulation (i.e. inputRef)?
   useEffect(() => {
     setCurrentDate(getDateString(new Date().toISOString()).date);
@@ -59,7 +66,6 @@ export function HabitsScreen({
     }
     let tempRemainingHabits = [],
       tempFinishedHabits = [];
-    const { habits } = habitReducer;
     for (const key in habits) {
       const currentHabit = habits[key];
       if (!currentHabit.deleted) {
@@ -73,7 +79,9 @@ export function HabitsScreen({
     setRemainingHabits(tempRemainingHabits);
     setFinishedHabits(tempFinishedHabits);
     setLoading(false);
-  }, [isAddingHabit, isEditingHabit, habitReducer]);
+    // TODO: figure out how to use useSelector to update state.
+    // right now, putting habits in there doesn't update state
+  }, [isAddingHabit, isEditingHabit, habitReducer, dayReducer]);
 
   /**
    * Toggle the habit "checked" status
@@ -284,10 +292,9 @@ export function HabitsScreen({
   );
 }
 
-const mapStateToProps = (state: { habitReducer: any; dayReducer: any }) => {
-  const { habitReducer } = state;
-  const { today } = state.dayReducer;
-  return { habitReducer, today };
+const mapStateToProps = (state) => {
+  const { habitReducer, dayReducer } = state;
+  return { habitReducer, dayReducer };
 };
 const mapDispatchToProps = (
   dispatch: (arg0: {

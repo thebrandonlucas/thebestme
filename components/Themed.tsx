@@ -145,6 +145,7 @@ export const Input = forwardRef((props: InputProps, ref: React.ForwardedRef<any>
     maxLength,
     placeholderTextColor,
     onChangeText,
+    ...other
   } = props;
   const textColor = useThemeColor(
     { light: lightColor, dark: darkColor },
@@ -166,6 +167,7 @@ export const Input = forwardRef((props: InputProps, ref: React.ForwardedRef<any>
       keyboardType={keyboardType}
       secureTextEntry={secureTextEntry}
       onChangeText={onChangeText}
+      {...other}
     />
   );
 });

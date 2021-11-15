@@ -1,7 +1,7 @@
 // import '@firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
 import PassMeter from 'react-native-passmeter';
 import ThemeButton from '../components/ThemeButton';
 import { Input } from '../components/Themed';
@@ -68,7 +68,7 @@ export default function SignupScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <Text>TheBestMe</Text>
       <>
         <Input
@@ -110,7 +110,7 @@ export default function SignupScreen() {
         <ThemeButton title="Sign up" onPress={handleSignUp} />
         <ThemeButton title="Go Back" onPress={goToLogin} />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

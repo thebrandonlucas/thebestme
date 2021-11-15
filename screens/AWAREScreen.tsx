@@ -4,16 +4,20 @@ import { StyleSheet, useColorScheme } from 'react-native';
 import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
 import { deleteAwareJournal } from '../redux/actions/AwareActions';
+import { AwareJournalEntryType } from '../types';
+import { getGuidedJournalDisplayText } from '../utils/getGuidedJournalDisplayText';
 
 export function AWAREScreen({ navigation, awareReducer, deleteAwareJournal }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
-  const [awareJournals, setAwareJournals] = useState({});
+  const [awareJournals, setAwareJournals] = useState<AwareJournalEntryType>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (Object.keys(awareReducer.awareJournals).length !== 0) {
       setAwareJournals(awareReducer.awareJournals);
+      setLoading(false);
     }
   }, [awareReducer]);
 
@@ -68,7 +72,8 @@ export function AWAREScreen({ navigation, awareReducer, deleteAwareJournal }) {
       date={date}
       setDate={setDate}
       deleteJournal={deleteAwareJournal}
-      journalType={'AWARE'}
+      journalType={'aware'}
+      loading={loading}
     />
   );
 }

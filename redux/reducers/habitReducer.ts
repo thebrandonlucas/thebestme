@@ -1,5 +1,6 @@
+import { HabitReducerType } from './../../types';
 import { ADD_HABIT, DELETE_HABIT, UPDATE_HABIT, TOGGLE_HABIT } from "../actions/types/HabitActions.types"
-const initialState = {
+const initialState: HabitReducerType = {
     habits: {},
 }
 

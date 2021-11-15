@@ -11,7 +11,7 @@ import {
   saveJournal,
   updateJournal,
 } from '../redux/actions/JournalActions';
-import { DayType } from '../types';
+import { DayType, JournalEntryType } from '../types';
 import getDateString from '../utils/index';
 
 export function JournalScreen({
@@ -30,11 +30,13 @@ export function JournalScreen({
   const [isAddingJournal, setIsAddingJournal] = useState<boolean>(false);
   const [isEditingJournal, setIsEditingJournal] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
-  const [journals, setJournals] = useState<Object>({});
+  const [journals, setJournals] = useState<JournalEntryType>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (Object.keys(journalReducer.journals).length !== 0) {
       setJournals(journalReducer.journals);
+      setLoading(false);
     }
   }, [journalReducer]);
 
@@ -124,7 +126,8 @@ export function JournalScreen({
       setText={setJournalText}
       setDate={setDate}
       deleteJournal={deleteJournal}
-      // journalType={''}
+      journalType={'primary'}
+      loading={loading}
     />
   );
 }

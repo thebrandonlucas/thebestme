@@ -1,14 +1,23 @@
 // import '@firebase/firestore';
 import * as React from 'react';
 import { useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+} from 'react-native';
 import ThemeButton from '../components/ThemeButton';
 import { Input, View } from '../components/Themed';
 import firebase from '../firebase.js';
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const goToLogin = () => {
+    navigation.navigate('Login');
+  };
 
   /**
    * Reset a user's password by sending it to a new email
@@ -17,14 +26,17 @@ export default function LoginScreen() {
   function sendPasswordResetEmail() {
     firebase.auth().sendPasswordResetEmail(email);
     Alert.alert(
-        'Password Reset Email Sent',
-        'Please check your email for a link to reset your password',
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-        { cancelable: false }
-      );
+      'Password Reset Email Sent',
+      'Please check your email for a link to reset your password',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      { cancelable: false }
+    );
   }
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
       <Input
         label="Email to send password reset"
         placeholder="thebestme@example.com"
@@ -36,8 +48,9 @@ export default function LoginScreen() {
           onPress={sendPasswordResetEmail}
           testID="passwordResetEmailButton"
         />
+        <ThemeButton title="Go Back" onPress={goToLogin} />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -61,6 +74,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     top: '5%',
-    aspectRatio: 7 / 3,
+    aspectRatio: 14 / 4,
   },
 });

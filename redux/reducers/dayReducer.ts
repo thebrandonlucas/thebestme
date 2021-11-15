@@ -1,4 +1,4 @@
-import { DayType, IDayType } from './../../types';
+import { DayType, IDayType, DayReducerType } from './../../types';
 // This object should reinitialize at the start of the next day (user's local time),
 
 import { CLEAR_DAY, FINISH_DAY, SET_DAY } from "../actions/types/DayActions.types"
@@ -8,7 +8,7 @@ import { DateTime } from 'luxon';
 // days: { '2021-01-01.2': day }
 
 // and save whatever is in it upon rollover (if anything);
-const initialState: {days: IDayType; today: DayType} = {
+const initialState: DayReducerType = {
     days: {},
     today: {
         id: '',

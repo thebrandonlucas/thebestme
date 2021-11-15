@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
 import { Collections } from '../constants';
 import { deleteCbtJournal } from '../redux/actions/CbtActions';
+import { CbtJournalEntryType } from '../types';
 import getDateString from '../utils/index';
 
 
@@ -12,11 +13,13 @@ export function CBTScreen({ navigation, cbtReducer, deleteCbtJournal }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
-  const [cbtJournals, setCbtJournals] = useState({});
+  const [cbtJournals, setCbtJournals] = useState<CbtJournalEntryType>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (Object.keys(cbtReducer.cbtJournals).length !== 0) {
       setCbtJournals(cbtReducer.cbtJournals);
+      setLoading(false);
     }
   }, [cbtReducer]);
 
@@ -71,8 +74,9 @@ export function CBTScreen({ navigation, cbtReducer, deleteCbtJournal }) {
       date={date}
       setDate={setDate}
       modalVisible={modalVisible}
-      journalType={'CBT'}
+      journalType={'cbt'}
       deleteJournal={deleteCbtJournal}
+      loading={loading}
     />
   );
 }
