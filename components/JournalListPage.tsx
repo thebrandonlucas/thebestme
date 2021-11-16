@@ -62,7 +62,6 @@ export default function JournalListPage(props: JournalListPageType) {
       const primaryJournal: JournalEntryType = props.entries[item];
       displayText = primaryJournal.text;
     }
-
     return (
       props.entries[item] && (
         <TouchableOpacity

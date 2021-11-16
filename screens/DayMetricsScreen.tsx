@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import ThemeButton from '../components/ThemeButton';
 import { Text, View } from '../components/Themed';
+import { VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
+
 
 function DayMetricsScreen({ navigation, route, days, habits }) {
   const currentDay = days[route.params.selectedDay];
@@ -15,9 +17,19 @@ function DayMetricsScreen({ navigation, route, days, habits }) {
     navigation.goBack();
   }
 
+  const data = [
+    { quarter: 1, earnings: 13000 },
+    { quarter: 2, earnings: 16500 },
+    { quarter: 3, earnings: 14250 },
+    { quarter: 4, earnings: 19000 }
+  ];
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Check back soon for some awesome analytics features!</Text>
+      {/* <VictoryChart width={300} theme={VictoryTheme.material}>
+          <VictoryBar data={data} x="quarter" y="earnings" />
+        </VictoryChart> */}
       {/* <Text>Date: {currentDay.date}</Text>
       <Text>Remaining Habits: </Text>
       {currentDay.habitIds.map((id) => {
@@ -57,6 +69,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     flex: 1,
+    // flex: 1,
+    // justifyContent: "center",
+    // alignItems: "center",
+    // backgroundColor: "#f5fcff"
   },
   title: {
     fontSize: 20,
