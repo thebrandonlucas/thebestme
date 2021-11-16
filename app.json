@@ -4,7 +4,7 @@
     "slug": "bestme",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/thebestme-logo.jpg",
+    "icon": "./assets/images/thebestme.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
