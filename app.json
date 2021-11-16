@@ -8,7 +8,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/thebestme-logo.jpg",
+      "image": "./assets/images/thebestme.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -25,7 +25,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/thebestme-logo.jpg",
+        "foregroundImage": "./assets/images/thebestme.png",
         "backgroundColor": "#000000"
       }
     },
