@@ -24,6 +24,7 @@ import CBTAddScreen from '../screens/CBTAddScreen';
 import CBTScreen from '../screens/CBTScreen';
 import DataScreen from '../screens/DataScreen';
 import DayMetricsScreen from '../screens/DayMetricsScreen';
+import EndOfDayNotesScreen from '../screens/EndOfDayNotesScreen';
 import FinishDayScreen from '../screens/FinishDayScreen';
 import HabitsScreen from '../screens/HabitsScreen';
 import JournalScreen from '../screens/JournalScreen';
@@ -32,6 +33,7 @@ import {
   BottomTabParamList,
   CBTParamList,
   DataParamList,
+  DescriptionType,
   HabitsParamList,
   JournalParamList,
 } from '../types';
@@ -181,10 +183,7 @@ TabBarIcon.defaultProps = {
   iconComponent: Icon,
 };
 
-function headerOptions(
-  title: string,
-  infoType?: 'data' | 'habits' | 'journal' | 'cbtJournal' | 'awareJournal'
-) {
+function headerOptions(title: string, infoType?: DescriptionType) {
   return {
     headerTitle: title,
     headerLeft: () => <MyCircleButton />,
@@ -214,6 +213,21 @@ function HabitsNavigator() {
         component={FinishDayScreen}
         options={() => headerOptions('Day Summary')}
       />
+      <HabitsStack.Screen
+        name="Data"
+        component={DataScreen}
+        options={() => headerOptions('Data')}
+      />
+      <HabitsStack.Screen
+        name="DayMetricsScreen"
+        component={DayMetricsScreen}
+        options={() => headerOptions('Day Metrics')}
+      />
+      <HabitsStack.Screen
+        name="EndOfDayNotesScreen"
+        component={EndOfDayNotesScreen}
+        options={() => headerOptions('End of Day Notes')}
+      />
     </HabitsStack.Navigator>
   );
 }
@@ -240,7 +254,7 @@ function CBTNavigator() {
       <CBTStack.Screen
         name="CBTScreen"
         component={CBTScreen}
-        options={() => headerOptions('CBT', 'cbtJournal')}
+        options={() => headerOptions('Thought Challenging', 'cbtJournal')}
       />
       <CBTStack.Screen
         name="CBTAddScreen"

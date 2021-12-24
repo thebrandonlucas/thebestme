@@ -1,5 +1,5 @@
 import { HabitType } from "../../types";
-import { ADD_HABIT, DELETE_HABIT, UPDATE_HABIT, TOGGLE_HABIT } from "./types/HabitActions.types";
+import { ADD_HABIT, DELETE_HABIT, UPDATE_HABIT, TOGGLE_HABIT, RESET_HABITS} from "./types/HabitActions.types";
 
 /**
  * Add a habit
@@ -25,6 +25,12 @@ export function deleteHabit(id: string) {
     }
 }
 
+/**
+ * Update a habit's text
+ * @param id 
+ * @param text 
+ * @returns 
+ */
 export function updateHabit(id: string, text: string) {
     return {
         type: UPDATE_HABIT,
@@ -32,9 +38,24 @@ export function updateHabit(id: string, text: string) {
     }
 }
 
+/**
+ * Toggle's a habit from remaining to finished, or vice versa
+ * @param id
+ * @param checked - bool indicating if the habit is finished or not
+ * @returns 
+ */
 export function toggleHabit(id: string, checked: boolean) {
     return {
         type: TOGGLE_HABIT,
         payload: { id, checked }
+    }
+}
+
+/**
+ * Reset all habits to unchecked (incomplete)
+ */
+export function resetHabits() {
+    return {
+        type: RESET_HABITS
     }
 }

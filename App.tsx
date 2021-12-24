@@ -19,6 +19,7 @@ async function clearAppData() {
        await AsyncStorage.clear();
       }
       if (Platform.OS === 'ios') {
+        console.log('clearing app data')
         await AsyncStorage.multiRemove(asyncStorageKeys);
       }
     }
@@ -28,7 +29,7 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-  // clearAppData();
+//   clearAppData();
 
   if (!isLoadingComplete) {
     return null;

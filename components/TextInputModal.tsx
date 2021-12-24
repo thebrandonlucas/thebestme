@@ -8,7 +8,7 @@ import { Input } from './Themed';
 
 interface TextInputModalProps {
   text: string;
-  setText: (text: string) => void;
+  setText?: (text: string) => void;
   label: string;
   lightColor?: string;
   darkColor?: string;
@@ -16,6 +16,7 @@ interface TextInputModalProps {
   textInputStyle?: Styles['viewStyle'];
   journalModalStyle?: Styles['viewStyle'];
   labelStyle?: Styles['textStyle'];
+  disabled?: boolean;
 }
 
 TextInputModal.defaultProps = {

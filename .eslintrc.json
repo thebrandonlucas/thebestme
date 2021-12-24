@@ -44,6 +44,6 @@
             }
         ],
         "prettier/prettier": "error",
-        // "allowForLoopAfterthoughts": true
+        "allowForLoopAfterthoughts": true 
     }
 }

@@ -1,19 +1,15 @@
 import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import {
-  ScrollView,
-  StyleProp,
-  StyleSheet,
-  ViewProps,
-  ViewStyle,
-} from 'react-native';
-import { connect } from 'react-redux';
+import { StyleProp, StyleSheet, ViewProps, ViewStyle } from 'react-native';
+import { connect, useDispatch } from 'react-redux';
+import { HabitSummaryCard } from '../components/HabitSummaryCard';
 import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
 import Colors from '../constants/Colors';
 import { saveDay } from '../redux/actions/DayActions';
+import { resetHabits } from '../redux/actions/HabitsActions';
 import { DayType, HabitType, IDayType, IHabitType } from '../types';
 
 function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
@@ -29,11 +25,13 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
   const [cbtEntryCount, setCbtEntryCount] = useState(0);
   const [awareEntryCount, setAwareEntryCount] = useState(0);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    const habits: IHabitType = habitReducer.habits,
-      today: DayType = dayReducer.today;
-    let tempRemainingHabits: HabitType[] = [],
-      tempFinishedHabits: HabitType[] = [];
+    const { habits } = habitReducer;
+    const { today } = dayReducer;
+    const tempRemainingHabits: HabitType[] = [];
+    const tempFinishedHabits: HabitType[] = [];
     for (let i = 0; i < today.habitIds.length; i++) {
       const id = today.habitIds[i];
       if (habits[id].checked) {
@@ -66,44 +64,29 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
     const finishedHabitIds: string[] = finishedHabits.map((habit) => habit.id);
     const habitIds: string[] = [...remainingHabitIds, ...finishedHabitIds];
 
+    const currentDayInfo: DayType = dayReducer.days[date];
     const dayInfo: IDayType = {
       [date]: {
         ...dayReducer.today,
-        // TODO: Figure out when to set date
         date,
         habitIds,
         finishedHabitCount,
         habitCount,
         habitPercentComplete,
-        mood: dayReducer.days[date]
-          ? [...dayReducer.days[date].mood, mood]
-          : [mood],
-        endOfDayNotes: dayReducer.days[date]
-          ? [...dayReducer.today.endOfDayNotes, endOfDayNotes]
-          : [endOfDayNotes],
+        mood: currentDayInfo ? [...currentDayInfo.mood, mood] : [mood],
+        endOfDayNotes:
+          currentDayInfo && endOfDayNotes
+            ? [...currentDayInfo.endOfDayNotes, endOfDayNotes]
+            : currentDayInfo
+            ? currentDayInfo.endOfDayNotes
+            : [],
       },
     };
+    console.log('dayinfo', dayInfo);
     saveDay(dayInfo);
-    navigation.navigate('HabitsScreen');
+    dispatch(resetHabits());
+    navigation.navigate('Data');
   }
-
-  const HabitCard = ({ habits }) => {
-    return (
-      <>
-        <ScrollView style={styles.habitScroll}>
-          {habits.map((habit: { id: React.Key; text: string }) => {
-            // \u2022 is unicode for 'bullet' character
-            return (
-              <Text
-                style={styles.bulletHabit}
-                key={habit.id}
-              >{`\u2022${habit.text}`}</Text>
-            );
-          })}
-        </ScrollView>
-      </>
-    );
-  };
 
   return (
     <View style={styles.container}>
@@ -113,26 +96,12 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
         label="End of Day Notes"
         buttonStyle={styles.endOfDayNotes as StyleProp<ViewStyle>}
       />
-      <Card style={styles.habitCard}>
-        <Text style={styles.title}>Habits</Text>
-        <View style={styles.textRow}>
-          <Text style={styles.bold}>
-            Completed: {finishedHabits.length} / {habitCount}
-          </Text>
-          <Text style={styles.bold}>
-            Percent Complete: {habitPercentComplete}%
-          </Text>
-        </View>
-        <View style={styles.rowContainer}>
-          <Text style={styles.bold}>Remaining</Text>
-          <Text style={styles.bold}>Finished</Text>
-        </View>
-        <View style={styles.separator}></View>
-        <View style={styles.rowContainer}>
-          <HabitCard habits={remainingHabits} />
-          <HabitCard habits={finishedHabits} />
-        </View>
-      </Card>
+      <HabitSummaryCard
+        remainingHabits={remainingHabits}
+        finishedHabits={finishedHabits}
+        habitCount={habitCount}
+        habitPercentComplete={habitPercentComplete}
+      />
       <Card>
         <Text style={styles.title}>Journals</Text>
         <View style={[styles.rowContainer, { marginVertical: 5 }]}>
@@ -144,26 +113,23 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
       <Text style={styles.title}>How are you feeling?</Text>
       <View style={styles.rowContainer}>
         <ThemeButton
-          title="Happy"
+          title="Great"
           color={Colors.happyGreen}
-          onPress={() => finishDay('Happy')}
-          testID="happyBtn"
+          onPress={() => finishDay('Great')}
           buttonStyle={styles.button as StyleProp<ViewProps>}
           containerStyle={styles.buttonContainerStyle as StyleProp<ViewProps>}
         />
         <ThemeButton
-          title="Neutral"
+          title="Good"
           color={Colors.neutralYellow}
-          onPress={() => finishDay('Neutral')}
-          testID="neutralBtn"
+          onPress={() => finishDay('Okay')}
           buttonStyle={styles.button as StyleProp<ViewProps>}
           containerStyle={styles.buttonContainerStyle as StyleProp<ViewProps>}
         />
         <ThemeButton
-          title="Sad"
+          title="Not Great"
           color={Colors.sadRed}
-          onPress={() => finishDay('Sad')}
-          testID="sadBtn"
+          onPress={() => finishDay('Not Good')}
           buttonStyle={styles.button as StyleProp<ViewProps>}
           containerStyle={styles.buttonContainerStyle as StyleProp<ViewProps>}
         />
@@ -181,13 +147,11 @@ const mapStateToProps = (state: {
 };
 const mapDispatchToProps = (
   dispatch: (arg0: { type: string; payload: IDayType }) => void
-) => {
-  return {
-    saveDay: (dayInfo: IDayType) => {
-      dispatch(saveDay(dayInfo));
-    },
-  };
-};
+) => ({
+  saveDay: (dayInfo: IDayType) => {
+    dispatch(saveDay(dayInfo));
+  },
+});
 export default connect(mapStateToProps, mapDispatchToProps)(FinishDayScreen);
 
 const styles = StyleSheet.create({
@@ -202,38 +166,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  bulletHabit: {
-    marginVertical: 5,
-  },
   button: {},
   buttonContainerStyle: {
     flex: 1,
     justifyContent: 'space-around',
     margin: 5,
   },
-  habitCard: {
-    aspectRatio: 6 / 5,
-  },
-  habitScroll: {
-    aspectRatio: 1,
-  },
-  separator: {
-    marginVertical: 10,
-    height: 1,
-    width: '90%',
-    backgroundColor: Colors.dark.mutedText,
-    alignSelf: 'center',
-  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     alignSelf: 'center',
-  },
-  textRow: {
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    justifyContent: 'space-between',
-    marginVertical: 5,
   },
   endOfDayNotes: {
     width: '100%',

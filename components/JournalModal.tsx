@@ -19,7 +19,8 @@ interface JournalModalProps {
   setText: (text: string) => void;
   onBackdropPress: () => void;
   onSwipeComplete: () => void;
-  onClickSave: () => void;
+  onClickSave?: () => void;
+  disabled?: boolean;
 }
 
 JournalModal.defaultProps = {
@@ -33,7 +34,7 @@ JournalModal.defaultProps = {
  * @return {JSX.Element}
  */
 export default function JournalModal(props: JournalModalProps) {
-  const { label, lightColor, darkColor } = props;
+  const { label, lightColor, darkColor, disabled } = props;
   const mutedTextColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'mutedText'
@@ -83,6 +84,7 @@ export default function JournalModal(props: JournalModalProps) {
               onChangeText={props.setText}
               value={props.text}
               inputAccessoryViewID={inputAccessoryViewId}
+              disabled={disabled}
             />
           </ScrollView>
           {/* <InputAccessoryView nativeID={inputAccessoryViewId}>

@@ -16,6 +16,7 @@ import Descriptions from '../constants/Descriptions';
 import firebase from '../firebase';
 import ConfigureMyCircleFriendsScreen from '../screens/ConfigureMyCircleFriendsScreen';
 import ConfigureMyCircleMessageScreen from '../screens/ConfigureMyCircleMessageScreen';
+import FinishDayScreen from '../screens/FinishDayScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import InfoScreen from '../screens/InfoScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -26,6 +27,7 @@ import {
   ConfigureMyCircleFriendsParamList,
   ConfigureMyCircleMessageParamList,
   DescriptionType,
+  FinishDayParamList,
   InfoParamList,
   RootStackParamList,
   SettingsParamList,
@@ -94,6 +96,7 @@ function RootNavigator() {
         component={ConfigureMyCircleMessageNavigator}
       />
       <Stack.Screen name="Info" component={InfoNavigator} />
+      {/* <Stack.Screen name="FinishDayScreen" component={FinishDayNavigator} /> */}
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
@@ -172,3 +175,19 @@ function InfoNavigator({ route }) {
     </InfoStack.Navigator>
   );
 }
+
+// const FinishDayStack = createStackNavigator<FinishDayParamList>();
+
+// function FinishDayNavigator() {
+//   return (
+//     <FinishDayStack.Navigator>
+//       <FinishDayStack.Screen
+//         name="FinishDayScreen"
+//         component={FinishDayScreen}
+//         options={() => {
+//           return { headerTitle: 'Day Summary' };
+//         }}
+//       />
+//     </FinishDayStack.Navigator>
+//   );
+// }

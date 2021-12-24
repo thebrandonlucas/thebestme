@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 // NOTE: Required import for uuid to work
 import 'react-native-get-random-values';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import HabitContainer from '../components/HabitContainer';
 import ThemeButton from '../components/ThemeButton';

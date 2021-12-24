@@ -2,10 +2,11 @@ import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet } from 'react-native';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Calendar, Card, Text, View } from '../components/Themed';
 import { Colors } from '../constants';
 import { MoodToColor } from '../constants/MoodToColor';
+import { selectDay } from '../redux/actions/DayActions';
 import {
   CalendarDataType,
   ICalendarDataType,
@@ -22,8 +23,10 @@ function DataScreen({ habits, days, navigation }) {
   const isoDate = getDateFromISOString(currentDate);
 
   const [calendarData, setCalendarData] = useState<CalendarDataType>({});
-  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedDay, setSelectedDay] = useState(DateTime.now().toISODate());
   const [moodMode, setMoodMode] = useState('');
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let tempCalendarData: ICalendarDataType = getCalendarData(
@@ -42,6 +45,12 @@ function DataScreen({ habits, days, navigation }) {
     navigation.navigate('DayMetricsScreen', { selectedDay });
   }
 
+  function handleSelectDayButtonPress(day) {
+    const dateString = day.dateString
+    setSelectedDay(dateString);
+    dispatch(selectDay(dateString));
+  }
+
   return (
     <View style={styles.container}>
       <Text style={[styles.date, { color: Colors.themeColor }]}>
@@ -52,9 +61,7 @@ function DataScreen({ habits, days, navigation }) {
         markingType="period"
         markedDates={calendarData}
         current={isoDate}
-        onDayPress={(day) => {
-          setSelectedDay(day.dateString);
-        }}
+        onDayPress={handleSelectDayButtonPress}
       />
       <Card style={styles.cardContainer}>
         {days[selectedDay] ? (

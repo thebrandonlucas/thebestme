@@ -16,7 +16,6 @@ export default function QuestionButton({ infoType }: QuestionButtonType) {
   function goToInfoScreen() {
     // FIXME: route.params.infoType not being passed to InfoScreen, why?
     // using redux as workaround
-    console.log('asdf', infoType)
     dispatch(setDescription(infoType));
     navigation.navigate('Info', { infoType });
   }

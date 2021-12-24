@@ -12,6 +12,7 @@ export type RootStackParamList = {
   ConfigureMyCircleFriends: undefined;
   ConfigureMyCircleMessage: undefined;
   Info: undefined;
+  FinishDayScreen: undefined;
   NotFound: undefined;
   Login: undefined;
   Signup: undefined;
@@ -24,11 +25,15 @@ export type BottomTabParamList = {
   CBT: undefined;
   AWARE: undefined;
   Data: undefined;
+  FinishDayScreen: undefined;
 };
 
 export type HabitsParamList = {
-  HabitsScreen: undefined;
-  FinishDayScreen: undefined;
+  HabitsScreen: JSX.Element;
+  FinishDayScreen: JSX.Element;
+  Data: JSX.Element;
+  DayMetricsScreen: JSX.Element;
+  EndOfDayNotesScreen: JSX.Element;
 };
 
 export type JournalParamList = {
@@ -65,6 +70,10 @@ export type ConfigureMyCircleMessageParamList = {
 export type InfoParamList = {
   InfoScreen: undefined;
 };
+
+export type FinishDayParamList = {
+    FinishDayScreen: undefined;
+}
 
 export type CheckBoxType = {
   id: number;
@@ -124,6 +133,10 @@ export type OnlyIJournalType = {
   guided?: never;
 };
 
+export type EndOfDayNotesEntryType = {
+    text: string
+}
+
 export type OnlyIGuidedJournalType = {
   primary?: never;
   guided: ICbtJournalEntryType | IAwareJournalEntryType;
@@ -132,7 +145,8 @@ export type OnlyIGuidedJournalType = {
 export type UnionJournalEntryType =
   | JournalEntryType
   | CbtJournalEntryType
-  | AwareJournalEntryType;
+  | AwareJournalEntryType
+  | EndOfDayNotesEntryType;
 
 export type DayType = {
   id: string;
@@ -169,9 +183,9 @@ export type CalendarDataType = {
 export type ICalendarDataType = { [date: string]: CalendarDataType };
 
 export type MoodToColorType = {
-  Happy: string;
-  Neutral: string;
-  Sad: string;
+  'Great': string;
+  'Okay': string;
+  'Not Good': string;
 };
 
 export type CalendarDayType = {
@@ -203,7 +217,7 @@ export type JournalListPageType = {
   save?: () => void;
   clickPlus: () => void;
   clickPastEntry: (
-    props: JournalEntryType | CbtJournalEntryType | AwareJournalEntryType
+    props: JournalEntryType | CbtJournalEntryType | AwareJournalEntryType | EndOfDayNotesEntryType
   ) => void;
   closeModal: () => void;
   entries: UnionJournalEntryType;
@@ -211,9 +225,9 @@ export type JournalListPageType = {
   date: string;
   text?: string;
   setText?: React.Dispatch<React.SetStateAction<string>>;
-  setDate: React.Dispatch<React.SetStateAction<string>>;
+  setDate?: React.Dispatch<React.SetStateAction<string>>;
   deleteJournal: (id: string) => void;
-  journalType: 'primary' | 'cbt' | 'aware';
+  journalType: 'primary' | 'cbt' | 'aware' | 'endOfDay';
   loading: boolean;
 };
 
@@ -236,12 +250,16 @@ export type HabitReducerType = {
 
 export type DayReducerType = {
   days: IDayType;
+  selectedDay: DayType;
   today: DayType;
 };
 
-export type IRootState = {
-  
-}
+export type HabitSummaryCardType = {
+    remainingHabits: HabitType[],
+    finishedHabits: HabitType[],
+    habitCount: number,
+    habitPercentComplete: number
+};
 
 export type Styles = {
   viewStyle?: StyleProp<ViewProps>;
