@@ -24,7 +24,6 @@ export default function getCalendarData(
   // Set calendar display data according to dates
   for (const date in days) {
     const currentDay: DayType = days[date];
-    console.log('date', date, selectedDay)
     currentCalendarData = {
       selected: true,
       color:

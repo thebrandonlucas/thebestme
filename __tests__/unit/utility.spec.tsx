@@ -30,14 +30,36 @@ describe('Utility Functions', () => {
 
   // Tests calendar day logic for DataScreen (is it getting the right days?)
   it('should get calendar data', () => {
-    const testCases = [
-      ['2021-01-01', ]
-    ]
+    const testCases = [['2021-01-01']];
     expect(
       getCalendarData('2021-01-01', singleDayContainingSelectedDay)
     ).toEqual(calendarDataSelectedDayOnly);
     expect(getCalendarData('2021-01-01', daysContainingSelectedDay)).toEqual(
       calendarDataMultipleDaysWithSelectedDay
     );
+  });
+
+  // Test whether the top mood frequencies are generated
+  it('should get the top habit frequencies for each mood', () => {
+
+    const singleTestDataResult = [
+      [
+        { mood: 'Running', count: 4 },
+        { mood: 'Brush Teeth', count: 3 },
+        { mood: 'Get lunch', count: 1 },
+      ],
+      [
+        { mood: 'Running', count: 1 },
+        { mood: 'Brush Teeth', count: 6 },
+        { mood: 'Get lunch', count: 2 },
+      ],
+      [
+        { mood: 'Running', count: 5 },
+        { mood: 'Brush Teeth', count: 2 },
+        { mood: 'Get lunch', count: 5 },
+      ],
+    ];
+
+    // getTopHabitFrequenciesPerMood();
   });
 });

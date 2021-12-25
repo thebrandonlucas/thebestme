@@ -3,7 +3,14 @@ import { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
-import { VictoryChart, VictoryLine, VictoryPie } from 'victory-native';
+import {
+  VictoryBar,
+  VictoryChart,
+  VictoryGroup,
+  VictoryLegend,
+  VictoryLine,
+  VictoryPie,
+} from 'victory-native';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
 import ThemeButton from '../components/ThemeButton';
 import { View } from '../components/Themed';
@@ -25,10 +32,28 @@ function DayMetricsScreen({ navigation, route }) {
   const aspectRatio =
     Dimensions.get('screen').height / Dimensions.get('screen').width;
 
-  const data = [
+  const pChartData = [
     { mood: 'Great', frequency: 4 },
     { mood: 'Okay', frequency: 3 },
     { mood: 'Not Good', frequency: 1 },
+  ];
+
+  const data1 = [
+    { mood: 'Running', frequency: 4 },
+    { mood: 'Brush Teeth', frequency: 3 },
+    { mood: 'Get lunch', frequency: 1 },
+  ];
+
+  const data2 = [
+    { mood: 'Running', frequency: 5 },
+    { mood: 'Brush Teeth', frequency: 2 },
+    { mood: 'Get lunch', frequency: 5 },
+  ];
+
+  const data3 = [
+    { mood: 'Running', frequency: 1 },
+    { mood: 'Brush Teeth', frequency: 6 },
+    { mood: 'Get lunch', frequency: 2 },
   ];
 
   // Needs all categories to be initialized to 0 for animation to work
@@ -69,10 +94,9 @@ function DayMetricsScreen({ navigation, route }) {
         tempFinishedHabits.push(currentHabit);
       }
     }
-    console.log('dim', Dimensions.get('screen'));
     setRemainingHabits(tempRemainingHabits);
     setFinishedHabits(tempFinishedHabits);
-    setPieChartData(data);
+    setPieChartData(pChartData);
   }, []);
 
   function goBack() {
@@ -82,6 +106,17 @@ function DayMetricsScreen({ navigation, route }) {
   function goToEndOfDayNotes() {
     navigation.navigate('EndOfDayNotesScreen');
   }
+
+  const barChartStyle = {
+    axis: {
+      style: {
+        tickLabels: {
+          // this changed the color of my numbers to white
+          fill: 'white',
+        },
+      },
+    },
+  };
 
   return (
     <View style={styles.container}>
@@ -135,6 +170,76 @@ function DayMetricsScreen({ navigation, route }) {
             data={habitVsMoodHappyWashingDishesData}
           />
         </VictoryChart>
+        <VictoryChart theme={barChartStyle} domainPadding={{ x: 50 }}>
+          <VictoryGroup
+            colorScale={[
+              Colors.happyGreen,
+              Colors.neutralYellow,
+              Colors.sadRed,
+            ]}
+            offset={20}
+            style={{ data: { width: 15 } }}
+          >
+            <VictoryBar
+              x="mood"
+              y="frequency"
+              data={[
+                { mood: 'Running', frequency: 4 },
+                { mood: 'Brush Teeth', frequency: 3 },
+                { mood: 'Get lunch', frequency: 1 },
+              ]}
+            />
+            <VictoryBar
+              x="mood"
+              y="frequency"
+              data={[
+                { mood: 'Running', frequency: 5 },
+                { mood: 'Brush Teeth', frequency: 2 },
+                { mood: 'Get lunch', frequency: 5 },
+              ]}
+            />
+            <VictoryBar
+              x="mood"
+              y="frequency"
+              data={[
+                { mood: 'Running', frequency: 1 },
+                { mood: 'Brush Teeth', frequency: 6 },
+                { mood: 'Get lunch', frequency: 2 },
+              ]}
+            />
+          </VictoryGroup>
+        </VictoryChart>
+        <VictoryLegend
+          style={{ alignItems: 'center', border: { fill: 'red', width: 1 } }}
+          width={Dimensions.get('screen').width}
+          // FIXME: Is dividing the screen width by 6 guaranteed to center it?
+          x={Dimensions.get('screen').width / 6}
+          title={'Moods'}
+          orientation="horizontal"
+          gutter={20}
+          centerTitle
+          style={{
+            border: { stroke: Colors.activeTabColor },
+            title: { fontSize: 20, fill: 'white' },
+          }}
+          data={[
+            {
+              name: 'Great',
+              symbol: { fill: Colors.happyGreen },
+              labels: { fill: Colors.happyGreen },
+            },
+            {
+              name: 'Okay',
+              symbol: { fill: Colors.neutralYellow },
+              labels: { fill: Colors.neutralYellow },
+            },
+            {
+              name: 'Not Good',
+              symbol: { fill: Colors.sadRed },
+              labels: { fill: Colors.sadRed },
+            },
+          ]}
+        />
 
         {currentDay.endOfDayNotes && (
           <Button title="View End of Day Notes" onPress={goToEndOfDayNotes} />
