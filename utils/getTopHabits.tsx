@@ -1,8 +1,17 @@
-/**
- * How many times were the top N habits completed/incomplete for each mood?
- */
-// function getTopHabitFrequenciesPerMood(moods: , habits, dateRange, topN, isFinished: boolean) {
-//     function getTopHabitsMoodFrequencies()
+import { IDayType, IHabitType, ValidHabits } from "../types";
 
+/**
+ * Return an object many times were the top X habits completed/incomplete for each mood in the past?
+ * 
+ */
+// function getTopHabitFrequenciesPerMood(
+//   startDate: string,
+//   endDate: string,
+//   numberOfTopHabitsToGet: number,
+//   days: IDayType,
+//   habits: IHabitType,
+//   habitToGet: ValidHabits
+// ) {
 // }
+
 

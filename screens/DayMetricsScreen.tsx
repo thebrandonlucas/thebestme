@@ -4,6 +4,7 @@ import { Dimensions, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import {
+  VictoryAxis,
   VictoryBar,
   VictoryChart,
   VictoryGroup,
@@ -171,6 +172,8 @@ function DayMetricsScreen({ navigation, route }) {
           />
         </VictoryChart>
         <VictoryChart theme={barChartStyle} domainPadding={{ x: 50 }}>
+          <VictoryAxis dependentAxis tickFormat={(t) => Math.round(t)} />
+          <VictoryAxis />
           <VictoryGroup
             colorScale={[
               Colors.happyGreen,
@@ -210,16 +213,17 @@ function DayMetricsScreen({ navigation, route }) {
           </VictoryGroup>
         </VictoryChart>
         <VictoryLegend
-          style={{ alignItems: 'center', border: { fill: 'red', width: 1 } }}
+          // style={{ alignItems: 'center', border: { fill: 'red', width: 1 } }}
           width={Dimensions.get('screen').width}
+          // TODO: how to dynamically set the height of the legend based on 
+          height={100}
           // FIXME: Is dividing the screen width by 6 guaranteed to center it?
           x={Dimensions.get('screen').width / 6}
-          title={'Moods'}
+          title="Top 3 habits"
           orientation="horizontal"
           gutter={20}
           centerTitle
           style={{
-            border: { stroke: Colors.activeTabColor },
             title: { fontSize: 20, fill: 'white' },
           }}
           data={[
@@ -240,10 +244,27 @@ function DayMetricsScreen({ navigation, route }) {
             },
           ]}
         />
-
         {currentDay.endOfDayNotes && (
           <Button title="View End of Day Notes" onPress={goToEndOfDayNotes} />
         )}
+
+        <VictoryChart
+          theme={barChartStyle}
+          width={Dimensions.get('screen').width}
+          domainPadding={{ x: 50 }}
+        >
+          <VictoryBar
+            x="habit"
+            y="frequency"
+            style={{ data: { fill: Colors.sadRed } }}
+            data={[
+              { habit: 'Running', frequency: 5 },
+              { habit: 'Brush Teeth', frequency: 3 },
+              { habit: 'Get lunch', frequency: 2 },
+            ]}
+          />
+        </VictoryChart>
+
         {/* </VictoryChart> */}
         {/* <Text>Date: {currentDay.date}</Text>
       <Text>Remaining Habits: </Text>
@@ -278,13 +299,7 @@ export default DayMetricsScreen;
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    // justifyContent: 'center',
     flex: 1,
-
-    // flex: 1,
-    // justifyContent: "center",
-    // alignItems: "center",
-    // backgroundColor: "#f5fcff"
   },
   scrollList: {
     width: '100%',
@@ -296,7 +311,4 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: 'center',
   },
-  // backButton: {
-  //   alignSelf: 'center'
-  // }
 });

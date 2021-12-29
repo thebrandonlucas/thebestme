@@ -72,8 +72,8 @@ export type InfoParamList = {
 };
 
 export type FinishDayParamList = {
-    FinishDayScreen: undefined;
-}
+  FinishDayScreen: undefined;
+};
 
 export type CheckBoxType = {
   id: number;
@@ -134,8 +134,8 @@ export type OnlyIJournalType = {
 };
 
 export type EndOfDayNotesEntryType = {
-    text: string
-}
+  text: string;
+};
 
 export type OnlyIGuidedJournalType = {
   primary?: never;
@@ -183,8 +183,8 @@ export type CalendarDataType = {
 export type ICalendarDataType = { [date: string]: CalendarDataType };
 
 export type MoodToColorType = {
-  'Great': string;
-  'Okay': string;
+  Great: string;
+  Okay: string;
   'Not Good': string;
 };
 
@@ -217,7 +217,11 @@ export type JournalListPageType = {
   save?: () => void;
   clickPlus: () => void;
   clickPastEntry: (
-    props: JournalEntryType | CbtJournalEntryType | AwareJournalEntryType | EndOfDayNotesEntryType
+    props:
+      | JournalEntryType
+      | CbtJournalEntryType
+      | AwareJournalEntryType
+      | EndOfDayNotesEntryType
   ) => void;
   closeModal: () => void;
   entries: UnionJournalEntryType;
@@ -255,16 +259,25 @@ export type DayReducerType = {
 };
 
 export type HabitSummaryCardType = {
-    remainingHabits: HabitType[],
-    finishedHabits: HabitType[],
-    habitCount: number,
-    habitPercentComplete: number
+  remainingHabits: HabitType[];
+  finishedHabits: HabitType[];
+  habitCount: number;
+  habitPercentComplete: number;
 };
 
 export type Styles = {
   viewStyle?: StyleProp<ViewProps>;
   textStyle?: StyleProp<TextStyle>;
 };
+
+export type ValidHabits = 'Great' | 'Okay' | 'Not Good';
+
+export type HabitFrequency = {
+  habit: string;
+  frequency: number;
+}[];
+
+export type HabitFrequencyMultiMoodBarChartData = HabitFrequencySingleMoodBarChartData[];
 
 export type GetComponentProps<T> = T extends
   | React.ComponentType<infer P>
