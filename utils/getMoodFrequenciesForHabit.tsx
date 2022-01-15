@@ -8,8 +8,8 @@ import { HabitFrequency, IDayType, IHabitType, ValidHabits } from '../types';
  * @param isFinished - Whether or not to get frequencies for habits that were finished or completed
  * @returns - A list of objects containing frequencies for each habit for the chosen mood
  */
-export function getHabitFrequenciesForMood(
-  mood: ValidHabits,
+export function getMoodFrequenciesForHabit(
+  habitId: string,
   habits: IHabitType,
   days: IDayType,
   isFinished?: boolean,

@@ -3,6 +3,9 @@ import { IDayType } from '../../../types';
 // TODO: refactor "days" and "habits" data into giant nested objects which are separated into
 // test cases by the type of data they are, i.e. "singleDay", "noFinishDay", "noJournals",
 // "noFinishedHabits", etc.
+
+// TODO: write script to autogenerate test data using a schema
+// use of faker JS?
 export const days: IDayType = {
   '2021-12-24': {
     awareIds: [],

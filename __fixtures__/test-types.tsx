@@ -1,6 +1,6 @@
-import { IDayType, IHabitType, ValidHabits } from '../types';
+import { IDayType, IHabitType, ValidMoods } from '../types';
 
-export type TableTest<ParamType, ResultType> = [ParamType[], ResultType][];
+export type TableTest<ParamsType, ResultType> = [ParamsType, ResultType][];
 
 export type UnitTestInputAndExpectedResult<Input, Result> = {
   input: Input;
@@ -18,6 +18,15 @@ export type GetTopHabitFrequenciesPerMoodInput = [
   habitToGet?: string
 ];
 
+export type GetMoodFrequenciesForHabit = [
+  habitId: string,
+  habits: IHabitType,
+  days: IDayType,
+  isFinished?: boolean,
+  startDate?: string,
+  endDate?: string
+];
+
 export type GetTopHabitFrequenciesPerMoodResult = {
   habit: string;
   frequency: number;
@@ -29,7 +38,7 @@ export type GetCalendarDataInputs = {};
 export type GetCalendarDataResult = {};
 
 export type GetHabitFrequenciesParams = [
-  mood: ValidHabits,
+  mood: ValidMoods,
   habits: IHabitType,
   days: IDayType
 ];

@@ -270,14 +270,21 @@ export type Styles = {
   textStyle?: StyleProp<TextStyle>;
 };
 
-export type ValidHabits = 'Great' | 'Okay' | 'Not Good';
+export type ValidMoods = 'Great' | 'Okay' | 'Not Good';
+
+export type ISODateString = ''
 
 export type HabitFrequency = {
   habit: string;
   frequency: number;
 }[];
 
-export type HabitFrequencyMultiMoodBarChartData = HabitFrequencySingleMoodBarChartData[];
+export type MoodFrequency = {
+    mood: ValidMoods,
+    frequency: number;
+}[];
+
+export type HabitFrequencyMultiMoodBarChartData = HabitFrequency[];
 
 export type GetComponentProps<T> = T extends
   | React.ComponentType<infer P>

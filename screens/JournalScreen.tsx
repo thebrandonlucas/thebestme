@@ -5,6 +5,7 @@ import { StyleSheet, useColorScheme } from 'react-native';
 import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import JournalListPage from '../components/JournalListPage';
+import TopTabs from '../components/TopTabs';
 import { setDayInfo } from '../redux/actions/DayActions';
 import {
   deleteJournal,
@@ -112,23 +113,26 @@ export function JournalScreen({
   }
 
   return (
-    <JournalListPage
-      navigation={navigation}
-      update={save}
-      save={save}
-      clickPlus={clickPlus}
-      clickPastEntry={clickPastEntry}
-      closeModal={upsertAndCloseModal}
-      entries={journals}
-      modalVisible={modalVisible}
-      date={date}
-      text={journalText}
-      setText={setJournalText}
-      setDate={setDate}
-      deleteJournal={deleteJournal}
-      journalType={'primary'}
-      loading={loading}
-    />
+    <>
+      <TopTabs />
+      <JournalListPage
+        navigation={navigation}
+        update={save}
+        save={save}
+        clickPlus={clickPlus}
+        clickPastEntry={clickPastEntry}
+        closeModal={upsertAndCloseModal}
+        entries={journals}
+        modalVisible={modalVisible}
+        date={date}
+        text={journalText}
+        setText={setJournalText}
+        setDate={setDate}
+        deleteJournal={deleteJournal}
+        journalType={'primary'}
+        loading={loading}
+      />
+    </>
   );
 }
 

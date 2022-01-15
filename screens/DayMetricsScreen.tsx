@@ -66,14 +66,16 @@ function DayMetricsScreen({ navigation, route }) {
   ];
 
   // Will need a line chart for each habit & mood combo (unless I can think of a better chart)
-  const habitVsMoodHappyWashingDishesData = [
-    { habitCompleted: 0, happinessFreq: 1 },
-    { habitCompleted: 3, happinessFreq: 3 },
-    { habitCompleted: 5, happinessFreq: 3 },
-    { habitCompleted: 2, happinessFreq: 0 },
-    { habitCompleted: 4, happinessFreq: 2 },
-    { habitCompleted: 1, happinessFreq: 1 },
-    { habitCompleted: 5, happinessFreq: 3 },
+  const lineChartData = [
+    { x: new Date(2021, 5, 1), y: 'Great' },
+    { x: new Date(2021, 5, 2), y: 'Okay' },
+    { x: new Date(2021, 5, 3), y: 'Okay' },
+    { x: new Date(2021, 5, 4), y: 'Okay' },
+    { x: new Date(2021, 5, 7), y: 'Great' },
+    { x: new Date(2021, 5, 8), y: 'Great' },
+    { x: new Date(2021, 5, 9), y: 'Bad' },
+    { x: new Date(2021, 5, 10), y: 'Great' },
+    { x: new Date(2021, 5, 11), y: 'Great' },
   ];
 
   const habitVsMoodSadData = [];
@@ -160,15 +162,16 @@ function DayMetricsScreen({ navigation, route }) {
           innerRadius={65}
           animate={{ easing: 'exp' }}
         />
-        <VictoryChart>
+        <VictoryChart theme={barChartStyle} scale={'time'}>
+          <VictoryAxis dependentAxis tickValues={['Bad', 'Okay', 'Great']} />
+          <VictoryAxis />
           <VictoryLine
-            x="habitCompleted"
-            y="happinessFreq"
             style={{
-              data: { stroke: '#c43a31' },
+              data: { stroke: Colors.happyGreen },
               parent: { border: '1px solid #ccc' },
             }}
-            data={habitVsMoodHappyWashingDishesData}
+            data={lineChartData}
+            sortKey={['Bad', 'Great', 'Okay']}
           />
         </VictoryChart>
         <VictoryChart theme={barChartStyle} domainPadding={{ x: 50 }}>
@@ -215,7 +218,7 @@ function DayMetricsScreen({ navigation, route }) {
         <VictoryLegend
           // style={{ alignItems: 'center', border: { fill: 'red', width: 1 } }}
           width={Dimensions.get('screen').width}
-          // TODO: how to dynamically set the height of the legend based on 
+          // TODO: how to dynamically set the height of the legend based on
           height={100}
           // FIXME: Is dividing the screen width by 6 guaranteed to center it?
           x={Dimensions.get('screen').width / 6}
