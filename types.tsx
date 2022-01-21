@@ -94,6 +94,13 @@ export type HabitType = {
   deleted: boolean;
 };
 
+export type OptionalHabitType = {
+  id?: string;
+  checked?: boolean;
+  text?: string;
+  deleted?: boolean;
+};
+
 export type IHabitType = { [id: string]: HabitType };
 
 export type JournalEntryType = {
@@ -151,7 +158,8 @@ export type UnionJournalEntryType =
 export type DayType = {
   id: string;
   date: string;
-  habitIds: Array<string>;
+  finishedHabitIds: Array<string>;
+  remainingHabitIds: Array<string>;
   cbtIds: Array<string>;
   awareIds: Array<string>;
   journalIds: Array<string>;
@@ -161,6 +169,21 @@ export type DayType = {
   habitCount: number;
   habitPercentComplete: number;
   finishDayClickedCount: number;
+};
+
+export type OptionalDayType = {
+  id?: string;
+  date?: string;
+  habitIds?: Array<string>;
+  cbtIds?: Array<string>;
+  awareIds?: Array<string>;
+  journalIds?: Array<string>;
+  mood?: Array<string>;
+  endOfDayNotes?: string[];
+  finishedHabitCount?: number;
+  habitCount?: number;
+  habitPercentComplete?: number;
+  finishDayClickedCount?: number;
 };
 
 export type IDayType = { [date: string]: DayType };
@@ -272,7 +295,7 @@ export type Styles = {
 
 export type ValidMoods = 'Great' | 'Okay' | 'Not Good';
 
-export type ISODateString = ''
+export type ISODateString = '';
 
 export type HabitFrequency = {
   habit: string;
@@ -280,8 +303,8 @@ export type HabitFrequency = {
 }[];
 
 export type MoodFrequency = {
-    mood: ValidMoods,
-    frequency: number;
+  mood: ValidMoods;
+  frequency: number;
 }[];
 
 export type HabitFrequencyMultiMoodBarChartData = HabitFrequency[];
