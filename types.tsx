@@ -202,7 +202,7 @@ export type OptionalDayType = {
   cbtIds?: Array<string>;
   awareIds?: Array<string>;
   journalIds?: Array<string>;
-  mood?: Array<string>;
+  mood?: Array<ValidMoods>;
   endOfDayNotes?: string[];
   finishedHabitCount?: number;
   habitCount?: number;

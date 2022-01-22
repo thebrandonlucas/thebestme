@@ -8,7 +8,6 @@ export function getMoodMode(moods: ValidMoods[]): ValidMoods {
   if (moods.length === 0) {
     return 'No mood provided';
   }
-  console.log('moods', moods)
   const validMoods = ['Great', 'Okay', 'Not Good'];
   const invalidMoods = moods.filter(mood => !validMoods.includes(mood));
   if (invalidMoods.length !== 0) {

@@ -1,6 +1,8 @@
 import faker from '@faker-js/faker';
 import { DateTime } from 'luxon';
-import { DayType, IDayType, IHabitType, OptionalDayType, ValidMoods } from '../../types';
+import { DayType, IDayType, IHabitType, OptionalDayType } from '../../types';
+import { cbtFactory } from './journal/cbt';
+import { primaryJournalFactory } from './journal/primary';
 import { moodFactory } from './mood';
 
 /**
@@ -15,8 +17,7 @@ export function dayFactory(
   habits: IHabitType,
   numDays: number = faker.datatype.number({ min: 1, max: 10 }),
   daysSequential: boolean = true,
-  // TODO: add overrides
-  // overrides?: OptionalDayType
+  overrides?: OptionalDayType
 ): IDayType {
   const habitIds: string[] = Object.keys(habits);
   const dayDefaultFactory = {
@@ -29,14 +30,15 @@ export function dayFactory(
       habitIds.filter((habitId) =>
         finishedHabitIds.find((finishedHabitId) => habitId === finishedHabitId)
       ),
-      // TODO: create arrays of uuids for journals
-    cbtIds: () => [],
+    // TODO: create arrays of uuids for journals
+    cbtIds: () => Object.keys(cbtFactory()),
     awareIds: () => [],
-    journalIds: () => [],
+    journalIds: () => Object.keys(primaryJournalFactory()),
     mood: moodFactory,
     endOfDayNotes: () => [],
     finishedHabitCount: (finishedHabitIds: string[]) => finishedHabitIds.length,
-    habitCount: (finishedHabitIds: string[], remainingHabitIds: string[]) => finishedHabitIds.length + remainingHabitIds.length,
+    habitCount: (finishedHabitIds: string[], remainingHabitIds: string[]) =>
+      finishedHabitIds.length + remainingHabitIds.length,
     // TODO
     habitPercentComplete: () => 0,
     finishDayClickedCount: () => 0,
@@ -68,7 +70,8 @@ export function dayFactory(
   const days: IDayType = {};
   for (let i = 0; i < dates.length; i++) {
     const finishedHabitIds = dayDefaultFactory.finishedHabitIds();
-    const remainingHabitIds = dayDefaultFactory.remainingHabitIds(finishedHabitIds);
+    const remainingHabitIds =
+      dayDefaultFactory.remainingHabitIds(finishedHabitIds);
     let currentDay: DayType = {
       id: dates[i],
       date: dates[i],
@@ -79,12 +82,27 @@ export function dayFactory(
       journalIds: dayDefaultFactory.journalIds(),
       mood: dayDefaultFactory.mood(),
       endOfDayNotes: dayDefaultFactory.endOfDayNotes(),
-      finishedHabitCount: dayDefaultFactory.finishedHabitCount(finishedHabitIds),
-      habitCount: dayDefaultFactory.habitCount(finishedHabitIds, remainingHabitIds),
+      finishedHabitCount:
+        dayDefaultFactory.finishedHabitCount(finishedHabitIds),
+      habitCount: dayDefaultFactory.habitCount(
+        finishedHabitIds,
+        remainingHabitIds
+      ),
       habitPercentComplete: dayDefaultFactory.habitPercentComplete(),
       finishDayClickedCount: dayDefaultFactory.finishDayClickedCount(),
     };
     days[currentDay.id] = currentDay;
   }
+
+  // overwrite overrides
+  for (const date in days) {
+    for (const prop in overrides) {
+      if (!days[date][prop]) {
+        throw Error('Invalid property ' + prop + ' provided to IDayType');
+      }
+      days[date][prop] = overrides[prop];
+    }
+  }
+
   return days;
 }

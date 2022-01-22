@@ -16,8 +16,8 @@ import { getMoodMode } from './mood';
  * @returns - Calendar data props to be passed to Calendar component
  */
 export default function getCalendarData(
-  selectedDay: string,
-  days: IDayType
+  days: IDayType,
+  selectedDay?: string
 ): ICalendarDataType {
   let calendarData: ICalendarDataType = {};
   let currentCalendarData: CalendarDataType = {};
@@ -27,7 +27,7 @@ export default function getCalendarData(
     currentCalendarData = {
       selected: true,
       color:
-        selectedDay === date
+        selectedDay && selectedDay === date
           ? Colors.iosBlue
           : MoodToColor[getMoodMode(currentDay.mood)] || 'transparent',
       startingDay: true,
@@ -36,12 +36,15 @@ export default function getCalendarData(
     calendarData[date] = currentCalendarData;
   }
 
-  // If selectedDate has data associated with it, add it to calendar props
-  calendarData[selectedDay] = {
-    selected: true,
-    color: Colors.iosBlue,
-    startingDay: true,
-    endingDay: true,
-  };
+  // If selectedDay was outside of the range of days with information
+  if (days != null && Object.keys(days).length !== 0 && selectedDay) {
+    calendarData[selectedDay] = {
+      selected: true,
+      color: Colors.iosBlue,
+      startingDay: true,
+      endingDay: true,
+    };
+  }
+
   return calendarData;
 }
