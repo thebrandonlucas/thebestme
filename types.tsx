@@ -109,7 +109,17 @@ export type JournalEntryType = {
   text: string;
 };
 
+export type OptionalJournalEntryType = {
+  id?: string;
+  date?: string;
+  text?: string;
+};
+
 export type IJournalEntryType = { [id: string]: JournalEntryType };
+
+export type OptionalIJournalEntryType = {
+  [id: string]: OptionalJournalEntryType;
+};
 
 export type AwareJournalEntryType = {
   id: string;
@@ -133,7 +143,21 @@ export type CbtJournalEntryType = {
   alternativeThoughtsText: string;
 };
 
+export type OptionalCbtJournalEntryType = {
+  id?: string;
+  date?: string;
+  situationText?: string;
+  thoughtsText?: string;
+  emotionsText?: string;
+  behaviorsText?: string;
+  alternativeThoughtsText?: string;
+};
+
 export type ICbtJournalEntryType = { [id: string]: CbtJournalEntryType };
+
+export type OptionalICbtJournalEntryType = {
+  [id: string]: OptionalCbtJournalEntryType;
+};
 
 export type OnlyIJournalType = {
   primary: IJournalEntryType;
@@ -293,7 +317,12 @@ export type Styles = {
   textStyle?: StyleProp<TextStyle>;
 };
 
-export type ValidMoods = 'Great' | 'Okay' | 'Not Good' | 'No mood provided' | 'Invalid mood found';
+export type ValidMoods =
+  | 'Great'
+  | 'Okay'
+  | 'Not Good'
+  | 'No mood provided'
+  | 'Invalid mood found';
 
 export type ISODateString = '';
 

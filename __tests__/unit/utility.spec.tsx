@@ -37,19 +37,19 @@ import {
 
 
 describe('Utility Functions', () => {
-//   it('should get the most common (average/mode) mood from a list of moods', () => {
-//     const testCases: TableTest<string[], string> = [
-//       [['Great'], 'Great'],
-//       [['Great', 'Not Good'], 'Not Good'],
-//       [['Great', 'Not Good', 'Okay'], 'Okay'],
-//       [['Great', 'Not Good', 'Not Good', 'Okay'], 'Not Good'],
-//       [['Not Good', 'Not Good', 'Great', 'Okay'], 'Not Good'],
-//       [['Great', 'Not Good', 'Okay', 'Okay'], 'Okay'],
-//       [[], 'No mood provided'],
-//       [['Fake Mood'], 'Invalid mood found'],
-//     ];
-//     runTableTests(testCases, getMoodMode);
-//   });
+  // it('should get the most common (average/mode) mood from a list of moods', () => {
+  //   const testCases: TableTest<string[], string> = [
+  //     [['Great'], 'Great'],
+  //     [['Great', 'Not Good'], 'Not Good'],
+  //     [['Great', 'Not Good', 'Okay'], 'Okay'],
+  //     [['Great', 'Not Good', 'Not Good', 'Okay'], 'Not Good'],
+  //     [['Not Good', 'Not Good', 'Great', 'Okay'], 'Not Good'],
+  //     [['Great', 'Not Good', 'Okay', 'Okay'], 'Okay'],
+  //     [[], 'No mood provided'],
+  //     [['Fake Mood'], 'Invalid mood found'],
+  //   ];
+  //   runTableTests(testCases, getMoodMode);
+  // });
 
 //   // Tests calendar day logic for DataScreen (is it getting the right days?)
 //   it('should return correct calendar props given ISO date and IDayType days', () => {

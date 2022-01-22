@@ -4,6 +4,7 @@ import { MoodToColor } from '../../constants/MoodToColor';
 import {
   CalendarDataType,
   IHabitType,
+  OptionalCbtJournalEntryType,
   OptionalHabitType,
   ValidMoods,
 } from '../../types';
@@ -11,6 +12,7 @@ import { getMoodMode } from '../../utils/mood';
 import { calendarFactory } from '../../__fixtures__/factory/calendar';
 import { dayFactory } from '../../__fixtures__/factory/day';
 import { habitFactory } from '../../__fixtures__/factory/habit';
+import { cbtFactory } from '../../__fixtures__/factory/journal/cbt';
 import { moodFactory } from '../../__fixtures__/factory/mood';
 import { TableTest } from '../../__fixtures__/test-types';
 
@@ -85,7 +87,7 @@ describe('Habit factory', () => {
 describe('Day factory', () => {
   const habits = habitFactory();
   test('should return the correct number of days', () => {
-    expect(Object.keys(dayFactory(habits)).length).toBeGreaterThan(1);
+    expect(Object.keys(dayFactory(habits)).length).toBeGreaterThan(0);
     expect(Object.keys(dayFactory(habits)).length).toBeLessThan(11);
     expect(Object.keys(dayFactory(habits, 1)).length).toBe(1);
     expect(Object.keys(dayFactory(habits, 10)).length).toBe(10);
@@ -241,5 +243,59 @@ describe('Mood Factory', () => {
     for (const moodCounts of testCases) {
       expect(moodFactory(moodCounts[0]).length).toBe(moodCounts[1]);
     }
+  });
+});
+
+describe('Journal Factories', () => {
+  test('should have correct default CBT fields', () => {
+    const testCases = [
+      cbtFactory(),
+      cbtFactory(1),
+      cbtFactory(20),
+      cbtFactory(0),
+      cbtFactory(-1),
+    ];
+    const defaultFields = [
+      'date',
+      'situationText',
+      'thoughtsText',
+      'emotionsText',
+      'behaviorsText',
+      'alternativeThoughtsText',
+    ];
+
+    for (const cbtJournals of testCases) {
+      for (const journal in cbtJournals) {
+        for (const cbtProp of defaultFields) {
+          expect(defaultFields.includes(cbtProp)).toBe(true);
+        }
+      }
+    }
+  });
+
+  test('should overwrite correct CBT fields', () => {
+    const overrideTestCases: OptionalCbtJournalEntryType[] = [
+      { situationText: 'This is sample text' },
+      { date: '2021-01-01' },
+      { alternativeThoughtsText: 'sample alt thoughts' },
+      { behaviorsText: 'sample behaviors text' },
+    ];
+    for (const override of overrideTestCases) {
+      const cbtJournals = cbtFactory(undefined, override);
+      for (const id in cbtJournals) {
+        for (const journalProp in override) {
+          expect(cbtJournals[id][journalProp]).toEqual(override[journalProp]);
+        }
+      }
+    }
+  });
+
+  test('should have correct number of CBT journals', () => {
+    expect(Object.keys(cbtFactory()).length).toBeGreaterThan(0);
+    expect(Object.keys(cbtFactory()).length).toBeLessThan(11);
+    expect(Object.keys(cbtFactory(1)).length).toBe(1);
+    expect(Object.keys(cbtFactory(0)).length).toBe(0);
+    expect(Object.keys(cbtFactory(-1)).length).toBe(0);
+    expect(Object.keys(cbtFactory(20)).length).toBe(20);
   });
 });
