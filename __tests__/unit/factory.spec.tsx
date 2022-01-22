@@ -1,7 +1,18 @@
 import { DateTime } from 'luxon';
-import { IHabitType, OptionalHabitType } from '../../types';
+import { Colors } from '../../constants';
+import { MoodToColor } from '../../constants/MoodToColor';
+import {
+  CalendarDataType,
+  IHabitType,
+  OptionalHabitType,
+  ValidMoods,
+} from '../../types';
+import { getMoodMode } from '../../utils/mood';
+import { calendarFactory } from '../../__fixtures__/factory/calendar';
 import { dayFactory } from '../../__fixtures__/factory/day';
 import { habitFactory } from '../../__fixtures__/factory/habit';
+import { moodFactory } from '../../__fixtures__/factory/mood';
+import { TableTest } from '../../__fixtures__/test-types';
 
 describe('Habit factory', () => {
   test('should have all habit properties of the right type for each habit', () => {
@@ -124,12 +135,9 @@ describe('Day factory', () => {
         if (prevDate) {
           // Ensure dates are only off by 1
           const daysDiff = currentDate.diff(prevDate, ['days']).toObject().days;
-          console.log('prev', prevDate.toISODate(), currentDate.toISODate())
-
           expect(daysDiff).toBe(1);
-
         }
-        prevDate = currentDate
+        prevDate = currentDate;
       }
     }
     // TODO: how to test if it is random otherwise?
@@ -146,12 +154,12 @@ describe('Day factory', () => {
     for (const daysTestCase of testCases) {
       for (const id in daysTestCase) {
         const date = DateTime.fromISO(daysTestCase[id].date);
-        expect(date.startOf("day") <= DateTime.now()).toBe(true);
+        expect(date.startOf('day') <= DateTime.now()).toBe(true);
       }
     }
   });
 
-  // TODO: 
+  // TODO:
   // test('should have all the right day properties for each day', () => {
 
   // });
@@ -161,4 +169,77 @@ describe('Day factory', () => {
   // });
 });
 
-// describe('Calendar factory', () => {});
+describe('Calendar Factory', () => {
+  const testCases = [
+    dayFactory(habitFactory()),
+    dayFactory(habitFactory(10), 1),
+    dayFactory(habitFactory(), 20),
+    dayFactory(habitFactory(), 0),
+    dayFactory(habitFactory(), -1),
+  ];
+  test('should return the same calendar days that are provided in the days object', () => {
+    for (const days of testCases) {
+      const daysFromCalendar = Object.keys(calendarFactory(days)).sort();
+      const daysFromTest = Object.keys(days).sort();
+      expect(daysFromCalendar.every((date) => daysFromTest.includes(date)));
+    }
+  });
+  test('should show color corresponding to most common mood for a day', () => {
+    for (const days of testCases) {
+      const dates = Object.keys(days);
+      for (const date of dates) {
+        const testMostCommonMoodColor =
+          MoodToColor[getMoodMode(days[date].mood)];
+        const calendarDayColor = calendarFactory(days)[date].color;
+        expect(testMostCommonMoodColor).toBe(calendarDayColor);
+      }
+    }
+  });
+  test('should override selected fields', () => {
+    const days = dayFactory(habitFactory());
+    const overrideTestCases: CalendarDataType[] = [
+      { selected: true, startingDay: true, endingDay: true },
+      { color: Colors.happyGreen },
+      { color: Colors.neutralYellow },
+      { color: Colors.sadRed },
+    ];
+    for (const override of overrideTestCases) {
+      const calendar = calendarFactory(days, override);
+      for (const date in days) {
+        for (const calendarProp in override) {
+          expect(calendar[date][calendarProp]).toEqual(override[calendarProp]);
+        }
+      }
+    }
+  });
+});
+
+describe('Mood Factory', () => {
+  test('should have only valid moods', () => {
+    const validMoods: ValidMoods[] = ['Great', 'Okay', 'Not Good'];
+    const testCases = [
+      moodFactory(),
+      moodFactory(0),
+      moodFactory(1),
+      moodFactory(10),
+      moodFactory(21),
+      moodFactory(-1),
+    ];
+    for (const moods of testCases) {
+      for (const mood of moods) {
+        expect(validMoods.includes(mood)).toBe(true);
+      }
+    }
+  });
+  test('should have number of moods matching the specified mood count', () => {
+    const testCases: TableTest<number, number> = [
+      [1, 1],
+      [3, 3],
+      [0, 0],
+      [-1, 0],
+    ];
+    for (const moodCounts of testCases) {
+      expect(moodFactory(moodCounts[0]).length).toBe(moodCounts[1]);
+    }
+  });
+});

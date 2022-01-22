@@ -163,7 +163,7 @@ export type DayType = {
   cbtIds: Array<string>;
   awareIds: Array<string>;
   journalIds: Array<string>;
-  mood: Array<string>;
+  mood: Array<ValidMoods>;
   endOfDayNotes: string[];
   finishedHabitCount: number;
   habitCount: number;
@@ -293,7 +293,7 @@ export type Styles = {
   textStyle?: StyleProp<TextStyle>;
 };
 
-export type ValidMoods = 'Great' | 'Okay' | 'Not Good';
+export type ValidMoods = 'Great' | 'Okay' | 'Not Good' | 'No mood provided' | 'Invalid mood found';
 
 export type ISODateString = '';
 

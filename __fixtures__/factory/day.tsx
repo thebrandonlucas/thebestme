@@ -1,6 +1,7 @@
 import faker from '@faker-js/faker';
 import { DateTime } from 'luxon';
-import { DayType, IDayType, IHabitType, OptionalDayType } from '../../types';
+import { DayType, IDayType, IHabitType, OptionalDayType, ValidMoods } from '../../types';
+import { moodFactory } from './mood';
 
 /**
  * Randomly generate days given habits
@@ -8,7 +9,7 @@ import { DayType, IDayType, IHabitType, OptionalDayType } from '../../types';
  * @param numDays - number of habits to generate
  * @param daysSequential - indicates whether the days should be in a sequence from the start date
  *                         or randomized.
-//  * @param overrides - Overrides for specific day fields
+ * @param overrides - Overrides for specific day fields
  */
 export function dayFactory(
   habits: IHabitType,
@@ -19,7 +20,7 @@ export function dayFactory(
 ): IDayType {
   const habitIds: string[] = Object.keys(habits);
   const dayDefaultFactory = {
-    id: () => faker.datatype.uuid(),
+    id: (date) => date,
     date: (maxYears?: number, refDate?: string) =>
       DateTime.fromJSDate(faker.date.past(maxYears, refDate)),
     // get all habit id's and randomly select a number to go in finished and remaining
@@ -32,7 +33,7 @@ export function dayFactory(
     cbtIds: () => [],
     awareIds: () => [],
     journalIds: () => [],
-    mood: () => [],
+    mood: moodFactory,
     endOfDayNotes: () => [],
     finishedHabitCount: (finishedHabitIds: string[]) => finishedHabitIds.length,
     habitCount: (finishedHabitIds: string[], remainingHabitIds: string[]) => finishedHabitIds.length + remainingHabitIds.length,
@@ -69,7 +70,7 @@ export function dayFactory(
     const finishedHabitIds = dayDefaultFactory.finishedHabitIds();
     const remainingHabitIds = dayDefaultFactory.remainingHabitIds(finishedHabitIds);
     let currentDay: DayType = {
-      id: dayDefaultFactory.id(),
+      id: dates[i],
       date: dates[i],
       finishedHabitIds,
       remainingHabitIds,
@@ -83,20 +84,6 @@ export function dayFactory(
       habitPercentComplete: dayDefaultFactory.habitPercentComplete(),
       finishDayClickedCount: dayDefaultFactory.finishDayClickedCount(),
     };
-    // const id = dayDefaultFactory.id();
-    // for (const dayProp in dayDefaultFactory) {
-      // TODO: add overrides
-      // if (dayProp === 'id') {
-      //   currentDay.id = id;
-      //   continue;
-      // } else {
-      //   if (overrides !== undefined && overrides[dayProp] !== undefined) {
-      //     currentDay[dayProp] = overrides[dayProp];
-      //   } else {
-      //     currentDay[dayProp] = dayDefaultFactory[dayProp]();
-      //   }
-      // }      
-    // }
     days[currentDay.id] = currentDay;
   }
   return days;

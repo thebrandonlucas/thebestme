@@ -4,5 +4,6 @@
     },
     "eslint.validate": [ "javascript", "javascriptreact", "html", "typescript", "typescriptreact" ],
     "files.eol": "\n",
-    "typescript.preferences.importModuleSpecifier": "relative"
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "editor.tabSize": 2
 }
