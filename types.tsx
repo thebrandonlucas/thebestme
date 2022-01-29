@@ -198,7 +198,8 @@ export type DayType = {
 export type OptionalDayType = {
   id?: string;
   date?: string;
-  habitIds?: Array<string>;
+  remainingHabitIds?: string[],
+  finishedHabitIds?: string[],
   cbtIds?: Array<string>;
   awareIds?: Array<string>;
   journalIds?: Array<string>;
@@ -329,7 +330,7 @@ export type ISODateString = '';
 export type HabitFrequency = {
   habit: string;
   frequency: number;
-}[];
+};
 
 export type MoodFrequency = {
   mood: ValidMoods;

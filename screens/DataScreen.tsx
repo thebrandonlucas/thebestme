@@ -30,8 +30,8 @@ function DataScreen({ habits, days, navigation }) {
 
   useEffect(() => {
     let tempCalendarData: ICalendarDataType = getCalendarData(
-      selectedDay,
-      days
+      days,
+      selectedDay
     );
     setCalendarData(tempCalendarData);
 
@@ -39,7 +39,7 @@ function DataScreen({ habits, days, navigation }) {
       const tempMoodMode = getMoodMode(days[selectedDay].mood);
       setMoodMode(tempMoodMode);
     }
-    console.log('days', days)
+    console.log('days', days);
   }, [days, selectedDay]);
 
   function goToDayMetricsScreen() {
@@ -47,7 +47,7 @@ function DataScreen({ habits, days, navigation }) {
   }
 
   function handleSelectDayButtonPress(day) {
-    const dateString = day.dateString
+    const dateString = day.dateString;
     setSelectedDay(dateString);
     dispatch(selectDay(dateString));
   }

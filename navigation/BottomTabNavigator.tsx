@@ -85,7 +85,7 @@ export default function BottomTabNavigator() {
           ),
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="AWARE"
         component={AWARENavigator}
         options={{
@@ -97,7 +97,7 @@ export default function BottomTabNavigator() {
             />
           ),
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="Data"
         component={DataNavigator}

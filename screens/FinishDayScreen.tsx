@@ -82,7 +82,6 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
             : [],
       },
     };
-    console.log('dayinfo', dayInfo);
     saveDay(dayInfo);
     dispatch(resetHabits());
     navigation.navigate('Data');

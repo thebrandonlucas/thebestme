@@ -1,11 +1,9 @@
 // FIXME: for some reason, everything has to be in a .tsx extension for Eslint
 // to autoformat it on save, which is super annoying.
-import { MoodToColor } from '../../constants/MoodToColor';
-import { IDayType } from '../../types';
-import getCalendarData from '../../utils/getCalendarData';
+import faker from '@faker-js/faker';
+import { getHabitCount } from '../../utils/getHabitFrequencies';
 import { getMoodMode } from '../../utils/mood';
-import { dayFactory } from '../../__fixtures__/factory/day';
-import { habitFactory } from '../../__fixtures__/factory/habit';
+import { daysFixture } from '../../__fixtures__/factory/day';
 import { TableTest } from '../../__fixtures__/test-types';
 import { runTableTests } from '../../__fixtures__/testutil';
 
@@ -24,6 +22,21 @@ describe('Utility Functions', () => {
     runTableTests(testCases, getMoodMode);
   });
 
+    // TODO: create a day Fixture and then a days fixture on top of it, without using faker
+    // so that you can predictably test things
+    // e.g.
+    // function clientFixture(props: Partial<RawClient> = {}): RawClient {
+    //   const defaults: RawClient = {
+    //     id: uuidv4(),
+    //     full_name: "John Doe",
+    //     email: "john.doe@example.com",
+    //     email_notifications: true,
+    //   };
+
+    //   return { ...defaults, ...props };
+    // }
+  });
+
   //   it('should return a list of habit frequencies for a given mood', () => {
   //     const testCases: TableTest<GetHabitFrequenciesParams, HabitFrequency> = [
   //       [['Great', habits, days], habitFrequenciesResult],
@@ -35,7 +48,7 @@ describe('Utility Functions', () => {
 
   //   // Test whether the top mood frequencies are generated
   //   it('should get a list of mood frequencies per habit', () => {
-  //     const testCases: TableTest<GetMoodFrequenciesForHabit, MoodFrequency> = [
+  //     const testCases: TableTest<getHabitFrequencies, MoodFrequency> = [
   //       [
   //         [
   //           '2ea7e123-596a-4abb-b68e-899edbf3bd0b',
@@ -83,98 +96,218 @@ describe('Utility Functions', () => {
   //     ];
   //     // TODO: Will need to refactor habitIds field into finishedHabitIds and remainingHabitIds
   //     // to be able to tell which one's were completed/incomplete on a given day
-  //     runTableTests(testCases, getMoodFrequenciesForHabit);
+  //     runTableTests(testCases, getHabitFrequencies);
   //   });
 
-  it('should return true', () => {
-    expect(true).toBe(true);
-  });
-});
+//   it('should return true', () => {
+//     expect(true).toBe(true);
+//   });
+// });
 
-describe('Get Calendar Data', () => {
-  it('should return correct calendar props given ISO date and IDayType days', () => {
-    const calendarProps = ['color', 'startingDay', 'endingDay', 'selected'];
-    const testCases = [
-      dayFactory(habitFactory()),
-      dayFactory(habitFactory(1)),
-      dayFactory(habitFactory(3)),
-      dayFactory(habitFactory(10)),
-    ];
-    for (const days of testCases) {
-      for (const day in days) {
-        expect(Object.keys(getCalendarData(days)[day]).sort()).toEqual(
-          calendarProps.sort()
-        );
-      }
-    }
-  });
+// describe('Get Mood Frequencies for Habit', () => {
+//   // Generate test habit set
+//   const testHabitSet = [
+//     habitsFactory(),
+//     habitsFactory(1),
+//     habitsFactory(10),
+//     habitsFactory(23),
+//     habitsFactory(0),
+//     habitsFactory(-1),
+//   ];
+//   // Generate test day set
+//   const testDaySet = testHabitSet.map((habits) => daysFactory(habits));
+//   // const testDaySetDaysSequential = testHabitSet.map(habits => daysFactory(habits, undefined, true));
+//   // Grab random habitId from corresponding habitId set
+//   const testHabitIdSet = testHabitSet.map((habits) =>
+//     faker.random.arrayElement(Object.keys(habits))
+//   );
 
-  it('should return correct color for each date', () => {
-    // TODO: how to test for selectedDate color?
-    const testCases: TableTest<IDayType, string> = [
-      [
-        dayFactory(habitFactory(), undefined, undefined, { mood: ['Great'] }),
-        MoodToColor['Great'],
-      ],
-      [
-        dayFactory(habitFactory(), undefined, undefined, { mood: ['Okay'] }),
-        MoodToColor['Okay'],
-      ],
-      [
-        dayFactory(habitFactory(), undefined, undefined, { mood: [] }),
-        'transparent',
-      ],
-      [
-        dayFactory(habitFactory(), undefined, undefined, {
-          mood: ['Great', 'Not Good', 'Great'],
-        }),
-        MoodToColor['Great'],
-      ],
-      [
-        dayFactory(habitFactory(), undefined, undefined, {
-          mood: ['Great', 'Not Good', 'Not Good'],
-        }),
-        MoodToColor['Not Good'],
-      ],
-      [
-        dayFactory(habitFactory(), undefined, undefined, {
-          mood: ['Okay', 'Okay', 'Not Good'],
-        }),
-        MoodToColor['Okay'],
-      ],
-    ];
+//   test('should get correct number of mood frequencies for finished habits', () => {
+//     for (let i = 0; i < testHabitSet.length; i++) {
+//       const habits = testHabitSet[i];
+//       const habitId = testHabitIdSet[i];
+//       const days = testDaySet[i];
+//       // count the times that habit has been finished across days
+//       let finishedHabitCount = 0;
+//       for (const day in days) {
+//         finishedHabitCount += days[day].finishedHabitIds.filter(
+//           (id) => id === habitId
+//         ).length;
+//       }
+//       const finishedHabitFrequencyResult: HabitFrequency = {
+//         habit: habitId,
+//         frequency: finishedHabitCount,
+//       };
+//       expect(getHabitFrequencies(habitId, habits, days, true)).toEqual(
+//         finishedHabitFrequencyResult
+//       );
+//     }
+//   });
 
-    for (let i = 0; i < testCases.length; i++) {
-      const days: IDayType = testCases[i][0];
-      const mostCommonMoodColor = testCases[i][1];
-      const calendarData = getCalendarData(days);
-      for (const id in days) {
-        expect(calendarData[id].color).toEqual(mostCommonMoodColor);
-      }
-    }
-  });
+//   test('should get correct number of mood frequencies for remaining habits', () => {
+//     for (let i = 0; i < testHabitSet.length; i++) {
+//       const habits = testHabitSet[i];
+//       const habitId = testHabitIdSet[i];
+//       const days = testDaySet[i];
+//       // count the times that habit has been finished across days
+//       let remainingHabitCount= 0;
+//       for (const day in days) {
+//         remainingHabitCount += days[day].remainingHabitIds.filter(
+//           (id) => id === habitId
+//         ).length;
+//       }
+//       const remainingHabitFrequencyResult: HabitFrequency = {
+//         habit: habitId,
+//         frequency: remainingHabitCount,
+//       };
+//       expect(getHabitFrequencies(habitId, habits, days, true)).toEqual(
+//         remainingHabitFrequencyResult
+//       );
+//     }
+//   });
 
-  it('should return the correct number of calendar days', () => {
-    expect(Object.keys(getCalendarData(dayFactory(habitFactory(), 0))).length).toBe(0);
-    expect(Object.keys(getCalendarData(dayFactory(habitFactory(), 1))).length).toBe(1);
-    expect(Object.keys(getCalendarData(dayFactory(habitFactory(), 10))).length).toBe(10);
-    expect(Object.keys(getCalendarData(dayFactory(habitFactory(), 32))).length).toBe(32);
-    expect(Object.keys(getCalendarData(dayFactory(habitFactory(), -1))).length).toBe(0);
-    expect(Object.keys(getCalendarData(dayFactory(habitFactory()))).length).toBeGreaterThan(0);
-    expect(Object.keys(getCalendarData(dayFactory(habitFactory()))).length).toBeLessThanOrEqual(10);
-  });
+// test('should get the correct number of finished habit frequencies for the given mood (based on the most common mood for that time period)', () => {
+//   const moods: ValidMoods[] = ['Great', 'Okay', 'Not Good'];
+//   // loop and count the occurrences when the habits match the mood (don't forget to account for finished, remaining, and unspecified cases)
+//   for (const mood of moods) {
+//     for (let i = 0; i < testHabitSet.length; i++) {
+//       const habits = testHabitSet[i];
+//       const habitId = testHabitIdSet[i];
+//       const days = testDaySet[i];
+//       // count the times that habit has been finished across days
+//       let finishedHabitCount = 0;
+//       for (const day in days) {
+//         const mostCommonMood = getMoodMode(days[day].mood);
+//         finishedHabitCount += days[day].finishedHabitIds.filter(
+//           (id) => id === habitId
+//         ).length;
+//       }
+//       const finishedHabitFrequencyResult: HabitFrequency = {
+//         habit: habitId,
+//         frequency: finishedHabitCount,
+//       };
+//       expect(getHabitFrequencies(habitId, habits, days, true)).toEqual(
+//         finishedHabitFrequencyResult
+//       );
+//     }
+//   }
+// });
 
-  it('should return matching dates given the days', () => {
-    const testCases = [
-      dayFactory(habitFactory()),
-      dayFactory(habitFactory(), 10),
-      dayFactory(habitFactory(), 21),
-      dayFactory(habitFactory(), 0),
-      dayFactory(habitFactory(), 1, undefined, { date: '2021-01-01'})
-    ];
+// test('should get correct number of mood frequencies from start date', () => {});
 
-    for (const days of testCases) {
-      expect(Object.keys(getCalendarData(days)).sort()).toEqual(Object.keys(days).sort())
-    }
-  });
-});
+// test('should get correct number of mood frequencies up to end date', () => {});
+
+// // Mood arrays need to change to arrays of objects to include timestamp, mood, habitId
+// // and activity that's associated with that mood
+// test('should get the correct number of mood frequencies for a given time period', () => {
+
+// });
+
+// test('should get the correct count of moods associated with an activity')
+
+// test('should get correct number of mood frequencies for date range', () => {});
+// });
+
+// describe('Get Calendar Data', () => {
+//   it('should return correct calendar props given ISO date and IDayType days', () => {
+//     const calendarProps = ['color', 'startingDay', 'endingDay', 'selected'];
+//     const testCases = [
+//       daysFactory(habitsFactory()),
+//       daysFactory(habitsFactory(1)),
+//       daysFactory(habitsFactory(3)),
+//       daysFactory(habitsFactory(10)),
+//     ];
+//     for (const days of testCases) {
+//       for (const day in days) {
+//         expect(Object.keys(getCalendarData(days)[day]).sort()).toEqual(
+//           calendarProps.sort()
+//         );
+//       }
+//     }
+//   });
+
+//   it('should return correct color for each date', () => {
+//     // TODO: how to test for selectedDate color?
+//     const testCases: TableTest<IDayType, string> = [
+//       [
+//         daysFactory(habitsFactory(), undefined, undefined, { mood: ['Great'] }),
+//         MoodToColor['Great'],
+//       ],
+//       [
+//         daysFactory(habitsFactory(), undefined, undefined, { mood: ['Okay'] }),
+//         MoodToColor['Okay'],
+//       ],
+//       [
+//         daysFactory(habitsFactory(), undefined, undefined, { mood: [] }),
+//         'transparent',
+//       ],
+//       [
+//         daysFactory(habitsFactory(), undefined, undefined, {
+//           mood: ['Great', 'Not Good', 'Great'],
+//         }),
+//         MoodToColor['Great'],
+//       ],
+//       [
+//         daysFactory(habitsFactory(), undefined, undefined, {
+//           mood: ['Great', 'Not Good', 'Not Good'],
+//         }),
+//         MoodToColor['Not Good'],
+//       ],
+//       [
+//         daysFactory(habitsFactory(), undefined, undefined, {
+//           mood: ['Okay', 'Okay', 'Not Good'],
+//         }),
+//         MoodToColor['Okay'],
+//       ],
+//     ];
+
+//     for (let i = 0; i < testCases.length; i++) {
+//       const days: IDayType = testCases[i][0];
+//       const mostCommonMoodColor = testCases[i][1];
+//       const calendarData = getCalendarData(days);
+//       for (const id in days) {
+//         expect(calendarData[id].color).toEqual(mostCommonMoodColor);
+//       }
+//     }
+//   });
+
+//   it('should return the correct number of calendar days', () => {
+//     expect(
+//       Object.keys(getCalendarData(daysFactory(habitsFactory(), 0))).length
+//     ).toBe(0);
+//     expect(
+//       Object.keys(getCalendarData(daysFactory(habitsFactory(), 1))).length
+//     ).toBe(1);
+//     expect(
+//       Object.keys(getCalendarData(daysFactory(habitsFactory(), 10))).length
+//     ).toBe(10);
+//     expect(
+//       Object.keys(getCalendarData(daysFactory(habitsFactory(), 32))).length
+//     ).toBe(32);
+//     expect(
+//       Object.keys(getCalendarData(daysFactory(habitsFactory(), -1))).length
+//     ).toBe(0);
+//     expect(
+//       Object.keys(getCalendarData(daysFactory(habitsFactory()))).length
+//     ).toBeGreaterThan(0);
+//     expect(
+//       Object.keys(getCalendarData(daysFactory(habitsFactory()))).length
+//     ).toBeLessThanOrEqual(10);
+//   });
+
+//   it('should return matching dates given the days', () => {
+//     const testCases = [
+//       daysFactory(habitsFactory()),
+//       daysFactory(habitsFactory(), 10),
+//       daysFactory(habitsFactory(), 21),
+//       daysFactory(habitsFactory(), 0),
+//       daysFactory(habitsFactory(), 1, undefined, { date: '2021-01-01' }),
+//     ];
+
+//     for (const days of testCases) {
+//       expect(Object.keys(getCalendarData(days)).sort()).toEqual(
+//         Object.keys(days).sort()
+//       );
+//     }
+//   });
+// });
