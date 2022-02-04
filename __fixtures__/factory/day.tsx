@@ -1,9 +1,5 @@
-import faker from '@faker-js/faker';
 import { DateTime } from 'luxon';
-import { DayType, IDayType, IHabitType, OptionalDayType } from '../../types';
-import { cbtFactory } from './journal/cbt';
-import { primaryJournalFactory } from './journal/primary';
-import { moodFactory } from './mood';
+import { DayType, IDayType } from '../../types';
 
 // need to be able to pass in habits with overrides and have dayFactory account for that
 // While knowing what to expect (it can't be random)
@@ -14,8 +10,15 @@ export function dayFixture(overrides: Partial<DayType> = {}): DayType {
     id: '',
     // id: '2b68d805-734b-4f08-9e72-9b62db7d2d96',
     date: '2021-01-01',
-    finishedHabitIds: ['0d42a4e5-a42a-4dea-9768-a10a38b02ec7', 'a83fbde7-1fac-4e7c-b3e4-66bff637deb7', '908c9ec7-28bf-4d35-a326-a09febb46f82'],
-    remainingHabitIds: ['72bd6bd4-0097-44e1-aeb0-79f868522945', 'f430b0cd-0333-4fc9-813a-1c74dca07a1e'],
+    finishedHabitIds: [
+      '0d42a4e5-a42a-4dea-9768-a10a38b02ec7',
+      'a83fbde7-1fac-4e7c-b3e4-66bff637deb7',
+      '908c9ec7-28bf-4d35-a326-a09febb46f82',
+    ],
+    remainingHabitIds: [
+      '72bd6bd4-0097-44e1-aeb0-79f868522945',
+      'f430b0cd-0333-4fc9-813a-1c74dca07a1e',
+    ],
     cbtIds: [],
     awareIds: [],
     journalIds: [],
@@ -24,21 +27,38 @@ export function dayFixture(overrides: Partial<DayType> = {}): DayType {
     finishedHabitCount: 0,
     habitCount: 0,
     habitPercentComplete: 0,
-    finishDayClickedCount: 0
+    finishDayClickedCount: 0,
   };
 
-  return { ...defaults, ...overrides }
+  return { ...defaults, ...overrides };
 }
 
 export function daysFixture(overrides: Partial<DayType>[] = []): IDayType {
   const days: IDayType = {};
 
+  let newDay: DayType, prevDate: string;
   for (const override of overrides) {
-    const newDay = dayFixture(override)
+    newDay = getNextDay(override, prevDate);
     days[newDay.date] = newDay;
+    prevDate = newDay.date;
   }
 
   return days;
+}
+
+// Must generate unique dates if not specified in override, otherwise the "days" object will only have one date in it due to dates being used as key
+// newDate = prevDate + 1
+export function getNextDay(
+  override: Partial<DayType>,
+  prevDate?: string
+): DayType {
+  if (override.date || !prevDate) {
+    return dayFixture(override);
+  }
+
+  return dayFixture({
+    date: DateTime.fromISO(prevDate).plus({ days: 1 }).toISODate(), ...override
+  });
 }
 
 // /**

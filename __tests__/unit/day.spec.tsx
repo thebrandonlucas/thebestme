@@ -1,6 +1,7 @@
 import {
   getDaysInTimeRange,
-  isDateInRange,
+  getDaysWithPrimaryMood,
+  isDatetimeInRange,
 } from '../../utils/getHabitFrequencies';
 import { daysFixture } from '../../__fixtures__/factory/day';
 
@@ -37,29 +38,47 @@ describe('Day functions', () => {
     });
   });
 
-  describe('IsDateInRange', () => {
+  describe('isDatetimeInRange', () => {
     it('should be in between start and end date', () => {
-      expect(isDateInRange('2021-01-01', '2021-03-01', '2021-01-02')).toBe(
+      expect(isDatetimeInRange('2021-01-01', '2021-03-01', '2021-01-02')).toBe(
         true
       );
-      expect(isDateInRange('2021-12-23', '2023-03-03', '2022-01-01')).toBe(
+      expect(isDatetimeInRange('2021-12-23', '2023-03-03', '2022-01-01')).toBe(
         true
       );
     });
     it('should return false if it is earlier than start date', () => {
-      expect(isDateInRange('2021-01-01', '2020-12-31', '2021-01-02')).toBe(
+      expect(isDatetimeInRange('2021-01-01', '2020-12-31', '2021-01-02')).toBe(
         false
       );
-      expect(isDateInRange('2021-12-23', '2021-01-01', '2023-03-03')).toBe(
+      expect(isDatetimeInRange('2021-12-23', '2021-01-01', '2023-03-03')).toBe(
         false
       );
     });
     it('should return false if it is later than end date', () => {
-      expect(isDateInRange('2021-01-01', '2021-01-02', '2021-03-01')).toBe(
+      expect(isDatetimeInRange('2021-01-01', '2021-01-02', '2021-03-01')).toBe(
         false
       );
-      expect(isDateInRange('2021-12-23', '2022-01-01', '2022-01-03')).toBe(
+      expect(isDatetimeInRange('2021-12-23', '2022-01-01', '2022-01-03')).toBe(
         false
+      );
+    });
+  });
+
+  describe('getDaysWithPrimaryMood', () => {
+    it('should get days that have the selected mood as the primary mood', () => {
+      const days = daysFixture([
+        { date: '2021-01-01', mood: ['Great', 'Okay', 'Okay', 'Not Good'] },
+        { date: '2021-01-02', mood: ['Great', 'Not Good', 'Great'] },
+        { date: '2021-01-03', mood: ['Not Good', 'Not Good', 'Great'] },
+        { date: '2021-01-04', mood: ['Great'] },
+        { date: '2021-01-05', mood: [] },
+      ]);
+      expect(getDaysWithPrimaryMood('Great', days)).toEqual(
+        daysFixture([
+          { date: '2021-01-02', mood: ['Great', 'Not Good', 'Great'] },
+          { date: '2021-01-04', mood: ['Great'] }, 
+        ])
       );
     });
   });
