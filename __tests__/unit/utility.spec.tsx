@@ -1,9 +1,6 @@
 // FIXME: for some reason, everything has to be in a .tsx extension for Eslint
 // to autoformat it on save, which is super annoying.
-import faker from '@faker-js/faker';
-import { getHabitCount } from '../../utils/getHabitFrequencies';
 import { getMoodMode } from '../../utils/mood';
-import { daysFixture } from '../../__fixtures__/factory/day';
 import { TableTest } from '../../__fixtures__/test-types';
 import { runTableTests } from '../../__fixtures__/testutil';
 
@@ -22,82 +19,82 @@ describe('Utility Functions', () => {
     runTableTests(testCases, getMoodMode);
   });
 
-    // TODO: create a day Fixture and then a days fixture on top of it, without using faker
-    // so that you can predictably test things
-    // e.g.
-    // function clientFixture(props: Partial<RawClient> = {}): RawClient {
-    //   const defaults: RawClient = {
-    //     id: uuidv4(),
-    //     full_name: "John Doe",
-    //     email: "john.doe@example.com",
-    //     email_notifications: true,
-    //   };
+  // TODO: create a day Fixture and then a days fixture on top of it, without using faker
+  // so that you can predictably test things
+  // e.g.
+  // function clientFixture(props: Partial<RawClient> = {}): RawClient {
+  //   const defaults: RawClient = {
+  //     id: uuidv4(),
+  //     full_name: "John Doe",
+  //     email: "john.doe@example.com",
+  //     email_notifications: true,
+  //   };
 
-    //   return { ...defaults, ...props };
-    // }
-  });
+  //   return { ...defaults, ...props };
+  // }
+});
 
-  //   it('should return a list of habit frequencies for a given mood', () => {
-  //     const testCases: TableTest<GetHabitFrequenciesParams, HabitFrequency> = [
-  //       [['Great', habits, days], habitFrequenciesResult],
-  //       [['Great', habits, days], habitFrequenciesResult],
-  //       [['Great', habits, days], habitFrequenciesResult],
-  //     ];
-  //     runTableTests(testCases, getHabitFrequenciesForMood);
-  //   });
+//   it('should return a list of habit frequencies for a given mood', () => {
+//     const testCases: TableTest<GetHabitFrequenciesParams, HabitFrequency> = [
+//       [['Great', habits, days], habitFrequenciesResult],
+//       [['Great', habits, days], habitFrequenciesResult],
+//       [['Great', habits, days], habitFrequenciesResult],
+//     ];
+//     runTableTests(testCases, getHabitFrequenciesForMood);
+//   });
 
-  //   // Test whether the top mood frequencies are generated
-  //   it('should get a list of mood frequencies per habit', () => {
-  //     const testCases: TableTest<getHabitFrequencies, MoodFrequency> = [
-  //       [
-  //         [
-  //           '2ea7e123-596a-4abb-b68e-899edbf3bd0b',
-  //           habits,
-  //           days,
-  //           false,
-  //           '2021-12-24',
-  //           '2021-01-31',
-  //         ],
-  //         moodFrequenciesResult,
-  //       ],
-  //       [
-  //         [
-  //           'e0e1d3b0-dd0f-4c45-9c52-9f62efda5f62',
-  //           habits,
-  //           days,
-  //           true,
-  //           '2021-12-24',
-  //           '2021-12-27',
-  //         ],
-  //         moodFrequenciesResult1,
-  //       ],
-  //       [
-  //         [
-  //           'adda8857-9b7b-4ffc-9776-38c61bb52618',
-  //           habits,
-  //           days,
-  //           true,
-  //           '2021-12-24',
-  //           '2022-01-01',
-  //         ],
-  //         moodFrequenciesResult2,
-  //       ],
-  //       [
-  //         [
-  //           '2ea7e123-596a-4abb-b68e-899edbf3bd0b',
-  //           habits,
-  //           days,
-  //           true,
-  //           '2021-12-23',
-  //           '2021-12-27',
-  //         ],
-  //         moodFrequenciesResult3,
-  //       ],
-  //     ];
-  //     // TODO: Will need to refactor habitIds field into finishedHabitIds and remainingHabitIds
-  //     // to be able to tell which one's were completed/incomplete on a given day
-  //     runTableTests(testCases, getHabitFrequencies);
-  //   });
+//   // Test whether the top mood frequencies are generated
+//   it('should get a list of mood frequencies per habit', () => {
+//     const testCases: TableTest<getHabitFrequencies, MoodFrequency> = [
+//       [
+//         [
+//           '2ea7e123-596a-4abb-b68e-899edbf3bd0b',
+//           habits,
+//           days,
+//           false,
+//           '2021-12-24',
+//           '2021-01-31',
+//         ],
+//         moodFrequenciesResult,
+//       ],
+//       [
+//         [
+//           'e0e1d3b0-dd0f-4c45-9c52-9f62efda5f62',
+//           habits,
+//           days,
+//           true,
+//           '2021-12-24',
+//           '2021-12-27',
+//         ],
+//         moodFrequenciesResult1,
+//       ],
+//       [
+//         [
+//           'adda8857-9b7b-4ffc-9776-38c61bb52618',
+//           habits,
+//           days,
+//           true,
+//           '2021-12-24',
+//           '2022-01-01',
+//         ],
+//         moodFrequenciesResult2,
+//       ],
+//       [
+//         [
+//           '2ea7e123-596a-4abb-b68e-899edbf3bd0b',
+//           habits,
+//           days,
+//           true,
+//           '2021-12-23',
+//           '2021-12-27',
+//         ],
+//         moodFrequenciesResult3,
+//       ],
+//     ];
+//     // TODO: Will need to refactor habitIds field into finishedHabitIds and remainingHabitIds
+//     // to be able to tell which one's were completed/incomplete on a given day
+//     runTableTests(testCases, getHabitFrequencies);
+//   });
 
 //   it('should return true', () => {
 //     expect(true).toBe(true);
@@ -167,7 +164,7 @@ describe('Utility Functions', () => {
 //   });
 
 // test('should get the correct number of finished habit frequencies for the given mood (based on the most common mood for that time period)', () => {
-//   const moods: ValidMoods[] = ['Great', 'Okay', 'Not Good'];
+//   const moods: ValidMood[] = ['Great', 'Okay', 'Not Good'];
 //   // loop and count the occurrences when the habits match the mood (don't forget to account for finished, remaining, and unspecified cases)
 //   for (const mood of moods) {
 //     for (let i = 0; i < testHabitSet.length; i++) {

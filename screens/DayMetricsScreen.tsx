@@ -22,7 +22,7 @@ import { Colors } from '../constants';
 import { MoodToColor } from '../constants/MoodToColor';
 import { RootState } from '../redux/store';
 import { HabitType, IDayType, IHabitType } from '../types';
-import { getHabitsWithMoodForTimeRange } from '../utils/getHabitFrequencies';
+import { getHabitsWithMoodForTimeRange } from '../utils/habit';
 
 type Mode = 'date' | 'time';
 function DayMetricsScreen({ navigation, route }) {

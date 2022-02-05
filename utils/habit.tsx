@@ -1,6 +1,4 @@
-import { DateTime } from 'luxon';
-import { HabitFrequency, IDayType, IHabitType, ValidMoods } from '../types';
-import { getMoodMode } from './mood';
+import { HabitFrequency, IDayType, IHabitType, ValidMood } from '../types';
 
 /**
  * Get the frequencies of finished or remaining habits for a given mood
@@ -16,7 +14,7 @@ export function getHabitFrequencies(
   habits: IHabitType,
   days: IDayType,
   isFinished: boolean = true,
-  mood?: ValidMoods,
+  mood?: ValidMood,
   startDate?: string,
   endDate?: string
 ): HabitFrequency[] {
@@ -51,12 +49,11 @@ export function getFinishedHabitFrequencies() {}
  * @param isFinished - Whether or not to get frequencies for habits that were finished or completed
  * @returns - A list of objects containing frequencies for each habit for the chosen mood
  */
-export function getHabitMoodCountForTimeRange(
+export function getHabitCountForMoodInTimeRange(
   habitId: string,
-  habits: IHabitType,
   days: IDayType,
   isFinished: boolean = true,
-  mood?: ValidMoods,
+  mood?: ValidMood,
   startDatetime?: string, // ISO Timestamps
   endDatetime?: string
 ): HabitFrequency {
@@ -65,8 +62,12 @@ export function getHabitMoodCountForTimeRange(
     frequency: 0,
   };
 
+  // 1) filter days for which specified mood was majority (if applicable)
+  // 2) filter time range for which specified mood was (majority or just all in range?)
   // Get the number of habits for passed in days
   habitFrequencies = getHabitCount(habitId, days);
+
+  // TODO: get mood
 
   return habitFrequencies;
 }
@@ -86,47 +87,5 @@ export function getHabitCount(
   return habitFrequency;
 }
 
-// get days within the specified time range
-export function getDaysInTimeRange(
-  days: IDayType,
-  startDatetime: string,
-  endDatetime: string
-): IDayType {
-  let daysInRange: IDayType = {};
-  for (const date in days) {
-    // TODO: convert days to datetimes
-    const day = days[date];
-    if (isDatetimeInRange(startDatetime, endDatetime, day.date)) {
-      daysInRange[day.date] = day;
-    }
-  }
-  return daysInRange;
-}
-
-// Get days for which the mood specified was the primary mood
-export function getDaysWithPrimaryMood(
-  mood: ValidMoods,
-  days: IDayType
-): IDayType {
-  let daysWithMood: IDayType = {};
-  for (const date in days) {
-    const day = days[date];
-    if (getMoodMode(day.mood.slice()) === mood) {
-      daysWithMood[day.date] = day;
-    }
-  }
-  return daysWithMood;
-}
-
-export function isDatetimeInRange(
-  startDatetimeISO: string,
-  endDatetimeISO: string,
-  compareDatetimeISO: string
-): boolean {
-  const [startDate, endDate, compareDate] = [
-    DateTime.fromISO(startDatetimeISO),
-    DateTime.fromISO(endDatetimeISO),
-    DateTime.fromISO(compareDatetimeISO),
-  ];
-  return startDate <= compareDate && compareDate <= endDate;
-}
+// TODO: associate habit count with activities and not just days/times
+export function getHabitCountForActivity() {}

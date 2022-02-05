@@ -294,7 +294,7 @@ describe('Day Fixtures', () => {
 
 // describe('Mood Factory', () => {
 //   test('should have only valid moods', () => {
-//     const validMoods: ValidMoods[] = ['Great', 'Okay', 'Not Good'];
+//     const ValidMood: ValidMood[] = ['Great', 'Okay', 'Not Good'];
 //     const testCases = [
 //       moodFactory(),
 //       moodFactory(0),
@@ -305,7 +305,7 @@ describe('Day Fixtures', () => {
 //     ];
 //     for (const moods of testCases) {
 //       for (const mood of moods) {
-//         expect(validMoods.includes(mood)).toBe(true);
+//         expect(ValidMood.includes(mood)).toBe(true);
 //       }
 //     }
 //   });

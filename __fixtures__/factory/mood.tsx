@@ -1,9 +1,9 @@
 import faker from '@faker-js/faker';
 
 /**
- * Factory for ValidMoods array
+ * Factory for ValidMood array
  * @param moodCount - Number of moods to generate. If left blank, mood will default to random number between 0 and 20
- * @returns 
+ * @returns
  */
 export function moodFactory(moodCount?: number) {
   if (moodCount == null) {

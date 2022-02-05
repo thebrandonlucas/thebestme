@@ -1,4 +1,4 @@
-import { IDayType, IHabitType, ValidMoods } from '../types';
+import { IDayType, IHabitType, ValidMood } from '../types';
 
 // Note: since params are passed in as arrays, any arrays passed in will be double-arrays
 export type TableTest<ParamsType, ResultType> = [ParamsType, ResultType][];
@@ -39,7 +39,7 @@ export type GetCalendarDataInputs = {};
 export type GetCalendarDataResult = {};
 
 export type GetHabitFrequenciesParams = [
-  mood: ValidMoods,
+  mood: ValidMood,
   habits: IHabitType,
   days: IDayType
 ];

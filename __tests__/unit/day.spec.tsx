@@ -1,8 +1,5 @@
-import {
-  getDaysInTimeRange,
-  getDaysWithPrimaryMood,
-  isDatetimeInRange,
-} from '../../utils/getHabitFrequencies';
+import { getDaysInTimeRange, isDatetimeInRange } from '../../utils/day';
+import { getDaysWithSelectedMood } from '../../utils/mood';
 import { daysFixture } from '../../__fixtures__/factory/day';
 
 describe('Day functions', () => {
@@ -74,10 +71,10 @@ describe('Day functions', () => {
         { date: '2021-01-04', mood: ['Great'] },
         { date: '2021-01-05', mood: [] },
       ]);
-      expect(getDaysWithPrimaryMood('Great', days)).toEqual(
+      expect(getDaysWithSelectedMood('Great', days)).toEqual(
         daysFixture([
           { date: '2021-01-02', mood: ['Great', 'Not Good', 'Great'] },
-          { date: '2021-01-04', mood: ['Great'] }, 
+          { date: '2021-01-04', mood: ['Great'] },
         ])
       );
     });

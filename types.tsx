@@ -187,7 +187,7 @@ export type DayType = {
   cbtIds: Array<string>;
   awareIds: Array<string>;
   journalIds: Array<string>;
-  mood: Array<ValidMoods>;
+  mood: Array<ValidMood>;
   endOfDayNotes: string[];
   finishedHabitCount: number;
   habitCount: number;
@@ -198,12 +198,12 @@ export type DayType = {
 export type OptionalDayType = {
   id?: string;
   date?: string;
-  remainingHabitIds?: string[],
-  finishedHabitIds?: string[],
+  remainingHabitIds?: string[];
+  finishedHabitIds?: string[];
   cbtIds?: Array<string>;
   awareIds?: Array<string>;
   journalIds?: Array<string>;
-  mood?: Array<ValidMoods>;
+  mood?: Array<ValidMood>;
   endOfDayNotes?: string[];
   finishedHabitCount?: number;
   habitCount?: number;
@@ -318,7 +318,7 @@ export type Styles = {
   textStyle?: StyleProp<TextStyle>;
 };
 
-export type ValidMoods =
+export type ValidMood =
   | 'Great'
   | 'Okay'
   | 'Not Good'
@@ -333,9 +333,9 @@ export type HabitFrequency = {
 };
 
 export type MoodFrequency = {
-  mood: ValidMoods;
+  mood: ValidMood;
   frequency: number;
-}[];
+};
 
 export type HabitFrequencyMultiMoodBarChartData = HabitFrequency[];
 
