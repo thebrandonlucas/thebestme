@@ -13,7 +13,6 @@ import { getDaysWithSelectedMood } from './mood';
  */
 export function getHabitCountForMoodInTimeRange(
   habitId: string,
-  habitText: string,
   days: IDayType,
   mood?: ValidMood,
   checkFinishedHabits: boolean = true,
@@ -30,18 +29,17 @@ export function getHabitCountForMoodInTimeRange(
   if (mood) {
     tempDays = getDaysWithSelectedMood(mood, tempDays);
   }
-  habitFrequencies = getHabitCount(habitId, habitText, tempDays, checkFinishedHabits);
+  habitFrequencies = getHabitCount(habitId, tempDays, checkFinishedHabits);
   return habitFrequencies;
 }
 
 // get habit count for specified number of days
 export function getHabitCount(
   selectedHabitId: string,
-  selectedHabitText: string,
   days: IDayType,
   checkFinishedHabits = true
 ): HabitFrequency {
-  let habitFrequency: HabitFrequency = { habit: selectedHabitText, frequency: 0 };
+  let habitFrequency: HabitFrequency = { habit: selectedHabitId, frequency: 0 };
   for (const day in days) {
     const currentDay = days[day];
     const habitIdsToCheck = checkFinishedHabits

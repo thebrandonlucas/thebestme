@@ -96,7 +96,7 @@ describe('Day functions', () => {
       expect(getPastDate(1)).toBe(DateTime.now().minus({ days: 1 }).toISODate());
     });
     it('should get 3 days ago', () => {
-      expect(getPastDate(3)).toBe('2022-02-02')
+      expect(getPastDate(3)).toBe(DateTime.now().minus({ days: 3 }).toISODate())
     })
   });
 });
