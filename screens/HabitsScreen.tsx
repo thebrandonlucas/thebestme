@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 // NOTE: Required import for uuid to work
 import 'react-native-get-random-values';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import HabitContainer from '../components/HabitContainer';
 import ThemeButton from '../components/ThemeButton';
@@ -80,7 +80,7 @@ export function HabitsScreen({
     setFinishedHabits(tempFinishedHabits);
     setLoading(false);
     console.log('habits', habits);
-     // TODO: figure out how to use useSelector to update state.
+    // TODO: figure out how to use useSelector to update state.
     // right now, putting habits in there doesn't update state
   }, [isAddingHabit, isEditingHabit, habitReducer, dayReducer]);
 
@@ -123,7 +123,11 @@ export function HabitsScreen({
         },
       };
       addHabit(habit);
-      const tempHabitIds: string[] = [...today.habitIds, id];
+      const tempHabitIds: string[] = [
+        ...today.finishedHabitIds,
+        ...today.remainingHabitIds,
+        id,
+      ];
       setDayInfo({ ...today, habitIds: tempHabitIds });
       setIsAddingHabit(false);
       setHabitText('');
@@ -167,8 +171,17 @@ export function HabitsScreen({
    */
   function clickDelete(): void {
     deleteHabit(habitId);
-    const tempHabitIds = today.habitIds.filter((tempId) => tempId !== habitId);
-    setDayInfo({ ...today, habitIds: tempHabitIds });
+    const tempFinishedHabitIds = today.finishedHabitIds.filter(
+      (tempId) => tempId !== habitId
+    );
+    const tempRemainingHabitIds = today.remainingHabitIds.filter(
+      (tempId) => tempId !== habitId
+    );
+    setDayInfo({
+      ...today,
+      finishedHabitIds: tempFinishedHabitIds,
+      remainingHabitIds: tempRemainingHabitIds,
+    });
     setIsEditingHabit(false);
     setHabitText('');
   }

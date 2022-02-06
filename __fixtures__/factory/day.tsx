@@ -36,7 +36,12 @@ export function dayFixture(overrides: Partial<DayType> = {}): DayType {
 export function daysFixture(overrides: Partial<DayType>[] = []): IDayType {
   const days: IDayType = {};
 
-  let newDay: DayType, prevDate: string;
+  let newDay: DayType;
+
+  // The number of daysAgo to start is equivalent to the number of days being generated
+  // Adding +1 because getNextDay() will skip the prevDate
+  let prevDate: string = getPastDate(overrides.length + 1);
+
   for (const override of overrides) {
     newDay = getNextDay(override, prevDate);
     days[newDay.date] = newDay;
@@ -57,8 +62,22 @@ export function getNextDay(
   }
 
   return dayFixture({
-    date: DateTime.fromISO(prevDate).plus({ days: 1 }).toISODate(), ...override
+    date: getNextDate(prevDate),
+    ...override,
   });
+}
+
+export function getNextDate(date: string) {
+  return DateTime.fromISO(date).plus({ days: 1 }).toISODate();
+}
+
+/**
+ * Get a date in the past by specified number of days
+ * @param daysAgo - number of days ago
+ * @returns past date in ISO format
+ */
+export function getPastDate(daysAgo: number) {
+  return DateTime.now().minus({ days: daysAgo }).toISODate();
 }
 
 // /**

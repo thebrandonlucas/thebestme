@@ -18,7 +18,8 @@ const initialState: DayReducerType = {
         // datetimes: [],
         // FIXME: AsyncStorage doesn't recognize set objects, should we use array instead or convert to array upon upload
         // then back to set when downloading?
-        habitIds: [],
+        finishedHabitIds: [],
+        remainingHabitIds: [],
         cbtIds: [],
         awareIds: [],
         journalIds: [],
@@ -40,7 +41,8 @@ const initialState: DayReducerType = {
         // datetimes: [],
         // FIXME: AsyncStorage doesn't recognize set objects, should we use array instead or convert to array upon upload
         // then back to set when downloading?
-        habitIds: [],
+        finishedHabitIds: [],
+        remainingHabitIds: [],
         cbtIds: [],
         awareIds: [],
         journalIds: [],

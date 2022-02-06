@@ -1,6 +1,11 @@
+import { DateTime } from 'luxon';
 import { getDaysInTimeRange, isDatetimeInRange } from '../../utils/day';
 import { getDaysWithSelectedMood } from '../../utils/mood';
-import { daysFixture } from '../../__fixtures__/factory/day';
+import {
+  daysFixture,
+  getNextDate,
+  getPastDate,
+} from '../../__fixtures__/factory/day';
 
 describe('Day functions', () => {
   describe('getDaysInTimeRange', () => {
@@ -78,5 +83,20 @@ describe('Day functions', () => {
         ])
       );
     });
+  });
+
+  describe('getNextDate', () => {
+    it('should get 2021-01-02 when given 2021-01-01', () => {
+      expect(getNextDate('2021-01-01')).toBe('2021-01-02');
+    });
+  });
+
+  describe('getPastDate', () => {
+    it('should get ISO date 1 day ago', () => {
+      expect(getPastDate(1)).toBe(DateTime.now().minus({ days: 1 }).toISODate());
+    });
+    it('should get 3 days ago', () => {
+      expect(getPastDate(3)).toBe('2022-02-02')
+    })
   });
 });

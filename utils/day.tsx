@@ -1,5 +1,5 @@
-import { DateTime } from "luxon";
-import { IDayType } from "../types";
+import { DateTime } from 'luxon';
+import { IDayType } from '../types';
 
 export function getDaysInTimeRange(
   days: IDayType,

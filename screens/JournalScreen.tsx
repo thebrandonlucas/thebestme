@@ -1,19 +1,22 @@
 import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { StyleSheet, useColorScheme } from 'react-native';
+import { Button, StyleSheet, useColorScheme } from 'react-native';
 import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import JournalListPage from '../components/JournalListPage';
 import TopTabs from '../components/TopTabs';
-import { setDayInfo } from '../redux/actions/DayActions';
+import { saveDay, setDayInfo } from '../redux/actions/DayActions';
+import { addHabit } from '../redux/actions/HabitsActions';
 import {
   deleteJournal,
   saveJournal,
   updateJournal,
 } from '../redux/actions/JournalActions';
-import { DayType, JournalEntryType } from '../types';
+import { DayType, HabitType, IDayType, IHabitType, JournalEntryType } from '../types';
 import getDateString from '../utils/index';
+import { habitsFixture } from '../__fixtures__/factory/habit';
+import { generateTestDaysWithHabitsRandom } from '../__fixtures__/testutil';
 
 export function JournalScreen({
   navigation,
@@ -23,6 +26,9 @@ export function JournalScreen({
   updateJournal,
   deleteJournal,
   today,
+  // TODO: these should only appear in develop mode
+  saveDay,
+  addHabit,
 }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [journalId, setJournalId] = useState<string>('');
@@ -112,9 +118,35 @@ export function JournalScreen({
     setModalVisible(false);
   }
 
+  // TODO: remove after testing
+  function clickInjectTestData() {
+    // Inject habits
+    const habits = habitsFixture([
+      { text: 'Workout' },
+      { text: 'Eat lunch' },
+      { text: 'Code' },
+    ]);
+
+
+    // for (const habitId in habits) {
+    //   addHabit(habits[habitId]);
+    // }
+    addHabit(habits);
+    // // Inject days
+    const days = generateTestDaysWithHabitsRandom(100, habits, [
+      'Great',
+      'Not Good',
+    ]);
+
+    // // for (const date in days) {
+    saveDay(days);
+    // }
+  }
+
   return (
     <>
-      <TopTabs />
+      <TopTabs tabName={undefined} />
+      <Button title="Inject Test Data" onPress={clickInjectTestData} />
       <JournalListPage
         navigation={navigation}
         update={save}
@@ -155,6 +187,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     setDayInfo: (dayInfo: DayType) => {
       dispatch(setDayInfo(dayInfo));
+    },
+    saveDay: (dayInfo: IDayType) => {
+      dispatch(saveDay(dayInfo))
+    },
+    addHabit: (habit: HabitType) => {
+      dispatch(addHabit(habit))
     },
   };
 };

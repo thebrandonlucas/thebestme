@@ -1,9 +1,8 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Dimensions, Platform, ScrollView, StyleSheet } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import {
@@ -17,12 +16,12 @@ import {
 } from 'victory-native';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
 import ThemeButton from '../components/ThemeButton';
-import { View, Text } from '../components/Themed';
+import { Text, View } from '../components/Themed';
 import { Colors } from '../constants';
 import { MoodToColor } from '../constants/MoodToColor';
 import { RootState } from '../redux/store';
-import { HabitType, IDayType, IHabitType } from '../types';
-import { getHabitsWithMoodForTimeRange } from '../utils/habit';
+import { HabitFrequency, HabitType, IDayType, IHabitType } from '../types';
+import { getHabitCountForMoodInTimeRange } from '../utils/habit';
 
 type Mode = 'date' | 'time';
 function DayMetricsScreen({ navigation, route }) {
@@ -42,12 +41,11 @@ function DayMetricsScreen({ navigation, route }) {
   const [endDate, setEndDate] = useState(new Date());
 
   function onChangeStartDate(event, selectedDate: Date) {
-    setStartDate(selectedDate)
+    setStartDate(selectedDate);
   }
   function onChangeEndDate(event, selectedDate: Date) {
-    setEndDate(selectedDate)
+    setEndDate(selectedDate);
   }
-
 
   // TODO: set an aspect ratio for the whole project in Redux that adapts to the screen size
   const aspectRatio =
@@ -107,18 +105,8 @@ function DayMetricsScreen({ navigation, route }) {
   const [pieChartData, setPieChartData] = useState(initialPieChartData);
 
   useEffect(() => {
-    let tempRemainingHabits = [],
-      tempFinishedHabits = [];
-    for (let i = 0; i < currentDay.habitIds.length; i++) {
-      const currentHabit = habits[currentDay.habitIds[i]];
-      if (currentHabit.checked === false) {
-        tempRemainingHabits.push(currentHabit);
-      } else {
-        tempFinishedHabits.push(currentHabit);
-      }
-    }
-    setRemainingHabits(tempRemainingHabits);
-    setFinishedHabits(tempFinishedHabits);
+    setRemainingHabits(currentDay.remainingHabitIds.map((id) => habits[id]));
+    setFinishedHabits(currentDay.finishedHabitIds.map((id) => habits[id]));
     setPieChartData(pChartData);
   }, []);
 
@@ -140,6 +128,10 @@ function DayMetricsScreen({ navigation, route }) {
       },
     },
   };
+
+  function clickGetHabitsForTimeRange() {
+    const habitFreq: HabitFrequency = getHabitCountForMoodInTimeRange()
+  }
 
   return (
     <>
@@ -171,18 +163,18 @@ function DayMetricsScreen({ navigation, route }) {
             // style={{marginHorizontal: '40%'}}
             value={startDate}
             // FIXME: 'datetime' only available on ios
-            mode='datetime'
+            mode="datetime"
             is24Hour={true}
             display="default"
             onChange={onChangeStartDate}
-          /> 
+          />
           <Text>End Date/Time</Text>
           <DateTimePicker
             testID="dateTimePicker"
             // FIXME: center pickers! How?
             // style={{marginHorizontal: '40%'}}
             value={endDate}
-            mode='datetime'
+            mode="datetime"
             is24Hour={true}
             display="default"
             onChange={onChangeEndDate}
@@ -190,18 +182,20 @@ function DayMetricsScreen({ navigation, route }) {
           <Text>Mood</Text>
           <Picker
             selectedValue={selectedMood}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedMood(itemValue)
-            }
+            onValueChange={(itemValue, itemIndex) => setSelectedMood(itemValue)}
           >
-            <Picker.Item color="white" label='All' value='all' />
+            <Picker.Item color="white" label="All" value="all" />
             {moods.map((mood) => (
-              <Picker.Item color={MoodToColor[mood]} label={mood} value={mood} />
+              <Picker.Item
+                color={MoodToColor[mood]}
+                label={mood}
+                value={mood}
+              />
             ))}
           </Picker>
 
           <Button
-            onPress={getHabitsWithMoodForTimeRange}
+            onPress={clickGetHabitsForTimeRange}
             title="Get Habits for Time Range"
           />
           <VictoryPie
@@ -252,7 +246,7 @@ function DayMetricsScreen({ navigation, route }) {
               style={{ data: { width: 15 } }}
             >
               <VictoryBar
-                x="mood"
+                x="habit"
                 y="frequency"
                 data={[
                   { mood: 'Running', frequency: 4 },

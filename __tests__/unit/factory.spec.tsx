@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { daysFixture, getNextDay } from '../../__fixtures__/factory/day';
 
 describe('Day Fixtures', () => {
@@ -54,6 +55,21 @@ describe('Day Fixtures', () => {
       expect(days['2021-01-02'].finishedHabitIds).toEqual(['1234', '5678']);
       expect(days['2021-01-12'].finishedHabitIds).toEqual(['1234']);
       expect(Object.keys(days).length).toBe(3);
+    });
+
+    it('should return first day with date of 3 days ago', () => {
+      expect(Object.keys(daysFixture([{}, {}, {}]))[0]).toBe(
+        DateTime.now().minus({ days: 3 }).toISODate()
+      );
+    });
+
+    it('should return overridden day instead of 2 days ago for first day', () => {
+      const days = daysFixture([{ date: '2021-01-01' }, {}, {}]);
+      expect(Object.keys(days)).toEqual([
+        '2021-01-01',
+        '2021-01-02',
+        '2021-01-03',
+      ]);
     });
   });
 
