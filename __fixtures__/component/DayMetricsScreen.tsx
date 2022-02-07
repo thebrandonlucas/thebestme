@@ -22,6 +22,7 @@ import { Colors } from '../constants';
 import { MoodToColor } from '../constants/MoodToColor';
 import { RootState } from '../redux/store';
 import {
+  HabitFrequency,
   HabitFrequencyByMood,
   HabitType,
   IDayType,
@@ -29,6 +30,7 @@ import {
   ValidMood,
 } from '../types';
 import { getDaysInTimeRange } from '../utils/day';
+import { getHabitFrequencyForMoodInTimeRange } from '../utils/habit';
 
 type Mode = 'date' | 'time';
 
@@ -152,12 +154,12 @@ function DayMetricsScreen({ navigation, route }) {
       DateTime.fromJSDate(endDate).toISODate()
     );
     const mood = selectedMood ? selectedMood : undefined;
-    // setTripleBarChartData({Great: })
-    // const happyHabitFreq HabitFrequency = getHabitFrequencyForMoodInTimeRange(
-    //   selectedHabit,
-    //   selectedDays,
-    //   mood
-    // );
+    setTripleBarChartData({Great: })
+    const : HabitFrequency = getHabitFrequencyForMoodInTimeRange(
+      selectedHabit,
+      selectedDays,
+      mood
+    );
   }
 
   return (

@@ -1,4 +1,4 @@
-import { IDayType, MoodFrequency, ValidMood } from '../types';
+import { IDayType, IHabitType, ValidMood } from '../types';
 /**
  * Get's the mode (most commonly occurring) of moods for a day
  * @param {Array[String]} moods - a list of moods for a single day
@@ -33,4 +33,22 @@ export function getDaysWithSelectedMood(
     }
   }
   return daysWithMood;
+}
+
+/**
+ * Get habits with selected mood occurring in days
+ */
+export function getNumberOfHabitsWithSelectedMood(
+  mood: ValidMood,
+  days: IDayType
+) {
+  let habitsForMood = new Set();
+  let tempDays = getDaysWithSelectedMood(mood, days);
+  for (const date in tempDays) {
+    // TODO: allow for remainingHabitIds to be tested
+    tempDays[date].finishedHabitIds.forEach(id => {
+      habitsForMood.add(id);
+    })
+  }
+  return habitsForMood.size;
 }

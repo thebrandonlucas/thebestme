@@ -1,8 +1,27 @@
 import { IDayType } from '../../types';
-import { getDaysWithSelectedMood } from '../../utils/mood';
+import {
+  getDaysWithSelectedMood,
+  getHabitsWithSelectedMood,
+  getNumberOfHabitsWithSelectedMood,
+} from '../../utils/mood';
+import { IHabitType } from '../../__fixtures__/component/types';
 import { daysFixture } from '../../__fixtures__/factory/day';
+import { habitsFixture } from '../../__fixtures__/factory/habit';
 
 describe('Habit Mood correlation', () => {
+  let habits: IHabitType;
+  let days: IDayType;
+  beforeAll(() => {
+    habits = habitsFixture([
+      { id: 'runningId' },
+      { id: 'lunchId' },
+      { id: 'readId' },
+    ]);
+    days = daysFixture([
+      { finishedHabitIds: ['runningId'], mood: ['Great'] },
+      { finishedHabitIds: ['runningId', 'lunchId'], mood: ['Okay'] },
+    ]);
+  });
   describe('getDaysWithSelectedMood', () => {
     describe('Happy', () => {
       let pureHappyDays: IDayType,
@@ -141,7 +160,12 @@ describe('Habit Mood correlation', () => {
       it('should return a single day with sad mood given multiple moods but a sad majority', () => {
         const day = getDaysWithSelectedMood('Not Good', mixedSadDay);
         const date = Object.keys(day)[0];
-        expect(day[date].mood).toEqual(['Not Good', 'Great', 'Not Good', 'Not Good']);
+        expect(day[date].mood).toEqual([
+          'Not Good',
+          'Great',
+          'Not Good',
+          'Not Good',
+        ]);
       });
       it('should return multiple sad days with sad moods', () => {
         const days = getDaysWithSelectedMood('Not Good', pureSadDays);
@@ -166,5 +190,13 @@ describe('Habit Mood correlation', () => {
     it.todo(
       'should return the correct number of finished habit completions for a given mood'
     );
+  });
+
+  describe('getNumberOfHabitsWithSelectedMood', () => {
+    it('should get 1 habit with happy mood', () => {
+      expect(getNumberOfHabitsWithSelectedMood('Great', days)).toBe(
+        1
+      );
+    });
   });
 });

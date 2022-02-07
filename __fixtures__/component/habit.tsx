@@ -1,8 +1,5 @@
-import { HabitFrequency, IDayType, IHabitType, ValidMood } from '../types';
-import {
-  getDaysWithSelectedMood,
-  getNumberOfHabitsWithSelectedMood,
-} from './mood';
+import { HabitFrequency, IDayType, ValidMood } from '../types';
+import { getDaysWithSelectedMood } from './mood';
 
 /**
  * Get the frequencies of finished or remaining habits for a given mood
@@ -36,64 +33,7 @@ export function getHabitFrequencyForMoodInTimeRange(
   return habitFrequencies;
 }
 
-/**
- * Get the top habit(s) frequencies per mood (or all moods)
- */
-export function getTopHabitFrequencyPerMood(
-  days: IDayType,
-  habits: IHabitType,
-  mood?: ValidMood
-): HabitFrequency {
-  let topHabitFrequency: HabitFrequency = {
-    habit: '',
-    frequency: 0,
-  };
-
-  for (const habitId in habits) {
-    const currentHabitFrequency = getHabitFrequencyForMoodInTimeRange(
-      habitId,
-      days,
-      mood
-    );
-    topHabitFrequency =
-      currentHabitFrequency.frequency > topHabitFrequency.frequency
-        ? currentHabitFrequency
-        : topHabitFrequency;
-  }
-
-  return topHabitFrequency;
-}
-
-/**
- * Get top N habit frequencies
- */
-export function getTopHabitFrequenciesPerMood(
-  days: IDayType,
-  habits: IHabitType,
-  N?: number,
-  mood?: ValidMood
-) {
-  let topHabitFrequencies: HabitFrequency[] = [];
-  let tempHabits = { ...habits };
-  let habitCount = 0;
-
-  // Get the total number of habits that occur in days for which the selected mood is most common mood
-  habitCount = mood
-    ? getNumberOfHabitsWithSelectedMood(mood, days)
-    : Object.keys(habits).length;
-  const numFrequencies = N !== null && N < habitCount ? N : habitCount;
-
-  for (let i = 0; i < numFrequencies; i++) {
-    const habitFrequency: HabitFrequency = getTopHabitFrequencyPerMood(
-      days,
-      tempHabits,
-      mood
-    );
-    topHabitFrequencies.push(habitFrequency);
-    delete tempHabits[habitFrequency.habit];
-  }
-  return topHabitFrequencies;
-}
+export function getTopNHabits() {}
 
 // get habit count for specified number of days
 export function getHabitFrequency(
@@ -143,40 +83,6 @@ export function getHabitRemainingDays(
   }
 
   return remainingDays;
-}
-
-/**
- * Get habit count for a particular mood given days
- */
-export function getHabitCount(
-  habitId: string,
-  days: IDayType,
-  checkFinishedHabits: boolean = true
-) {
-  let habitCount = 0;
-  for (const date in days) {
-    const day = days[date];
-    const habitIdsToCheck = checkFinishedHabits
-      ? day.finishedHabitIds
-      : day.remainingHabitIds;
-    if (habitIdsToCheck.includes(habitId)) {
-      habitCount += 1;
-    }
-  }
-  return habitCount;
-}
-
-/**
- * Get habit count for a particular mood
- */
-export function getHabitCountForMood(
-  habitId: string,
-  days: IDayType,
-  mood: ValidMood,
-  checkFinishedHabits: boolean = true
-) {
-  const daysWithMood = getDaysWithSelectedMood(mood, days);
-  return getHabitCount(habitId, daysWithMood, checkFinishedHabits);
 }
 
 // TODO: associate mood count with activities and not just days/times
