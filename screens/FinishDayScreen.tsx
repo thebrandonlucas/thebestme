@@ -32,7 +32,11 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
     const { today } = dayReducer;
     const tempRemainingHabits: HabitType[] = [];
     const tempFinishedHabits: HabitType[] = [];
-    for (let i = 0; i < today.habitIds.length; i++) {
+    for (
+      let i = 0;
+      i < today.finishedHabitIds.length + today.remainingHabitIds.length;
+      i++
+    ) {
       const id = today.habitIds[i];
       if (habits[id].checked) {
         tempFinishedHabits.push(habits[id]);

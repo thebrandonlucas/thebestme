@@ -1,4 +1,4 @@
-import { HabitFrequency, IHabitType } from '../types';
+import { HabitFrequency, IHabitType } from '../../types';
 
 /**
  * Replaces the habit ID with the text of the habit.

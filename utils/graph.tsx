@@ -1,4 +1,5 @@
-import { HabitFrequency, IHabitType } from '../types';
+import { MoodToColor } from '../constants/MoodToColor';
+import { HabitFrequency, IHabitType, ValidMood } from '../types';
 
 /**
  * Replaces the habit ID with the text of the habit.
@@ -18,4 +19,17 @@ export function replaceHabitFrequencyIdsWithText(
     });
   }
   return frequenciesWithName;
+}
+
+/**
+ * Retrieves the color scale (either single color or multiple colors) to provide to chart.
+ * If only one mood is selected, only the corresponding color will be selected.
+ * If all moods are selected, then all three colors will be returned.
+ *
+ */
+export function getColorScale(mood: ValidMood | 'all'): ColorScalePropType {
+  if (mood === 'all') {
+    return [MoodToColor.Great, MoodToColor.Okay, MoodToColor['Not Good']];
+  }
+  return [MoodToColor[mood]];
 }

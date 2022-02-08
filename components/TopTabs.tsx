@@ -1,20 +1,45 @@
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { v4 as uuidv4 } from 'uuid';
 import Colors from '../constants/Colors';
 
-export default function TopTabs({ tabName: tab }) {
+export default function TopTabs({
+  screen,
+  setScreen,
+  tabs,
+}: {
+  screen: {
+    title: string;
+    link: string;
+  };
+  setScreen: React.Dispatch<
+    React.SetStateAction<{
+      title: string;
+      link: string;
+    }>
+  >;
+  tabs: { title: string; link: string }[];
+}) {
+  function clickTab(tab) {
+    setScreen(tab);
+  }
   return (
     <View style={styles.topTabBar}>
-      <TouchableOpacity style={styles.background}>
-        <Text>Test</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.background}>
-        <Text>Test</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.background}>
-        <Text>Test</Text>
-      </TouchableOpacity>
+      {tabs.map((tab) => {
+        return (
+          <TouchableOpacity key={uuidv4()} onPress={() => clickTab(tab)}>
+            <Text
+              style={
+                tab.title === screen.title
+                  ? styles.selectedTabText
+                  : styles.tabText
+              }
+            >
+              {tab.title}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 }
@@ -24,7 +49,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     backgroundColor: Colors.happyGreen,
-    // flex: 1
+    padding: 10,
+  },
+  tabText: {
+    color: 'black',
+  },
+  selectedTabText: {
+    color: 'white',
   },
   background: {
     borderColor: 'red',

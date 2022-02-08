@@ -79,7 +79,6 @@ export function HabitsScreen({
     setRemainingHabits(tempRemainingHabits);
     setFinishedHabits(tempFinishedHabits);
     setLoading(false);
-    console.log('habits', habits);
     // TODO: figure out how to use useSelector to update state.
     // right now, putting habits in there doesn't update state
   }, [isAddingHabit, isEditingHabit, habitReducer, dayReducer]);

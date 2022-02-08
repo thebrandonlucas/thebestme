@@ -11,25 +11,12 @@ import { Platform } from 'react-native';
 import { store, persistor } from './redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-async function clearAppData() {
-    // TODO: remove after dev
-    const asyncStorageKeys = await AsyncStorage.getAllKeys();
-    if (asyncStorageKeys.length > 0) {
-      if (Platform.OS === 'android') {
-       await AsyncStorage.clear();
-      }
-      if (Platform.OS === 'ios') {
-        console.log('clearing app data')
-        await AsyncStorage.multiRemove(asyncStorageKeys);
-      }
-    }
-}
+
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-  // clearAppData();
 
   if (!isLoadingComplete) {
     return null;

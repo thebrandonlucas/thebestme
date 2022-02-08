@@ -1,6 +1,10 @@
 import faker from '@faker-js/faker';
+import { MoodToColor } from '../../constants/MoodToColor';
 import { IDayType, IHabitType } from '../../types';
-import { replaceHabitFrequencyIdsWithText } from '../../utils/graph';
+import {
+  getColorScale,
+  replaceHabitFrequencyIdsWithText,
+} from '../../utils/graph';
 import { getHabitFrequencyForMoodInTimeRange } from '../../utils/habit';
 import { daysFixture } from '../../__fixtures__/factory/day';
 import { habitsFixture } from '../../__fixtures__/factory/habit';
@@ -69,6 +73,24 @@ describe('Graph Data Converters', () => {
         { habit: 'Test Habit', frequency: 3 },
         { habit: 'Test Habit', frequency: 1 },
         { habit: 'Test Habit', frequency: 1 },
+      ]);
+    });
+  });
+  describe('getColorScale', () => {
+    it('should get the happy color given happy mood', () => {
+      expect(getColorScale('Great')).toEqual([MoodToColor.Great]);
+    });
+    it('should get the neutral color', () => {
+      expect(getColorScale('Okay')).toEqual([MoodToColor.Okay]);
+    });
+    it('should get the sad color given sad mood', () => {
+      expect(getColorScale('Not Good')).toEqual([MoodToColor['Not Good']]);
+    });
+    it('should get all three colors in an array', () => {
+      expect(getColorScale('all')).toEqual([
+        MoodToColor.Great,
+        MoodToColor.Okay,
+        MoodToColor['Not Good'],
       ]);
     });
   });

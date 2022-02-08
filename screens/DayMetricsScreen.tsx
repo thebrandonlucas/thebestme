@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
+import { ColorScalePropType } from 'victory-core';
 import {
   VictoryAxis,
   VictoryBar,
@@ -22,13 +23,21 @@ import { Colors } from '../constants';
 import { MoodToColor } from '../constants/MoodToColor';
 import { RootState } from '../redux/store';
 import {
-  HabitFrequencyByMood,
+  HabitFrequency,
   HabitType,
   IDayType,
   IHabitType,
   ValidMood,
 } from '../types';
 import { getDaysInTimeRange } from '../utils/day';
+import {
+  getColorScale,
+  replaceHabitFrequencyIdsWithText,
+} from '../utils/graph';
+import {
+  getHabitFrequencyForMoodInTimeRange,
+  getTopHabitFrequenciesPerMood,
+} from '../utils/habit';
 
 type Mode = 'date' | 'time';
 
@@ -40,27 +49,34 @@ function DayMetricsScreen({ navigation, route }) {
     (state) => state.habitReducer.habits
   );
   const currentDay = days[route.params.selectedDay];
-  const [selectedMood, setSelectedMood] = useState<ValidMood | ''>('');
-  const [selectedHabit, setSelectedHabit] = useState('');
+  const [selectedMood, setSelectedMood] = useState<ValidMood | 'all'>('all');
+  const [selectedHabitId, setSelectedHabitId] = useState<string>('top3');
+  const [startDate, setStartDate] = useState<string>(Object.keys(days)[0]);
+  const [endDate, setEndDate] = useState<string>(DateTime.now().toISODate());
 
-  const [tripleBarChartData, setTripleBarChartData] =
-    useState<HabitFrequencyByMood>({
-      Great: { habit: '', frequency: 0 },
-      Okay: { habit: '', frequency: 0 },
-      'Not Good': { habit: '', frequency: 0 },
-    });
+  const [barChartDataHappy, setBarChartDataHappy] = useState<HabitFrequency[]>(
+    []
+  );
+  const [barChartDataNeutral, setBarChartDataNeutral] = useState<
+    HabitFrequency[]
+  >([]);
+  const [barChartDataSad, setBarChartDataSad] = useState<HabitFrequency[]>([]);
+  const [barChartColorScale, setBarChartColorScale] =
+    useState<ColorScalePropType>([]);
+
+  useEffect(() => {
+    configureBarChart();
+  }, [selectedHabitId, selectedMood, startDate, endDate]);
 
   const moods = ['Great', 'Okay', 'Not Good'];
 
   // Datetime picker stuff
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
 
   function onChangeStartDate(event, selectedDate: Date) {
-    setStartDate(selectedDate);
+    setStartDate(DateTime.fromJSDate(selectedDate).toISODate());
   }
   function onChangeEndDate(event, selectedDate: Date) {
-    setEndDate(selectedDate);
+    setEndDate(DateTime.fromJSDate(selectedDate).toISODate());
   }
 
   // TODO: set an aspect ratio for the whole project in Redux that adapts to the screen size
@@ -94,7 +110,7 @@ function DayMetricsScreen({ navigation, route }) {
   // Needs all categories to be initialized to 0 for animation to work
   // Animation occurs after data param gets set
   const initialPieChartData = [
-    { mood: 'Great', frequency: 100 },
+    { mood: 'Great', frequency: 0 },
     { mood: 'Okay', frequency: 0 },
     { mood: 'Not Good', frequency: 0 },
   ];
@@ -145,19 +161,127 @@ function DayMetricsScreen({ navigation, route }) {
     },
   };
 
-  function clickGetHabitsForTimeRange() {
+  function configureBarChart() {
+    // TODO: allow the user to configure remaining habits as well as finished habits
     const selectedDays = getDaysInTimeRange(
       days,
-      DateTime.fromJSDate(startDate).toISODate(),
-      DateTime.fromJSDate(endDate).toISODate()
+      // TODO: change these to ISO date immediately in setState
+      startDate,
+      endDate
     );
-    const mood = selectedMood ? selectedMood : undefined;
-    // setTripleBarChartData({Great: })
-    // const happyHabitFreq HabitFrequency = getHabitFrequencyForMoodInTimeRange(
-    //   selectedHabit,
-    //   selectedDays,
-    //   mood
-    // );
+
+    const tempHabits =
+      selectedHabitId === 'top3'
+        ? habits
+        : { [selectedHabitId]: habits[selectedHabitId] };
+
+    setBarChartColorScale(getColorScale(selectedMood));
+    let habitFrequencies: HabitFrequency[];
+    if (selectedMood !== 'all') {
+      if (selectedHabitId === 'top3') {
+        habitFrequencies = replaceHabitFrequencyIdsWithText(
+          getTopHabitFrequenciesPerMood(
+            selectedDays,
+            tempHabits,
+            3,
+            selectedMood
+          ),
+          habits
+        );
+      } else {
+        habitFrequencies = replaceHabitFrequencyIdsWithText(
+          [
+            getHabitFrequencyForMoodInTimeRange(
+              selectedHabitId,
+              selectedDays,
+              selectedMood
+            ),
+          ],
+          habits
+        );
+      }
+    }
+    switch (selectedMood) {
+      case 'Great':
+        setBarChartDataHappy(habitFrequencies);
+        setBarChartDataNeutral([]);
+        setBarChartDataSad([]);
+        break;
+      case 'Okay':
+        setBarChartDataNeutral(habitFrequencies);
+        setBarChartDataHappy([]);
+        setBarChartDataSad([]);
+        break;
+      case 'Not Good':
+        setBarChartDataSad(habitFrequencies);
+        setBarChartDataHappy([]);
+        setBarChartDataNeutral([]);
+        break;
+      default:
+        if (selectedHabitId !== 'top3') {
+          setBarChartDataHappy(
+            replaceHabitFrequencyIdsWithText(
+              [
+                getHabitFrequencyForMoodInTimeRange(
+                  selectedHabitId,
+                  selectedDays,
+                  'Great'
+                ),
+              ],
+              habits
+            )
+          );
+          setBarChartDataNeutral(
+            replaceHabitFrequencyIdsWithText(
+              [
+                getHabitFrequencyForMoodInTimeRange(
+                  selectedHabitId,
+                  selectedDays,
+                  'Okay'
+                ),
+              ],
+              habits
+            )
+          );
+          setBarChartDataSad(
+            replaceHabitFrequencyIdsWithText(
+              [
+                getHabitFrequencyForMoodInTimeRange(
+                  selectedHabitId,
+                  selectedDays,
+                  'Not Good'
+                ),
+              ],
+              habits
+            )
+          );
+        } else {
+          setBarChartDataHappy(
+            replaceHabitFrequencyIdsWithText(
+              getTopHabitFrequenciesPerMood(selectedDays, habits, 3, 'Great'),
+              habits
+            )
+          );
+          setBarChartDataNeutral(
+            replaceHabitFrequencyIdsWithText(
+              getTopHabitFrequenciesPerMood(selectedDays, habits, 3, 'Okay'),
+              habits
+            )
+          );
+          setBarChartDataSad(
+            replaceHabitFrequencyIdsWithText(
+              getTopHabitFrequenciesPerMood(
+                selectedDays,
+                habits,
+                3,
+                'Not Good'
+              ),
+              habits
+            )
+          );
+        }
+        break;
+    }
   }
 
   return (
@@ -188,7 +312,7 @@ function DayMetricsScreen({ navigation, route }) {
             testID="dateTimePicker"
             // FIXME: center pickers! How?
             // style={{marginHorizontal: '40%'}}
-            value={startDate}
+            value={DateTime.fromISO(startDate).toJSDate()}
             // FIXME: 'datetime' only available on ios
             mode="datetime"
             is24Hour={true}
@@ -200,7 +324,7 @@ function DayMetricsScreen({ navigation, route }) {
             testID="dateTimePicker"
             // FIXME: center pickers! How?
             // style={{marginHorizontal: '40%'}}
-            value={endDate}
+            value={DateTime.fromISO(endDate).toJSDate()}
             mode="datetime"
             is24Hour={true}
             display="default"
@@ -223,22 +347,62 @@ function DayMetricsScreen({ navigation, route }) {
 
           <Text>Habit</Text>
           <Picker
-            selectedValue={selectedHabit}
-            onValueChange={(itemValue) => setSelectedHabit(itemValue)}
+            selectedValue={selectedHabitId}
+            onValueChange={(itemValue) => setSelectedHabitId(itemValue)}
           >
             <Picker.Item color="white" label="Top 3 Habits" value="top3" />
             {Object.keys(habits).map((habitId) => (
               <Picker.Item
                 color="white"
                 label={habits[habitId].text}
-                value={habits[habitId].text}
+                value={habitId}
               />
             ))}
           </Picker>
-
-          <Button
-            onPress={clickGetHabitsForTimeRange}
-            title="Get Habits for Time Range"
+          <VictoryChart theme={barChartStyle} domainPadding={{ x: 50 }}>
+            <VictoryAxis dependentAxis tickFormat={(t) => Math.round(t)} />
+            <VictoryAxis />
+            <VictoryGroup
+              colorScale={barChartColorScale}
+              offset={20}
+              style={{ data: { width: 15 } }}
+            >
+              <VictoryBar x="habit" y="frequency" data={barChartDataHappy} />
+              <VictoryBar x="habit" y="frequency" data={barChartDataNeutral} />
+              <VictoryBar x="habit" y="frequency" data={barChartDataSad} />
+            </VictoryGroup>
+          </VictoryChart>
+          <VictoryLegend
+            // style={{ alignItems: 'center', border: { fill: 'red', width: 1 } }}
+            width={Dimensions.get('screen').width}
+            // TODO: how to dynamically set the height of the legend based on
+            height={100}
+            // FIXME: Is dividing the screen width by 6 guaranteed to center it?
+            x={Dimensions.get('screen').width / 6}
+            title="Top 3 habits"
+            orientation="horizontal"
+            gutter={20}
+            centerTitle
+            style={{
+              title: { fontSize: 20, fill: 'white' },
+            }}
+            data={[
+              {
+                name: 'Great',
+                symbol: { fill: Colors.happyGreen },
+                labels: { fill: Colors.happyGreen },
+              },
+              {
+                name: 'Okay',
+                symbol: { fill: Colors.neutralYellow },
+                labels: { fill: Colors.neutralYellow },
+              },
+              {
+                name: 'Not Good',
+                symbol: { fill: Colors.sadRed },
+                labels: { fill: Colors.sadRed },
+              },
+            ]}
           />
           <VictoryPie
             data={pieChartData}
@@ -275,84 +439,12 @@ function DayMetricsScreen({ navigation, route }) {
               sortKey={['Bad', 'Great', 'Okay']}
             />
           </VictoryChart>
-          <VictoryChart theme={barChartStyle} domainPadding={{ x: 50 }}>
-            <VictoryAxis dependentAxis tickFormat={(t) => Math.round(t)} />
-            <VictoryAxis />
-            <VictoryGroup
-              colorScale={[
-                Colors.happyGreen,
-                Colors.neutralYellow,
-                Colors.sadRed,
-              ]}
-              offset={20}
-              style={{ data: { width: 15 } }}
-            >
-              <VictoryBar
-                x="habit"
-                y="frequency"
-                data={[
-                  { habit: 'Running', frequency: 4 },
-                  { mood: 'Brush Teeth', frequency: 3 },
-                  { mood: 'Get lunch', frequency: 1 },
-                ]}
-              />
-              <VictoryBar
-                x="mood"
-                y="frequency"
-                data={[
-                  { mood: 'Running', frequency: 5 },
-                  { mood: 'Brush Teeth', frequency: 2 },
-                  { mood: 'Get lunch', frequency: 5 },
-                ]}
-              />
-              <VictoryBar
-                x="mood"
-                y="frequency"
-                data={[
-                  { mood: 'Running', frequency: 1 },
-                  { mood: 'Brush Teeth', frequency: 6 },
-                  { mood: 'Get lunch', frequency: 2 },
-                ]}
-              />
-            </VictoryGroup>
-          </VictoryChart>
-          <VictoryLegend
-            // style={{ alignItems: 'center', border: { fill: 'red', width: 1 } }}
-            width={Dimensions.get('screen').width}
-            // TODO: how to dynamically set the height of the legend based on
-            height={100}
-            // FIXME: Is dividing the screen width by 6 guaranteed to center it?
-            x={Dimensions.get('screen').width / 6}
-            title="Top 3 habits"
-            orientation="horizontal"
-            gutter={20}
-            centerTitle
-            style={{
-              title: { fontSize: 20, fill: 'white' },
-            }}
-            data={[
-              {
-                name: 'Great',
-                symbol: { fill: Colors.happyGreen },
-                labels: { fill: Colors.happyGreen },
-              },
-              {
-                name: 'Okay',
-                symbol: { fill: Colors.neutralYellow },
-                labels: { fill: Colors.neutralYellow },
-              },
-              {
-                name: 'Not Good',
-                symbol: { fill: Colors.sadRed },
-                labels: { fill: Colors.sadRed },
-              },
-            ]}
-          />
+
           {currentDay.endOfDayNotes && (
             <Button title="View End of Day Notes" onPress={goToEndOfDayNotes} />
           )}
 
-          <VictoryChart
+          {/* <VictoryChart
             theme={barChartStyle}
             width={Dimensions.get('screen').width}
             domainPadding={{ x: 50 }}
@@ -367,11 +459,11 @@ function DayMetricsScreen({ navigation, route }) {
                 { habit: 'Get lunch', frequency: 2 },
               ]}
             />
-          </VictoryChart>
+          </VictoryChart> */}
 
           {/* </VictoryChart> */}
           {/* <Text>Date: {currentDay.date}</Text>
-<Text>Remaining Habits: </Text>
+
 {currentDay.habitIds.map((id) => {
   return (
     habits[id].checked === true && (

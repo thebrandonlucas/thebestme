@@ -18,8 +18,6 @@ import QuestionButton from '../components/HeaderButtons/QuestionButton';
 import SettingsButton from '../components/HeaderButtons/SettingsButton';
 import { View } from '../components/Themed';
 import { Colors } from '../constants';
-import AWAREAddScreen from '../screens/AWAREAddScreen';
-import AWAREScreen from '../screens/AWAREScreen';
 import CBTAddScreen from '../screens/CBTAddScreen';
 import CBTScreen from '../screens/CBTScreen';
 import DataScreen from '../screens/DataScreen';
@@ -72,7 +70,7 @@ export default function BottomTabNavigator() {
           ),
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="CBT"
         component={CBTNavigator}
         options={{
@@ -84,7 +82,7 @@ export default function BottomTabNavigator() {
             />
           ),
         }}
-      />
+      /> */}
       {/* <BottomTab.Screen
         name="AWARE"
         component={AWARENavigator}
@@ -242,15 +240,6 @@ function JournalNavigator() {
         component={JournalScreen}
         options={() => headerOptions('Journal', 'journal')}
       />
-    </JournalStack.Navigator>
-  );
-}
-
-const CBTStack = createStackNavigator<CBTParamList>();
-
-function CBTNavigator() {
-  return (
-    <CBTStack.Navigator>
       <CBTStack.Screen
         name="CBTScreen"
         component={CBTScreen}
@@ -261,28 +250,47 @@ function CBTNavigator() {
         component={CBTAddScreen}
         options={() => headerOptions('CBT - Add Entry', 'cbtJournal')}
       />
-    </CBTStack.Navigator>
+    </JournalStack.Navigator>
   );
 }
+
+const CBTStack = createStackNavigator<CBTParamList>();
+
+// function CBTNavigator() {
+//   return (
+//     <CBTStack.Navigator>
+//       <CBTStack.Screen
+//         name="CBTScreen"
+//         component={CBTScreen}
+//         options={() => headerOptions('Thought Challenging', 'cbtJournal')}
+//       />
+//       <CBTStack.Screen
+//         name="CBTAddScreen"
+//         component={CBTAddScreen}
+//         options={() => headerOptions('CBT - Add Entry', 'cbtJournal')}
+//       />
+//     </CBTStack.Navigator>
+//   );
+// }
 
 const AWAREStack = createStackNavigator<AWAREParamList>();
 
-function AWARENavigator() {
-  return (
-    <AWAREStack.Navigator>
-      <AWAREStack.Screen
-        name="AWAREScreen"
-        component={AWAREScreen}
-        options={() => headerOptions('AWARE', 'awareJournal')}
-      />
-      <AWAREStack.Screen
-        name="AWAREAddScreen"
-        component={AWAREAddScreen}
-        options={() => headerOptions('AWARE - Add Entry', 'awareJournal')}
-      />
-    </AWAREStack.Navigator>
-  );
-}
+// function AWARENavigator() {
+//   return (
+//     <AWAREStack.Navigator>
+//       <AWAREStack.Screen
+//         name="AWAREScreen"
+//         component={AWAREScreen}
+//         options={() => headerOptions('AWARE', 'awareJournal')}
+//       />
+//       <AWAREStack.Screen
+//         name="AWAREAddScreen"
+//         component={AWAREAddScreen}
+//         options={() => headerOptions('AWARE - Add Entry', 'awareJournal')}
+//       />
+//     </AWAREStack.Navigator>
+//   );
+// }
 
 const DataStack = createStackNavigator<DataParamList>();
 

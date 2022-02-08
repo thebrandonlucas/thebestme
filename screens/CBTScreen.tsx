@@ -1,13 +1,10 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Alert, useColorScheme } from 'react-native';
+import { useColorScheme } from 'react-native';
 import { connect } from 'react-redux';
 import JournalListPage from '../components/JournalListPage';
-import { Collections } from '../constants';
 import { deleteCbtJournal } from '../redux/actions/CbtActions';
 import { CbtJournalEntryType } from '../types';
-import getDateString from '../utils/index';
-
 
 export function CBTScreen({ navigation, cbtReducer, deleteCbtJournal }) {
   const colorScheme = useColorScheme() ?? 'dark';
@@ -44,7 +41,7 @@ export function CBTScreen({ navigation, cbtReducer, deleteCbtJournal }) {
     thoughtsText,
     emotionsText,
     behaviorsText,
-    alternativeThoughtsText
+    alternativeThoughtsText,
   }): void {
     navigation.navigate('CBTAddScreen', {
       id,
@@ -53,7 +50,7 @@ export function CBTScreen({ navigation, cbtReducer, deleteCbtJournal }) {
       thoughtsText,
       emotionsText,
       behaviorsText,
-      alternativeThoughtsText
+      alternativeThoughtsText,
     });
   }
 
@@ -65,22 +62,23 @@ export function CBTScreen({ navigation, cbtReducer, deleteCbtJournal }) {
   }
 
   return (
-    <JournalListPage
-      navigation={navigation}
-      clickPlus={clickPlus}
-      clickPastEntry={clickPastEntry}
-      closeModal={closeModal}
-      entries={cbtJournals}
-      date={date}
-      setDate={setDate}
-      modalVisible={modalVisible}
-      journalType={'cbt'}
-      deleteJournal={deleteCbtJournal}
-      loading={loading}
-    />
+    <>
+      <JournalListPage
+        navigation={navigation}
+        clickPlus={clickPlus}
+        clickPastEntry={clickPastEntry}
+        closeModal={closeModal}
+        entries={cbtJournals}
+        date={date}
+        setDate={setDate}
+        modalVisible={modalVisible}
+        journalType={'cbt'}
+        deleteJournal={deleteCbtJournal}
+        loading={loading}
+      />
+    </>
   );
 }
-
 
 const mapStateToProps = (state) => {
   const { cbtReducer } = state;

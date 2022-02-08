@@ -39,7 +39,6 @@ function DataScreen({ habits, days, navigation }) {
       const tempMoodMode = getMoodMode(days[selectedDay].mood);
       setMoodMode(tempMoodMode);
     }
-    console.log('days', days);
   }, [days, selectedDay]);
 
   function goToDayMetricsScreen() {
