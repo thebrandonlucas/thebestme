@@ -52,6 +52,7 @@ function SettingsScreen({
       if (Platform.OS === 'ios') {
         console.log('clearing app data');
         await AsyncStorage.multiRemove(asyncStorageKeys);
+        console.log('done')
       }
     }
   }
@@ -96,7 +97,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapDispatchToProps)(SettingsScreen);
+export default connect(null, mapDispatchToProps)(SettingsScreen);
 
 const styles = StyleSheet.create({
   container: {
