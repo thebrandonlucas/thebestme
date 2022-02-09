@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { Button, Platform, StyleSheet } from 'react-native';
+import { Alert, Button, Platform, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { Text, View } from '../components/Themed';
 import firebase from '../firebase';
@@ -50,9 +50,8 @@ function SettingsScreen({
         await AsyncStorage.clear();
       }
       if (Platform.OS === 'ios') {
-        console.log('clearing app data');
         await AsyncStorage.multiRemove(asyncStorageKeys);
-        console.log('done')
+        Alert.alert('App data cleared')
       }
     }
   }

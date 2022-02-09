@@ -25,6 +25,7 @@ import DayMetricsScreen from '../screens/DayMetricsScreen';
 import EndOfDayNotesScreen from '../screens/EndOfDayNotesScreen';
 import FinishDayScreen from '../screens/FinishDayScreen';
 import HabitsScreen from '../screens/HabitsScreen';
+import { HomeScreen } from '../screens/HomeScreen';
 import JournalScreen from '../screens/JournalScreen';
 import {
   AWAREParamList,
@@ -33,6 +34,7 @@ import {
   DataParamList,
   DescriptionType,
   HabitsParamList,
+  HomeParamList,
   JournalParamList,
 } from '../types';
 
@@ -49,11 +51,20 @@ export default function BottomTabNavigator() {
       }}
     >
       <BottomTab.Screen
+        name="Home"
+        component={HomeNavigator}
+        options={{
+          tabBarIcon: ({ color }: { color: string }) => (
+            <TabBarIcon name="home" color={color} iconComponent={FontAwesome} />
+          ),
+        }}
+      />
+      <BottomTab.Screen
         name="Habits"
         component={HabitsNavigator}
         options={{
           tabBarIcon: ({ color }: { color: string }) => (
-            <TabBarIcon name="home" color={color} iconComponent={FontAwesome} />
+            <TabBarIcon name="check-square" color={color} iconComponent={FontAwesome} />
           ),
         }}
       />
@@ -70,32 +81,6 @@ export default function BottomTabNavigator() {
           ),
         }}
       />
-      {/* <BottomTab.Screen
-        name="CBT"
-        component={CBTNavigator}
-        options={{
-          tabBarIcon: ({ color }: { color: string }) => (
-            <TabBarIcon
-              name="thought-bubble"
-              color={color}
-              iconComponent={MaterialCommunityIcons}
-            />
-          ),
-        }}
-      /> */}
-      {/* <BottomTab.Screen
-        name="AWARE"
-        component={AWARENavigator}
-        options={{
-          tabBarIcon: ({ color }: { color: string }) => (
-            <TabBarIcon
-              name="magnifying-glass"
-              color={color}
-              iconComponent={Foundation}
-            />
-          ),
-        }}
-      /> */}
       <BottomTab.Screen
         name="Data"
         component={DataNavigator}
@@ -147,7 +132,7 @@ function TabBarIcon(props: TabBarIconProps) {
     case MaterialIcons:
       return (
         <MaterialIcons
-          size={30}
+          size={35}
           style={{ marginBottom: -3 }}
           color={color}
           iconComponent={iconComponent}
@@ -196,6 +181,20 @@ function headerOptions(title: string, infoType?: DescriptionType) {
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
+const HomeStack = createStackNavigator<HomeParamList>();
+
+function HomeNavigator() {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={() => headerOptions('Home', 'home')}
+      />
+    </HomeStack.Navigator>
+  )
+}
+
 const HabitsStack = createStackNavigator<HabitsParamList>();
 
 function HabitsNavigator() {
@@ -239,16 +238,6 @@ function JournalNavigator() {
         name="JournalScreen"
         component={JournalScreen}
         options={() => headerOptions('Journal', 'journal')}
-      />
-      <CBTStack.Screen
-        name="CBTScreen"
-        component={CBTScreen}
-        options={() => headerOptions('Thought Challenging', 'cbtJournal')}
-      />
-      <CBTStack.Screen
-        name="CBTAddScreen"
-        component={CBTAddScreen}
-        options={() => headerOptions('CBT - Add Entry', 'cbtJournal')}
       />
     </JournalStack.Navigator>
   );

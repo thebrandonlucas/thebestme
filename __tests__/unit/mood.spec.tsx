@@ -1,16 +1,22 @@
+import { DateTime } from 'luxon';
 import { IDayType } from '../../types';
 import {
   getDaysWithSelectedMood,
-  getHabitsWithSelectedMood,
+  getMoodCountTotal,
+  getMoodFrequency,
+  getMoodFrequencyByDate,
+  getMoodFrequencyByDates,
   getNumberOfHabitsWithSelectedMood,
 } from '../../utils/mood';
 import { IHabitType } from '../../__fixtures__/component/types';
-import { daysFixture } from '../../__fixtures__/factory/day';
+import { dayFixture, daysFixture } from '../../__fixtures__/factory/day';
 import { habitsFixture } from '../../__fixtures__/factory/habit';
 
 describe('Habit Mood correlation', () => {
   let habits: IHabitType;
   let days: IDayType;
+  let happyDay: IDayType;
+  let mixedDays: IDayType;
   beforeAll(() => {
     habits = habitsFixture([
       { id: 'runningId' },
@@ -20,6 +26,12 @@ describe('Habit Mood correlation', () => {
     days = daysFixture([
       { finishedHabitIds: ['runningId'], mood: ['Great'] },
       { finishedHabitIds: ['runningId', 'lunchId'], mood: ['Okay'] },
+    ]);
+    happyDay = daysFixture([{ mood: ['Great', 'Not Good', 'Great'] }]);
+    mixedDays = daysFixture([
+      { mood: ['Great'] },
+      { mood: ['Okay'] },
+      { mood: ['Not Good'] },
     ]);
   });
   describe('getDaysWithSelectedMood', () => {
@@ -194,9 +206,89 @@ describe('Habit Mood correlation', () => {
 
   describe('getNumberOfHabitsWithSelectedMood', () => {
     it('should get 1 habit with happy mood', () => {
-      expect(getNumberOfHabitsWithSelectedMood('Great', days)).toBe(
-        1
-      );
+      expect(getNumberOfHabitsWithSelectedMood('Great', days)).toBe(1);
+    });
+  });
+
+  describe('getMoodFrequency', () => {
+    it('should get 1 frequency for happy mood given happy mood specified', () => {
+      expect(getMoodFrequency(happyDay, 'Great')).toEqual({
+        mood: 'Great',
+        frequency: 1,
+      });
+    });
+    it('should get 1 frequency for sad mood given sad mood specified', () => {
+      expect(getMoodFrequency(mixedDays, 'Not Good')).toEqual({
+        mood: 'Not Good',
+        frequency: 1,
+      });
+    });
+  });
+
+  describe('getMoodCountTotal', () => {
+    it('should return 2 mood count for happy mood for one happy day', () => {
+      expect(getMoodCountTotal(happyDay, 'Great')).toBe(2);
+    });
+    it('should return 1 as mood count for sad mood for mixed days', () => {
+      expect(getMoodCountTotal(mixedDays, 'Not Good')).toBe(1);
+    });
+  });
+
+  describe('getMoodFrequencyByDate', () => {
+    let happyDay = dayFixture({
+      date: '2021-01-01',
+      mood: ['Great', 'Not Good', 'Great'],
+    });
+    let mixedDays = daysFixture([
+      { date: '2021-01-01', mood: ['Great', 'Not Good'] },
+      { date: '2021-01-02', mood: ['Okay'] },
+      { date: '2021-01-03', mood: ['Not Good', 'Not Good'] },
+    ]);
+    it('should get 1 frequency for happy mood', () => {
+      expect(getMoodFrequencyByDate(happyDay, 'Great')).toEqual({
+        date: DateTime.fromISO('2021-01-01').toJSDate(),
+        frequency: 2,
+      });
+    });
+    it('should get 1 frequency for sad mood in an overall happy day', () => {
+      expect(getMoodFrequencyByDate(happyDay, 'Not Good')).toEqual({
+        date: DateTime.fromISO('2021-01-01').toJSDate(),
+        frequency: 1,
+      });
+    });
+    it('should get 1 frequency for sad mood with sad mood specified', () => {
+      expect(
+        getMoodFrequencyByDate(mixedDays[Object.keys(mixedDays)[2]], 'Not Good')
+      ).toEqual({
+        date: DateTime.fromISO('2021-01-03').toJSDate(),
+        frequency: 2,
+      });
+    });
+  });
+
+  describe('getMoodFrequencyByDates', () => {
+    let happyDay = daysFixture([
+      {
+        date: '2021-01-01',
+        mood: ['Great', 'Not Good', 'Great'],
+      },
+    ]);
+    let mixedDays = daysFixture([
+      { date: '2021-01-01', mood: ['Great', 'Not Good'] },
+      { date: '2021-01-02', mood: ['Okay'] },
+      { date: '2021-01-03', mood: ['Not Good', 'Not Good'] },
+    ]);
+    it('should get 1 frequency happy mood for 1 happy day', () => {
+      expect(getMoodFrequencyByDates(happyDay, 'Great')).toEqual([
+        { date: DateTime.fromISO('2021-01-01').toJSDate(), frequency: 2 },
+      ]);
+    });
+    it('should get 3 frequencies for sad mood in mixed days', () => {
+      expect(getMoodFrequencyByDates(mixedDays, 'Not Good')).toEqual([
+        { date: DateTime.fromISO('2021-01-01').toJSDate(), frequency: 1 },
+        { date: DateTime.fromISO('2021-01-02').toJSDate(), frequency: 0 },
+        { date: DateTime.fromISO('2021-01-03').toJSDate(), frequency: 2 },
+      ]);
     });
   });
 });

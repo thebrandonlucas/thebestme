@@ -24,7 +24,6 @@ export default function ConfigureMyCircleMessageScreen({ navigation }) {
     await navigation.navigate('Home');
   }
 
-  console.log('cur', currentPanicMessage);
   return (
     <View style={styles.container}>
       <View>

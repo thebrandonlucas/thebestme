@@ -11,12 +11,10 @@ function EndOfDayNotesScreen({ navigation }) {
   const selectedDay = useSelector<RootState, string>(
     (state) => state.dayReducer.selectedDay
   );
-  console.log('selected', selectedDay);
 
   const endOfDayNotes = useSelector<RootState, EndOfDayNotesEntryType[]>(
     (state) => state.dayReducer.days[selectedDay].endOfDayNotes
   );
-  console.log('end', endOfDayNotes);
   // const [endOfDayNotes, setEndOfDayNotes] = useState<EndOfDayNotesEntryType[]>();
   // const { selectedDay } = route.params.selectedDay;
   // console.log('se', selectedDay)

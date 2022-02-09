@@ -63,7 +63,7 @@ export function getHabitDayPropertiesRandom(
       }
     }
     habitCount = finishedHabitIds.length + remainingHabitIds.length;
-    habitPercentComplete = remainingHabitIds.length / habitCount;
+    habitPercentComplete = Math.round(remainingHabitIds.length / habitCount * 100) / 100;
     return {
       finishedHabitIds,
       remainingHabitIds,

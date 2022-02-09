@@ -20,12 +20,17 @@ export type RootStackParamList = {
 };
 
 export type BottomTabParamList = {
+  Home: undefined;
   Habits: undefined;
   Journal: undefined;
   CBT: undefined;
   AWARE: undefined;
   Data: undefined;
   FinishDayScreen: undefined;
+};
+
+export type HomeParamList = {
+  HomeScreen: JSX.Element;
 };
 
 export type HabitsParamList = {
@@ -80,11 +85,6 @@ export type CheckBoxType = {
   text: string;
   checked: boolean;
   checkedTitle?: string;
-};
-
-export type DateTime = {
-  date: string;
-  time: string;
 };
 
 export type HabitType = {
@@ -244,12 +244,7 @@ export type CalendarDayType = {
   year: number;
 };
 
-export type DescriptionType =
-  | 'habits'
-  | 'journal'
-  | 'cbtJournal'
-  | 'awareJournal'
-  | 'data';
+export type DescriptionType = 'home' | 'habits' | 'journal' | 'data';
 
 export type QuestionButtonType = {
   infoType?: DescriptionType;
@@ -318,10 +313,7 @@ export type Styles = {
   textStyle?: StyleProp<TextStyle>;
 };
 
-export type ValidMood =
-  | 'Great'
-  | 'Okay'
-  | 'Not Good';
+export type ValidMood = 'Great' | 'Okay' | 'Not Good';
 
 export type ISODateString = '';
 
@@ -335,7 +327,11 @@ export type HabitFrequencyByMood = {
 };
 
 export type MoodFrequency = {
-  mood: ValidMood;
+  [mood in ValidMood]: number;
+};
+
+export type FrequencyByDate = {
+  date: Date;
   frequency: number;
 };
 
