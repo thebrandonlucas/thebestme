@@ -17,7 +17,6 @@ function EndOfDayNotesScreen({ navigation }) {
   );
   // const [endOfDayNotes, setEndOfDayNotes] = useState<EndOfDayNotesEntryType[]>();
   // const { selectedDay } = route.params.selectedDay;
-  // console.log('se', selectedDay)
   //
   useEffect(() => {
     // setEndOfDayNotes(

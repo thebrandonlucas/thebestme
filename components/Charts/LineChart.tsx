@@ -30,7 +30,6 @@ export function LineChart({
 
   useEffect(() => {
     configureLineChart();
-    console.log(happyLineChartData);
   }, [days, startDate, endDate, selectedMood]);
 
   function configureLineChart() {

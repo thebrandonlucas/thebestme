@@ -27,6 +27,7 @@ import {
 import { RootState } from '../redux/store';
 import { DayType, HabitType, IDayType, IHabitType } from '../types';
 import getDateString from '../utils';
+import { getMostRecentDay } from '../utils/day';
 
 export function HabitsScreen({
   habitReducer,
@@ -55,9 +56,9 @@ export function HabitsScreen({
   const habits = useSelector<RootState, IHabitType>(
     (state) => state.habitReducer.habits
   );
-  const today = useSelector<RootState, IDayType>(
-    (state) => state.dayReducer
-  );
+  const today = getMostRecentDay(useSelector<RootState, IDayType>(
+    (state) => state.dayReducer.days
+  ));
   
   // FIXME: should useLayoutEffect be used for DOM manipulation (i.e. inputRef)?
   useEffect(() => {

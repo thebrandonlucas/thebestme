@@ -23,7 +23,7 @@ export default function App() {
   }
 
   async function clearAppData() {
-    console.log('clear')
+    console.log('Clearing App Data')
     // TODO: remove after dev
     const asyncStorageKeys = await AsyncStorage.getAllKeys();
     if (asyncStorageKeys.length > 0) {
@@ -37,7 +37,7 @@ export default function App() {
     }
   }
 
-  clearAppData();
+  // clearAppData();
 
   // TODO: How to pass colorScheme as a prop through the app?
   return (

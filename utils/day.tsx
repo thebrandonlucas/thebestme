@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { IDayType } from '../types';
+import { DayType, IDayType } from '../types';
 
 export function getDaysInTimeRange(
   days: IDayType,
@@ -28,4 +28,14 @@ export function isDatetimeInRange(
     DateTime.fromISO(compareDatetimeISO),
   ];
   return startDate <= compareDate && compareDate <= endDate;
+}
+
+/**
+ * Gets the last day with data. If that's today, then returns object for today
+ * @param days
+ */
+export function getMostRecentDay(days: IDayType): DayType {
+  const dates = Object.keys(days);
+  const lastDate = dates[dates.length - 1];
+  return days[lastDate];
 }

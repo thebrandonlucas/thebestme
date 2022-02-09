@@ -16,7 +16,6 @@ const initialState: DayReducerType = {
 };
 
 const dayReducer = (state = initialState, action) => {
-  console.log('here1', action.type);
   let tempDays: IDayType;
   switch (action.type) {
     case SET_DAY:

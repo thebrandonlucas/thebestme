@@ -1,7 +1,12 @@
 import { DateTime } from 'luxon';
-import { getDaysInTimeRange, isDatetimeInRange } from '../../utils/day';
+import {
+  getDaysInTimeRange,
+  getMostRecentDay,
+  isDatetimeInRange,
+} from '../../utils/day';
 import { getDaysWithSelectedMood } from '../../utils/mood';
 import {
+  dayFixture,
   daysFixture,
   getNextDate,
   getPastDate,
@@ -93,10 +98,39 @@ describe('Day functions', () => {
 
   describe('getPastDate', () => {
     it('should get ISO date 1 day ago', () => {
-      expect(getPastDate(1)).toBe(DateTime.now().minus({ days: 1 }).toISODate());
+      expect(getPastDate(1)).toBe(
+        DateTime.now().minus({ days: 1 }).toISODate()
+      );
     });
     it('should get 3 days ago', () => {
-      expect(getPastDate(3)).toBe(DateTime.now().minus({ days: 3 }).toISODate())
-    })
+      expect(getPastDate(3)).toBe(
+        DateTime.now().minus({ days: 3 }).toISODate()
+      );
+    });
+  });
+
+  describe('getMostRecentDay', () => {
+    const day = daysFixture([{ date: '2021-01-01' }]);
+    it('should get the last day when theres only one day to pick from', () => {
+      expect(getMostRecentDay(day)).toEqual(dayFixture({ date: '2021-01-01' }));
+    });
+
+    it('should get the last day when there are 10 days', () => {
+      const days = daysFixture([
+        { date: '2021-01-01' },
+        { date: '2021-01-02' },
+        { date: '2021-01-03' },
+        { date: '2021-01-04' },
+        { date: '2021-01-05' },
+        { date: '2021-01-06' },
+        { date: '2021-01-07' },
+        { date: '2021-01-08' },
+        { date: '2021-01-09' },
+        { date: '2021-01-10' },
+      ]);
+      expect(getMostRecentDay(days)).toEqual(
+        dayFixture({ date: '2021-01-10' })
+      );
+    });
   });
 });

@@ -62,10 +62,7 @@ export default function Navigation({
     const dates = Object.keys(days);
     const mostRecentDate = dates[dates.length - 1];
     if (dates.length === 0 || DateTime.now().toISODate() !== mostRecentDate) {
-      console.log('creating new day')
       dispatch(newDay(habits));
-    } else {
-      console.log('DAYS', days);
     }
   }
   return (
