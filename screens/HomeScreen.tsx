@@ -6,7 +6,7 @@ import { ChartContainer } from '../components/ChartContainer';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
 import { Colors } from '../constants';
 import { RootState } from '../redux/store';
-import { DayType, HabitType, IDayType, IHabitType } from '../types';
+import { HabitType, IDayType, IHabitType } from '../types';
 import { getDaysInTimeRange } from '../utils/day';
 
 export function HomeScreen() {
@@ -16,22 +16,22 @@ export function HomeScreen() {
   const habits = useSelector<RootState, IHabitType>(
     (state) => state.habitReducer.habits
   );
-  const today = useSelector<RootState, DayType>(
-    (state) => state.dayReducer.today
-  );
+
+  const today = DateTime.now().toISODate();
 
   const [daysPastWeek, setDaysPastWeek] = useState<IDayType>({});
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
   const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
+  const [habitCount, setHabitCount] = useState(0);
+  const [habitPercentComplete, setHabitPercentComplete] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getDataForPastWeek();
     setHabits();
-    console.log('today', today.habitPercentComplete, today.habitCount)
-  }, [today]);
+  }, []);
 
   function getDataForPastWeek() {
     const tempStartDate = DateTime.now().minus({ week: 1 }).toISODate();
@@ -44,10 +44,16 @@ export function HomeScreen() {
   }
 
   function setHabits() {
-    const todayFinishedHabits = today.finishedHabitIds.map((id) => habits[id]);
-    const todayRemainingHabits = today.remainingHabitIds.map((id) => habits[id]);
+    const todayFinishedHabits = days[today].finishedHabitIds.map(
+      (id) => habits[id]
+    );
+    const todayRemainingHabits = days[today].remainingHabitIds.map(
+      (id) => habits[id]
+    );
     setFinishedHabits(todayFinishedHabits);
     setRemainingHabits(todayRemainingHabits);
+    // setHabitCount(todayFinishedHabits ? todayFinishedHabits.length : 0)
+    // setHabitPercentComplete()
   }
 
   return loading ? (
@@ -61,8 +67,8 @@ export function HomeScreen() {
       <HabitSummaryCard
         remainingHabits={remainingHabits}
         finishedHabits={finishedHabits}
-        habitCount={today.habitCount}
-        habitPercentComplete={today.habitPercentComplete}
+        habitCount={days[today].habitCount}
+        habitPercentComplete={days[today].habitPercentComplete}
       />
 
       <ChartContainer

@@ -1,5 +1,5 @@
 export const SET_DAY = 'SET_DAY'
-export const CLEAR_DAY = 'CLEAR_DAY'
+export const NEW_DAY = 'NEW_DAY'
 
 export const FINISH_DAY = 'FINISH_DAY';
 export const FINISH_DAY_SUCCESS = 'FINISH_DAY_SUCCESS';

@@ -1,4 +1,5 @@
 import { AntDesign } from '@expo/vector-icons';
+import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -24,7 +25,7 @@ import {
   updateHabit,
 } from '../redux/actions/HabitsActions';
 import { RootState } from '../redux/store';
-import { DayType, HabitType, IHabitType } from '../types';
+import { DayType, HabitType, IDayType, IHabitType } from '../types';
 import getDateString from '../utils';
 
 export function HabitsScreen({
@@ -54,12 +55,14 @@ export function HabitsScreen({
   const habits = useSelector<RootState, IHabitType>(
     (state) => state.habitReducer.habits
   );
-  const today = useSelector<RootState, DayType>(
-    (state) => state.dayReducer.today
+  const today = useSelector<RootState, IDayType>(
+    (state) => state.dayReducer
   );
-
+  
   // FIXME: should useLayoutEffect be used for DOM manipulation (i.e. inputRef)?
   useEffect(() => {
+    console.log('today', today)
+
     setCurrentDate(getDateString(new Date().toISOString()).date);
     if (isAddingHabit || isEditingHabit) {
       inputRef.current.focus();
@@ -81,7 +84,7 @@ export function HabitsScreen({
     setLoading(false);
     // TODO: figure out how to use useSelector to update state.
     // right now, putting habits in there doesn't update state
-  }, [isAddingHabit, isEditingHabit, habitReducer, dayReducer]);
+  }, [isAddingHabit, isEditingHabit, habitReducer, dayReducer, today]);
 
   /**
    * Toggle the habit "checked" status

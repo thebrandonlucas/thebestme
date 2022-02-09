@@ -1,6 +1,5 @@
-import { IHabitType } from './../../__fixtures__/component/types';
-import { DayType, IDayType } from './../../types';
-import {SET_DAY, FINISH_DAY, CLEAR_DAY, SELECT_DAY} from './types/DayActions.types';
+import { DayType, IDayType, IHabitType } from './../../types';
+import {SET_DAY, FINISH_DAY, NEW_DAY, SELECT_DAY} from './types/DayActions.types';
 
 export const setDayInfo = (dayInfo: DayType) => {
     return {
@@ -20,10 +19,10 @@ export function saveDay(dayInfo: IDayType) {
  * Sets dayInfo object to original state, sets each habit back to remainingHabits
  * @returns 
  */
-export const clearDay = (habits: IHabitType) => {
+export const newDay = (habits: IHabitType) => {
     return {
-        type: CLEAR_DAY,
-        payload: habits
+        type: NEW_DAY,
+        payload: Object.keys(habits)
     }
 }
 

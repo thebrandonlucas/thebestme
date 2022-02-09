@@ -9,14 +9,17 @@ import {
   NavigationContainer,
 } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { ColorSchemeName } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import Descriptions from '../constants/Descriptions';
 import firebase from '../firebase';
+import { newDay } from '../redux/actions/DayActions';
+import { RootState } from '../redux/store';
 import ConfigureMyCircleFriendsScreen from '../screens/ConfigureMyCircleFriendsScreen';
 import ConfigureMyCircleMessageScreen from '../screens/ConfigureMyCircleMessageScreen';
-import FinishDayScreen from '../screens/FinishDayScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import InfoScreen from '../screens/InfoScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -27,7 +30,8 @@ import {
   ConfigureMyCircleFriendsParamList,
   ConfigureMyCircleMessageParamList,
   DescriptionType,
-  FinishDayParamList,
+  IDayType,
+  IHabitType,
   InfoParamList,
   RootStackParamList,
   SettingsParamList,
@@ -40,6 +44,30 @@ export default function Navigation({
 }: {
   colorScheme: ColorSchemeName;
 }) {
+  const days = useSelector<RootState, IDayType>(
+    (state) => state.dayReducer.days
+  );
+  const habits = useSelector<RootState, IHabitType>(
+    (state) => state.habitReducer.habits
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (days && habits) {
+      checkIfNewDate();
+    }
+  }, [days, habits]);
+
+  function checkIfNewDate() {
+    const dates = Object.keys(days);
+    const mostRecentDate = dates[dates.length - 1];
+    if (dates.length === 0 || DateTime.now().toISODate() !== mostRecentDate) {
+      console.log('creating new day')
+      dispatch(newDay(habits));
+    } else {
+      console.log('DAYS', days);
+    }
+  }
   return (
     <NavigationContainer
       linking={LinkingConfiguration}

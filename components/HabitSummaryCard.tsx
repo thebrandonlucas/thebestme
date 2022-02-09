@@ -10,10 +10,10 @@ export function HabitSummaryCard({
   habitCount,
   habitPercentComplete,
 }: HabitSummaryCardType) {
-  
+
   const finishedHabitCount =
     habitCount && finishedHabits
-      ? Object.keys(finishedHabits).length / habitCount
+      ? Object.keys(finishedHabits).length
       : 0;
 
   const HabitScroll = ({ habits }) => (

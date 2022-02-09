@@ -180,12 +180,10 @@ export type UnionJournalEntryType =
   | EndOfDayNotesEntryType;
 
 export type DayType = {
-  id: string;
   date: string;
   finishedHabitIds: Array<string>;
   remainingHabitIds: Array<string>;
   cbtIds: Array<string>;
-  awareIds: Array<string>;
   journalIds: Array<string>;
   mood: Array<ValidMood>;
   endOfDayNotes: string[];
