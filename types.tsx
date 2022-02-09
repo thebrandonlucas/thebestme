@@ -297,8 +297,6 @@ export type HabitReducerType = {
 
 export type DayReducerType = {
   days: IDayType;
-  selectedDay: DayType;
-  today: DayType;
 };
 
 export type HabitSummaryCardType = {

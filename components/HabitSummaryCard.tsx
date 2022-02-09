@@ -10,6 +10,12 @@ export function HabitSummaryCard({
   habitCount,
   habitPercentComplete,
 }: HabitSummaryCardType) {
+  
+  const finishedHabitCount =
+    habitCount && finishedHabits
+      ? Object.keys(finishedHabits).length / habitCount
+      : 0;
+
   const HabitScroll = ({ habits }) => (
     <>
       <ScrollView style={styles.habitScroll}>
@@ -25,26 +31,24 @@ export function HabitSummaryCard({
   );
 
   return (
-      <Card style={styles.habitCard}>
-        <Text style={styles.title}>Habits</Text>
-        <View style={styles.textRow}>
-          <Text style={styles.bold}>
-            Completed: {finishedHabits.length} / {habitCount}
-          </Text>
-          <Text style={styles.bold}>
-            Percent Complete: {habitPercentComplete}%
-          </Text>
-        </View>
-        <View style={styles.rowContainer}>
-          <Text style={styles.bold}>Remaining</Text>
-          <Text style={styles.bold}>Finished</Text>
-        </View>
-        <View style={styles.separator} />
-        <View style={styles.rowContainer}>
-          <HabitScroll habits={remainingHabits} />
-          <HabitScroll habits={finishedHabits} />
-        </View>
-      </Card>
+    <Card style={styles.habitCard}>
+      <Text style={styles.title}>Habits</Text>
+      <View style={styles.textRow}>
+        <Text style={styles.bold}>Completed: {finishedHabitCount}</Text>
+        <Text style={styles.bold}>
+          Percent Complete: {habitPercentComplete}%
+        </Text>
+      </View>
+      <View style={styles.rowContainer}>
+        <Text style={styles.bold}>Remaining</Text>
+        <Text style={styles.bold}>Finished</Text>
+      </View>
+      <View style={styles.separator} />
+      <View style={styles.rowContainer}>
+        <HabitScroll habits={remainingHabits} />
+        <HabitScroll habits={finishedHabits} />
+      </View>
+    </Card>
   );
 }
 

@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker';
-import { IDayType } from '../../types';
+import { IDayType, IHabitType } from '../../types';
 import {
   getHabitCount,
   getHabitCountForMood,
@@ -7,10 +7,10 @@ import {
   getHabitFrequency,
   getHabitFrequencyForMoodInTimeRange,
   getHabitRemainingDays,
+  getHabitsFromIds,
   getTopHabitFrequenciesPerMood,
   getTopHabitFrequencyPerMood,
 } from '../../utils/habit';
-import { IHabitType } from '../../__fixtures__/component/types';
 import { daysFixture } from '../../__fixtures__/factory/day';
 import { habitsFixture } from '../../__fixtures__/factory/habit';
 
@@ -18,6 +18,7 @@ import { habitsFixture } from '../../__fixtures__/factory/habit';
 describe('Habit', () => {
   let selectedHabitId: string;
   let habits: IHabitType;
+  let singleHabit: IHabitType;
   let daysWithSelectedHabitCount1: IDayType;
   let daysWithSelectedHabitCount3: IDayType;
   let daysWithSelectedHabitCount5: IDayType;
@@ -42,6 +43,7 @@ describe('Habit', () => {
       { text: 'pray', id: 'prayId' },
       { text: 'bass', id: 'bassId' },
     ]);
+    singleHabit = habitsFixture([{ text: 'running', id: 'runningId' }]);
     // (finished) Days without Mood override
     daysWithSelectedHabitCount1 = daysFixture([
       { finishedHabitIds: [selectedHabitId] },
@@ -668,6 +670,26 @@ describe('Habit', () => {
           'Great'
         )
       ).toBe(1);
+    });
+  });
+
+  describe('getHabitsFromIds', () => {
+    it('should get 1 habit from 1 id', () => {
+      expect(getHabitsFromIds(singleHabit, ['runningId'])).toEqual(
+        habitsFixture([{ text: 'running', id: 'runningId' }])
+      );
+    });
+    it('should get 4 habits from 4 ids', () => {
+      expect(
+        getHabitsFromIds(habits, ['runningId', 'hangoutId', 'prayId', 'bassId'])
+      ).toEqual(
+        habitsFixture([
+          { text: 'running', id: 'runningId' },
+          { text: 'hangout', id: 'hangoutId' },
+          { text: 'bass', id: 'bassId' },
+          { text: 'pray', id: 'prayId' },
+        ])
+      );
     });
   });
 });

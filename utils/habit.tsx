@@ -179,5 +179,18 @@ export function getHabitCountForMood(
   return getHabitCount(habitId, daysWithMood, checkFinishedHabits);
 }
 
+/**
+ * Retrieve habits from a set of ids
+ * @param habits - The habits to retrieve from
+ * @param ids - An array of habit ids
+ */
+export function getHabitsFromIds(habits: IHabitType, ids: string[]) {
+  let selectedHabits: IHabitType = {};
+  for (const id of ids) {
+    selectedHabits[id] = habits[id];
+  }
+  return selectedHabits;
+}
+
 // TODO: associate mood count with activities and not just days/times
 export function getMoodCountForActivity() {}
