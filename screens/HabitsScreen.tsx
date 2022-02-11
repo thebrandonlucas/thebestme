@@ -1,5 +1,4 @@
 import { AntDesign } from '@expo/vector-icons';
-import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -49,6 +48,9 @@ export function HabitsScreen({
   const [remainingHabits, setRemainingHabits] = useState<Array<HabitType>>([]);
   const [finishedHabits, setFinishedHabits] = useState<Array<HabitType>>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [areHabitsEmpty, setAreHabitsEmpty] = useState(
+    Object.keys(habitReducer.habits).length === 0
+  );
 
   const colorScheme = useColorScheme();
   const inputRef = useRef(null);
@@ -56,14 +58,12 @@ export function HabitsScreen({
   const habits = useSelector<RootState, IHabitType>(
     (state) => state.habitReducer.habits
   );
-  const today = getMostRecentDay(useSelector<RootState, IDayType>(
-    (state) => state.dayReducer.days
-  ));
-  
+  const today = getMostRecentDay(
+    useSelector<RootState, IDayType>((state) => state.dayReducer.days)
+  );
+
   // FIXME: should useLayoutEffect be used for DOM manipulation (i.e. inputRef)?
   useEffect(() => {
-    console.log('today', today)
-
     setCurrentDate(getDateString(new Date().toISOString()).date);
     if (isAddingHabit || isEditingHabit) {
       inputRef.current.focus();
@@ -82,6 +82,14 @@ export function HabitsScreen({
     }
     setRemainingHabits(tempRemainingHabits);
     setFinishedHabits(tempFinishedHabits);
+    console.log('here', tempRemainingHabits);
+    if (tempRemainingHabits.length + tempFinishedHabits.length === 0) {
+      console.log('habitsareempty');
+      setAreHabitsEmpty(true);
+    } else {
+      console.log('habitsarentempty');
+      setAreHabitsEmpty(false);
+    }
     setLoading(false);
     // TODO: figure out how to use useSelector to update state.
     // right now, putting habits in there doesn't update state
@@ -126,12 +134,12 @@ export function HabitsScreen({
         },
       };
       addHabit(habit);
-      const tempHabitIds: string[] = [
-        ...today.finishedHabitIds,
-        ...today.remainingHabitIds,
-        id,
-      ];
-      setDayInfo({ ...today, habitIds: tempHabitIds });
+      const dayInfo: DayType = {
+        ...today,
+        remainingHabitIds: [...today.remainingHabitIds, id],
+      };
+      console.log('today', today);
+      setDayInfo(dayInfo);
       setIsAddingHabit(false);
       setHabitText('');
       setHabitChecked(false);
@@ -243,68 +251,75 @@ export function HabitsScreen({
           </>
         )}
       </View>
-      <View style={styles.cardContainer}>
-        {!loading ? (
-          <>
-            <Card style={{ marginBottom: 10 }}>
-              <Text style={styles.title}>Remaining</Text>
-              <ScrollView style={styles.scrollList}>
-                {remainingHabits.length ? (
-                  <>
-                    {remainingHabits.map((habit) => (
-                      <HabitContainer
-                        key={habit.id}
-                        habit={habit}
-                        clickToggle={clickToggle}
-                        clickEdit={clickEdit}
-                        isAddingHabit={isAddingHabit}
-                        isEditingHabit={isEditingHabit}
-                      />
-                    ))}
-                  </>
-                ) : (
-                  <Text style={styles.habitCardEmptyMessage}>
-                    You've completed all your habits today!
-                  </Text>
-                )}
-              </ScrollView>
-            </Card>
-            <Card>
-              <Text style={styles.title}>Finished</Text>
-              <ScrollView style={styles.scrollList}>
-                {finishedHabits.length ? (
-                  <>
-                    {finishedHabits.map((habit) => (
-                      <HabitContainer
-                        key={habit.id}
-                        habit={habit}
-                        clickToggle={clickToggle}
-                        clickEdit={clickEdit}
-                        isAddingHabit={isAddingHabit}
-                        isEditingHabit={isEditingHabit}
-                      />
-                    ))}
-                  </>
-                ) : (
-                  <Text style={styles.habitCardEmptyMessage}>
-                    When you've finished a habit, bring it on down!
-                  </Text>
-                )}
-              </ScrollView>
-            </Card>
-            <View style={styles.buttonContainer}>
-              <ThemeButton
-                title="Finish Day"
-                onPress={goToFinishDayScreen}
-                testID="finishDay"
-              />
-            </View>
-          </>
-        ) : (
-          <ActivityIndicator size="large" color={Colors.themeColor} />
-        )}
-      </View>
-      {error && <Text>{JSON.stringify(error)}</Text>}
+      {areHabitsEmpty ? (
+        <Text style={styles.habitCardEmptyMessage}>
+          It looks like you don't have any habits yet. Click the{' '}
+          <AntDesign name="plus" size={24} color={Colors.themeColor} /> icon to
+          add some!{' '}
+        </Text>
+      ) : (
+        <View style={styles.cardContainer}>
+          {!loading ? (
+            <>
+              <Card style={{ marginBottom: 10 }}>
+                <Text style={styles.title}>Remaining</Text>
+                <ScrollView style={styles.scrollList}>
+                  {remainingHabits.length ? (
+                    <>
+                      {remainingHabits.map((habit) => (
+                        <HabitContainer
+                          key={habit.id}
+                          habit={habit}
+                          clickToggle={clickToggle}
+                          clickEdit={clickEdit}
+                          isAddingHabit={isAddingHabit}
+                          isEditingHabit={isEditingHabit}
+                        />
+                      ))}
+                    </>
+                  ) : (
+                    <Text style={styles.habitCardEmptyMessage}>
+                      You've completed all your habits today!
+                    </Text>
+                  )}
+                </ScrollView>
+              </Card>
+              <Card>
+                <Text style={styles.title}>Finished</Text>
+                <ScrollView style={styles.scrollList}>
+                  {finishedHabits.length ? (
+                    <>
+                      {finishedHabits.map((habit) => (
+                        <HabitContainer
+                          key={habit.id}
+                          habit={habit}
+                          clickToggle={clickToggle}
+                          clickEdit={clickEdit}
+                          isAddingHabit={isAddingHabit}
+                          isEditingHabit={isEditingHabit}
+                        />
+                      ))}
+                    </>
+                  ) : (
+                    <Text style={styles.habitCardEmptyMessage}>
+                      When you've finished a habit, bring it on down!
+                    </Text>
+                  )}
+                </ScrollView>
+              </Card>
+              <View style={styles.buttonContainer}>
+                <ThemeButton
+                  title="Finish Day"
+                  onPress={goToFinishDayScreen}
+                  testID="finishDay"
+                />
+              </View>
+            </>
+          ) : (
+            <ActivityIndicator size="large" color={Colors.themeColor} />
+          )}
+        </View>
+      )}
     </View>
   );
 }

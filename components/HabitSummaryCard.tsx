@@ -16,6 +16,8 @@ export function HabitSummaryCard({
       ? Object.keys(finishedHabits).length
       : 0;
 
+      console.log('remaininghab', remainingHabits)
+      console.log('finishedhab', finishedHabits)
   const HabitScroll = ({ habits }) => (
     <>
       <ScrollView style={styles.habitScroll}>

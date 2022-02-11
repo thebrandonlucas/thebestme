@@ -12,6 +12,7 @@ export function replaceHabitFrequencyIdsWithText(
 ): HabitFrequency[] {
   let frequenciesWithName: HabitFrequency[] = [];
   for (const habitFrequency of habitFrequencies) {
+    console.log('habbb', habits, habitFrequency)
     const habitName: string = habits[habitFrequency.habit].text;
     frequenciesWithName.push({
       habit: habitName,

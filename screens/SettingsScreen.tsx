@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { Alert, Button, Platform, StyleSheet } from 'react-native';
@@ -8,7 +9,7 @@ import { Text, View } from '../components/Themed';
 import firebase from '../firebase';
 import { saveDay } from '../redux/actions/DayActions';
 import { addHabit } from '../redux/actions/HabitsActions';
-import { HabitType, IDayType } from '../types';
+import { DayType, HabitType, IDayType } from '../types';
 import { habitsFixture } from '../__fixtures__/factory/habit';
 import { generateTestDaysWithHabitsRandom } from '../__fixtures__/testutil';
 

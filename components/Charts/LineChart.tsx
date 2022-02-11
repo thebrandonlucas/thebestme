@@ -10,6 +10,7 @@ import Colors from '../../constants/Colors';
 import { FrequencyByDate, IDayType, ValidMood } from '../../types';
 import { getDaysInTimeRange } from '../../utils/day';
 import { getMoodFrequencyByDates } from '../../utils/mood';
+import { Text } from '../Themed';
 
 export function LineChart({
   days,
@@ -23,10 +24,10 @@ export function LineChart({
   selectedMood: ValidMood | 'all';
 }) {
   const [happyLineChartData, setHappyLineChartData] =
-    useState<FrequencyByDate[]>();
+    useState<FrequencyByDate[]>([]);
   const [neutralLineChartData, setNeutralLineChartData] =
-    useState<FrequencyByDate[]>();
-  const [sadLineChartData, setSadLineChartData] = useState<FrequencyByDate[]>();
+    useState<FrequencyByDate[]>([]);
+  const [sadLineChartData, setSadLineChartData] = useState<FrequencyByDate[]>([]);
 
   useEffect(() => {
     configureLineChart();
@@ -79,6 +80,18 @@ export function LineChart({
       },
     },
   };
+
+  if (
+    happyLineChartData.length === 0 &&
+    neutralLineChartData.length === 0 &&
+    sadLineChartData.length === 0
+  ) {
+    return (
+      <Text>
+        No mood data to show for line chart given selected days and mood(s)
+      </Text>
+    );
+  }
   return (
     <>
       <VictoryChart theme={barChartStyle} scale={'time'}>

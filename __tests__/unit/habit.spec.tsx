@@ -6,19 +6,27 @@ import {
   getHabitFinishedDays,
   getHabitFrequency,
   getHabitFrequencyForMoodInTimeRange,
+  getHabitIds,
+  getHabitPercentComplete,
   getHabitRemainingDays,
   getHabitsFromIds,
+  getHabitsFromIdsAsArray,
   getTopHabitFrequenciesPerMood,
   getTopHabitFrequencyPerMood,
 } from '../../utils/habit';
 import { daysFixture } from '../../__fixtures__/factory/day';
-import { habitsFixture } from '../../__fixtures__/factory/habit';
+import { habitFixture, habitsFixture } from '../../__fixtures__/factory/habit';
 
 // TODO: should we add beforeAll() somewhere here?
 describe('Habit', () => {
   let selectedHabitId: string;
   let habits: IHabitType;
   let singleHabit: IHabitType;
+  let singleHabitRemaining: IHabitType;
+  let singleHabitFinished: IHabitType;
+  let mixedHabits: IHabitType;
+  let emptyHabits: IHabitType = {};
+
   let daysWithSelectedHabitCount1: IDayType;
   let daysWithSelectedHabitCount3: IDayType;
   let daysWithSelectedHabitCount5: IDayType;
@@ -44,6 +52,19 @@ describe('Habit', () => {
       { text: 'bass', id: 'bassId' },
     ]);
     singleHabit = habitsFixture([{ text: 'running', id: 'runningId' }]);
+    singleHabitRemaining = habitsFixture([
+      { text: 'running', id: 'runningId', checked: false },
+    ]);
+    singleHabitFinished = habitsFixture([
+      { text: 'running', id: 'runningId', checked: true },
+    ]);
+    mixedHabits = habitsFixture([
+      { text: 'running', id: 'runningId', checked: false },
+      { text: 'homework', id: 'homeworkId', checked: true },
+      { text: 'chores', id: 'choresId', checked: true },
+      { text: 'workout', id: 'workoutId', checked: false },
+    ]);
+
     // (finished) Days without Mood override
     daysWithSelectedHabitCount1 = daysFixture([
       { finishedHabitIds: [selectedHabitId] },
@@ -690,6 +711,100 @@ describe('Habit', () => {
           { text: 'pray', id: 'prayId' },
         ])
       );
+    });
+  });
+
+  describe('getHabitsFromIdsAsArray', () => {
+    it('should get 1 habit from 1 id', () => {
+      expect(getHabitsFromIdsAsArray(singleHabit, ['runningId'])).toEqual([
+        habitFixture({ text: 'running', id: 'runningId' }),
+      ]);
+    });
+    it('should get 4 habits from 4 ids', () => {
+      expect(
+        getHabitsFromIdsAsArray(habits, [
+          'runningId',
+          'hangoutId',
+          'bassId',
+          'prayId',
+        ])
+      ).toEqual([
+        habitFixture({ text: 'running', id: 'runningId' }),
+        habitFixture({ text: 'hangout', id: 'hangoutId' }),
+        habitFixture({ text: 'bass', id: 'bassId' }),
+        habitFixture({ text: 'pray', id: 'prayId' }),
+      ]);
+    });
+    it('should get 1 finished habit from 1 id', () => {
+      expect(
+        getHabitsFromIdsAsArray(singleHabitFinished, ['runningId'])
+      ).toEqual([
+        habitFixture({ text: 'running', id: 'runningId', checked: true }),
+      ]);
+    });
+    it('should get 2 finished habits from 4 ids', () => {
+      expect(
+        getHabitsFromIdsAsArray(mixedHabits, ['homeworkId', 'choresId'])
+      ).toEqual([
+        habitFixture({ text: 'homework', id: 'homeworkId', checked: true }),
+        habitFixture({ text: 'chores', id: 'choresId', checked: true }),
+      ]);
+    });
+  });
+
+  describe('getHabitPercentComplete', () => {
+    it('should return 0 when theres 10 total habits but 0 finished', () => {
+      expect(getHabitPercentComplete(0, 10)).toBe(0);
+    });
+    it('should return 1 when theres 1 habit complete and 1 total habit', () => {
+      expect(getHabitPercentComplete(1, 1)).toBe(100);
+    });
+    it('should return 33 percent complete for 1 habit out of 3 completed', () => {
+      expect(getHabitPercentComplete(1, 3)).toBe(33.33);
+    });
+    it('should return 0 when theres 0 habits and 0 finished', () => {
+      expect(getHabitPercentComplete(0, 0)).toBe(0);
+    });
+  });
+
+  describe('getHabitIds', () => {
+    it('should get 1 habit id when not specifying whether it should be finished or remaining', () => {
+      expect(getHabitIds(singleHabit)).toEqual(['runningId']);
+    });
+    it('should get 1 habit when specifying finished', () => {
+      expect(getHabitIds(singleHabitFinished, true)).toEqual(['runningId']);
+    });
+    it('should get 1 habit when specifying remaining', () => {
+      expect(getHabitIds(singleHabitRemaining, false)).toEqual(['runningId']);
+    });
+    it('should get 4 habit ids when not specifying finished or remaining', () => {
+      expect(getHabitIds(mixedHabits)).toEqual([
+        'runningId',
+        'homeworkId',
+        'choresId',
+        'workoutId',
+      ]);
+    });
+    it('should get 2 habits when specifying finished', () => {
+      expect(getHabitIds(mixedHabits, true)).toEqual([
+        'homeworkId',
+        'choresId',
+      ]);
+    });
+    it('should get 2 habits when specifying remaining', () => {
+      expect(getHabitIds(mixedHabits, false)).toEqual([
+        'runningId',
+        'workoutId',
+      ]);
+    });
+    it('should get 0 habits when specifying remaining', () => {
+      expect(getHabitIds(singleHabitFinished, false)).toEqual([]);
+    });
+    it('should get 0 habits when specifying finished', () => {
+      expect(getHabitIds(singleHabitRemaining, true)).toEqual([]);
+    });
+    it('should get 0 habits when not specifying finished or remaining', () => {
+      expect(getHabitIds(emptyHabits)).toEqual([]);
     });
   });
 });

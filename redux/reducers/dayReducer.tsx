@@ -24,6 +24,7 @@ const dayReducer = (state = initialState, action) => {
     case FINISH_DAY:
       tempDays = { ...state.days, ...action.payload };
       return { ...state, days: tempDays };
+      // return { ...state, days: {} };
     case NEW_DAY:
       const newDay: DayType = {
         date: DateTime.now().toISODate(),
@@ -36,10 +37,10 @@ const dayReducer = (state = initialState, action) => {
         finishedHabitCount: 0,
         habitCount: 0,
         habitPercentComplete: 0,
-        finishDayClickedCount: 0,
       };
       tempDays = { ...state.days, [newDay.date]: { ...newDay } };
       return { ...state, days: tempDays };
+
     default:
       return state;
   }

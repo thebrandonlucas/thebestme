@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet, useColorScheme } from 'react-native';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import JournalListPage from '../components/JournalListPage';
 import { setDayInfo } from '../redux/actions/DayActions';
@@ -11,7 +11,9 @@ import {
   saveJournal,
   updateJournal,
 } from '../redux/actions/JournalActions';
-import { DayType, JournalEntryType } from '../types';
+import { RootState } from '../redux/store';
+import { DayType, IDayType, JournalEntryType } from '../types';
+import { getMostRecentDay } from '../utils/day';
 import getDateString from '../utils/index';
 
 export function PrimaryJournalScreen({
@@ -21,7 +23,7 @@ export function PrimaryJournalScreen({
   saveJournal,
   updateJournal,
   deleteJournal,
-  today,
+  // today,
 }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [journalId, setJournalId] = useState<string>('');
@@ -32,6 +34,10 @@ export function PrimaryJournalScreen({
   const [date, setDate] = useState<string>('');
   const [journals, setJournals] = useState<JournalEntryType>();
   const [loading, setLoading] = useState(true);
+
+  const today = getMostRecentDay(
+    useSelector<RootState, IDayType>((state) => state.dayReducer.days)
+  );
 
   useEffect(() => {
     if (Object.keys(journalReducer.journals).length !== 0) {

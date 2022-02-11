@@ -9,6 +9,7 @@ export const setDayInfo = (dayInfo: DayType) => {
 }
 
 export function saveDay(dayInfo: IDayType) {
+  console.log('saveday', dayInfo)
     return {
         type: FINISH_DAY,
         payload: dayInfo

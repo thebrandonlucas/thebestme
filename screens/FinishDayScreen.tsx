@@ -10,7 +10,13 @@ import { Card, Text, View } from '../components/Themed';
 import Colors from '../constants/Colors';
 import { saveDay } from '../redux/actions/DayActions';
 import { resetHabits } from '../redux/actions/HabitsActions';
-import { DayType, HabitType, IDayType, IHabitType } from '../types';
+import { DayType, HabitType, IDayType, IHabitType, ValidMood } from '../types';
+import { getMostRecentDay } from '../utils/day';
+import {
+  getHabitIds,
+  getHabitPercentComplete,
+  getHabitsFromIdsAsArray,
+} from '../utils/habit';
 
 function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
   const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
@@ -18,62 +24,66 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
   const [habitCount, setHabitCount] = useState<number>(0);
   const [habitPercentComplete, setHabitPercentComplete] = useState<number>(0);
   const [endOfDayNotes, setEndOfDayNotes] = useState<string>('');
-  const [todayDate, setTodayDate] = useState(DateTime.now().toISODate());
   const [finishedHabitCount, setFinishedHabitCount] = useState(0);
 
   const [journalEntryCount, setJournalEntryCount] = useState(0);
   const [cbtEntryCount, setCbtEntryCount] = useState(0);
-  const [awareEntryCount, setAwareEntryCount] = useState(0);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     const { habits } = habitReducer;
-    const { today } = dayReducer;
-    const tempRemainingHabits: HabitType[] = [];
-    const tempFinishedHabits: HabitType[] = [];
-    for (
-      let i = 0;
-      i < today.finishedHabitIds.length + today.remainingHabitIds.length;
-      i++
-    ) {
-      const id = today.habitIds[i];
-      if (habits[id].checked) {
-        tempFinishedHabits.push(habits[id]);
-      } else {
-        tempRemainingHabits.push(habits[id]);
-      }
-    }
-    const tempHabitCount =
-      tempRemainingHabits.length + tempFinishedHabits.length;
-    setHabitCount(tempHabitCount);
-    setFinishedHabitCount(tempFinishedHabits.length);
-    const percentComplete = 100 * (tempFinishedHabits.length / tempHabitCount);
-    // Round percent complete to two decimal places
-    // @see https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places (comment by Marquizzo)
-    setHabitPercentComplete(Math.round(percentComplete * 100) / 100);
-    setRemainingHabits(tempRemainingHabits);
-    setFinishedHabits(tempFinishedHabits);
+    const today = getMostRecentDay(dayReducer.days);
+    let tempRemainingHabits: HabitType[];
+    let tempFinishedHabits: HabitType[];
+    if (today) {
+      tempRemainingHabits = getHabitsFromIdsAsArray(
+        habits,
+        today.remainingHabitIds
+      );
+      tempFinishedHabits = getHabitsFromIdsAsArray(
+        habits,
+        today.finishedHabitIds
+      );
 
-    setJournalEntryCount(today.journalIds.length);
-    setCbtEntryCount(today.cbtIds.length);
-    setAwareEntryCount(today.awareIds.length);
+      const tempHabitCount =
+        tempRemainingHabits.length + tempFinishedHabits.length;
+
+      const percentComplete = getHabitPercentComplete(
+        tempFinishedHabits.length,
+        tempHabitCount
+      );
+      // Round percent complete to two decimal places
+      // @see https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places (comment by Marquizzo)
+      setRemainingHabits(tempRemainingHabits);
+      setFinishedHabits(tempFinishedHabits);
+      setJournalEntryCount(today.journalIds.length);
+      setCbtEntryCount(today.cbtIds.length);
+      setHabitCount(tempHabitCount);
+      setFinishedHabitCount(tempFinishedHabits.length);
+      setHabitPercentComplete(percentComplete);
+    } else {
+      setRemainingHabits([]);
+      setFinishedHabits([]);
+      setJournalEntryCount(0);
+      setCbtEntryCount(0);
+      setHabitCount(0);
+      setFinishedHabitCount(0);
+      setHabitPercentComplete(0);
+    }
   }, [dayReducer, habitReducer]);
 
-  function finishDay(mood: string) {
+  function finishDay(mood: ValidMood) {
     const date = DateTime.now().toISODate();
-    const remainingHabitIds: string[] = remainingHabits.map(
-      (habit) => habit.id
-    );
-    const finishedHabitIds: string[] = finishedHabits.map((habit) => habit.id);
-    const habitIds: string[] = [...remainingHabitIds, ...finishedHabitIds];
+    const remainingHabitIds: string[] = getHabitIds(habitReducer.habits, false);
+    const finishedHabitIds: string[] = getHabitIds(habitReducer.habits, true);
 
     const currentDayInfo: DayType = dayReducer.days[date];
     const dayInfo: IDayType = {
       [date]: {
-        ...dayReducer.today,
         date,
-        habitIds,
+        remainingHabitIds,
+        finishedHabitIds,
         finishedHabitCount,
         habitCount,
         habitPercentComplete,
@@ -84,6 +94,8 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
             : currentDayInfo
             ? currentDayInfo.endOfDayNotes
             : [],
+        cbtIds: [],
+        journalIds: [],
       },
     };
     saveDay(dayInfo);
@@ -110,7 +122,6 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
         <View style={[styles.rowContainer, { marginVertical: 5 }]}>
           <Text style={styles.bold}>Primary: {journalEntryCount}</Text>
           <Text style={styles.bold}>CBT: {cbtEntryCount}</Text>
-          <Text style={styles.bold}>AWARE: {awareEntryCount}</Text>
         </View>
       </Card>
       <Text style={styles.title}>How are you feeling?</Text>

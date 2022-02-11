@@ -190,7 +190,6 @@ export type DayType = {
   finishedHabitCount: number;
   habitCount: number;
   habitPercentComplete: number;
-  finishDayClickedCount: number;
 };
 
 export type OptionalDayType = {

@@ -9,7 +9,7 @@ import {
   VictoryLegend,
 } from 'victory-native';
 import Colors from '../../constants/Colors';
-import { HabitFrequency, ValidMood } from '../../types';
+import { HabitFrequency, IDayType, IHabitType, ValidMood } from '../../types';
 import { getDaysInTimeRange } from '../../utils/day';
 import {
   getColorScale,
@@ -19,7 +19,7 @@ import {
   getHabitFrequencyForMoodInTimeRange,
   getTopHabitFrequenciesPerMood,
 } from '../../utils/habit';
-import { IDayType, IHabitType } from '../../__fixtures__/component/types';
+import { Text } from '../Themed';
 
 export function BarChart({
   days,
@@ -183,6 +183,19 @@ export function BarChart({
       },
     },
   };
+
+  if (
+    barChartDataHappy.length === 0 &&
+    barChartDataNeutral.length === 0 &&
+    barChartDataSad.length === 0
+  ) {
+    return (
+      <Text>
+        No mood data to show for bar chart given selected days, mood(s), and
+        habit(s)
+      </Text>
+    );
+  }
 
   return (
     <>

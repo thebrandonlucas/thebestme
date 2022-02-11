@@ -60,7 +60,7 @@ export default function JournalListPage(props: JournalListPageType) {
       displayText = getGuidedJournalDisplayText(guidedJournal);
     } else {
       const primaryJournal: JournalEntryType = props.entries[item];
-      displayText = primaryJournal.text;
+      displayText = primaryJournal ? primaryJournal.text : '';
     }
     return (
       props.entries[item] && (

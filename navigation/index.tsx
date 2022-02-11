@@ -61,7 +61,9 @@ export default function Navigation({
   function checkIfNewDate() {
     const dates = Object.keys(days);
     const mostRecentDate = dates[dates.length - 1];
+    console.log('checkIfNewDate', dates, mostRecentDate)
     if (dates.length === 0 || DateTime.now().toISODate() !== mostRecentDate) {
+      console.log('checking new date')
       dispatch(newDay(habits));
     }
   }

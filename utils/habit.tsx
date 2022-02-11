@@ -1,4 +1,10 @@
-import { HabitFrequency, IDayType, IHabitType, ValidMood } from '../types';
+import {
+  HabitFrequency,
+  HabitType,
+  IDayType,
+  IHabitType,
+  ValidMood,
+} from '../types';
 import {
   getDaysWithSelectedMood,
   getNumberOfHabitsWithSelectedMood,
@@ -184,12 +190,66 @@ export function getHabitCountForMood(
  * @param habits - The habits to retrieve from
  * @param ids - An array of habit ids
  */
-export function getHabitsFromIds(habits: IHabitType, ids: string[]) {
+export function getHabitsFromIds(
+  habits: IHabitType,
+  ids: string[]
+): IHabitType {
   let selectedHabits: IHabitType = {};
   for (const id of ids) {
     selectedHabits[id] = habits[id];
   }
   return selectedHabits;
+}
+
+/**
+ * Retrieve habits from a set of ids and return as array
+ * @param habits
+ * @param ids
+ * @returns
+ */
+export function getHabitsFromIdsAsArray(
+  habits: IHabitType,
+  ids: string[]
+): HabitType[] {
+  let selectedHabits: HabitType[] = [];
+  for (const id of ids) {
+    selectedHabits.push(habits[id]);
+  }
+  return selectedHabits;
+}
+
+export function getHabitPercentComplete(
+  completedHabits: number,
+  totalHabitCount: number
+): number {
+  if (totalHabitCount === 0) {
+    return 0;
+  }
+  const percentComplete = 100 * (completedHabits / totalHabitCount);
+  return Math.round(percentComplete * 100) / 100;
+}
+
+/**
+ * Get the id's of habits marked as 'checked'
+ */
+export function getFinishedHabitIds(habits: IHabitType): string[] {
+  return Object.keys(habits).filter((id) => habits[id].checked === true);
+}
+
+/**
+ * Get the id's of habits not marked as 'checked'
+ */
+export function getRemainingHabitIds(habits: IHabitType): string[] {
+  return Object.keys(habits).filter((id) => habits[id].checked === false);
+}
+
+/**
+ * Get the id's of habits.
+ * @param isFinished: Optional parameter to determine whether to get finished or remaining habits
+ */
+export function getHabitIds(habits: IHabitType, isFinished?: boolean): string[] {
+  if (isFinished == null) return Object.keys(habits);
+  return Object.keys(habits).filter((id) => habits[id].checked === isFinished);
 }
 
 // TODO: associate mood count with activities and not just days/times

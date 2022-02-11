@@ -18,6 +18,7 @@ const habitReducer = (state = initialState, action) => {
     case ADD_HABIT:
       tempHabits = { ...tempHabits, ...action.payload };
       return { ...state, habits: tempHabits };
+      // return {...state, habits: {}}
     case DELETE_HABIT:
       tempHabits[action.payload.id].deleted = true;
       return { ...state, habits: tempHabits };

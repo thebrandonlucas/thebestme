@@ -8,6 +8,7 @@ import { Colors } from '../constants';
 import { RootState } from '../redux/store';
 import { HabitType, IDayType, IHabitType } from '../types';
 import { getDaysInTimeRange } from '../utils/day';
+import { getHabitIds, getHabitsFromIdsAsArray } from '../utils/habit';
 
 export function HomeScreen() {
   const days = useSelector<RootState, IDayType>(
@@ -31,7 +32,7 @@ export function HomeScreen() {
   useEffect(() => {
     getDataForPastWeek();
     setHabits();
-  }, []);
+  }, [habits]);
 
   function getDataForPastWeek() {
     const tempStartDate = DateTime.now().minus({ week: 1 }).toISODate();
@@ -44,16 +45,10 @@ export function HomeScreen() {
   }
 
   function setHabits() {
-    const todayFinishedHabits = days[today].finishedHabitIds.map(
-      (id) => habits[id]
-    );
-    const todayRemainingHabits = days[today].remainingHabitIds.map(
-      (id) => habits[id]
-    );
-    setFinishedHabits(todayFinishedHabits);
-    setRemainingHabits(todayRemainingHabits);
-    // setHabitCount(todayFinishedHabits ? todayFinishedHabits.length : 0)
-    // setHabitPercentComplete()
+    const finishedHabits = getHabitsFromIdsAsArray(habits, getHabitIds(habits, true)) 
+    const remainingHabits = getHabitsFromIdsAsArray(habits, getHabitIds(habits, false))
+    setFinishedHabits(finishedHabits);
+    setRemainingHabits(remainingHabits);
   }
 
   return loading ? (

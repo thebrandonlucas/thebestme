@@ -34,39 +34,11 @@ function DayMetricsScreen({ navigation, route }) {
 
   const moods = ['Great', 'Okay', 'Not Good'];
 
-  // Datetime picker stuff
-
-  function onChangeStartDate(event, selectedDate: Date) {
-    setStartDate(DateTime.fromJSDate(selectedDate).toISODate());
-  }
-  function onChangeEndDate(event, selectedDate: Date) {
-    setEndDate(DateTime.fromJSDate(selectedDate).toISODate());
-  }
 
   // TODO: set an aspect ratio for the whole project in Redux that adapts to the screen size
   const aspectRatio =
     Dimensions.get('screen').height / Dimensions.get('screen').width;
 
-  const pChartData = [
-    { mood: 'Great', frequency: 4 },
-    { mood: 'Okay', frequency: 3 },
-    { mood: 'Not Good', frequency: 1 },
-  ];
-
-  const barChartStyle = {
-    axis: {
-      style: {
-        tickLabels: {
-          // this changed the color of my numbers to white
-          fill: 'white',
-        },
-      },
-    },
-  };
-
-  const habitVsMoodSadData = [];
-
-  const habitVsMoodNeutralData = [];
 
   const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
   const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
@@ -123,59 +95,7 @@ function DayMetricsScreen({ navigation, route }) {
             endDate={endDate}
             selectedMood={selectedMood}
           />
-          <Text>Start Date/Time</Text>
-          <DateTimePicker
-            testID="dateTimePicker"
-            // FIXME: center pickers! How?
-            // style={{marginHorizontal: '40%'}}
-            value={DateTime.fromISO(startDate).toJSDate()}
-            // FIXME: 'datetime' only available on ios
-            mode="datetime"
-            is24Hour={true}
-            display="default"
-            onChange={onChangeStartDate}
-          />
-          <Text>End Date/Time</Text>
-          <DateTimePicker
-            testID="dateTimePicker"
-            // FIXME: center pickers! How?
-            // style={{marginHorizontal: '40%'}}
-            value={DateTime.fromISO(endDate).toJSDate()}
-            mode="datetime"
-            is24Hour={true}
-            display="default"
-            onChange={onChangeEndDate}
-          />
-          <Text>Mood</Text>
-          <Picker
-            selectedValue={selectedMood}
-            onValueChange={(itemValue, itemIndex) => setSelectedMood(itemValue)}
-          >
-            <Picker.Item color="white" label="All" value="all" />
-            {moods.map((mood) => (
-              <Picker.Item
-                key={uuidv4()}
-                color={MoodToColor[mood]}
-                label={mood}
-                value={mood}
-              />
-            ))}
-          </Picker>
-
-          <Text>Habit</Text>
-          <Picker
-            selectedValue={selectedHabitId}
-            onValueChange={(itemValue) => setSelectedHabitId(itemValue)}
-          >
-            <Picker.Item color="white" label="Top 3 Habits" value="top3" />
-            {Object.keys(habits).map((habitId) => (
-              <Picker.Item
-                color="white"
-                label={habits[habitId].text}
-                value={habitId}
-              />
-            ))}
-          </Picker>
+          
 
           {currentDay.endOfDayNotes && (
             <Button title="View End of Day Notes" onPress={goToEndOfDayNotes} />
