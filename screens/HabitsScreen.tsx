@@ -13,8 +13,10 @@ import 'react-native-get-random-values';
 import { connect, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import HabitContainer from '../components/HabitContainer';
+import Plus from '../components/Icons/Plus';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Input, Text, View } from '../components/Themed';
+import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
 import { setDayInfo } from '../redux/actions/DayActions';
 import {
@@ -82,12 +84,9 @@ export function HabitsScreen({
     }
     setRemainingHabits(tempRemainingHabits);
     setFinishedHabits(tempFinishedHabits);
-    console.log('here', tempRemainingHabits);
     if (tempRemainingHabits.length + tempFinishedHabits.length === 0) {
-      console.log('habitsareempty');
       setAreHabitsEmpty(true);
     } else {
-      console.log('habitsarentempty');
       setAreHabitsEmpty(false);
     }
     setLoading(false);
@@ -138,7 +137,6 @@ export function HabitsScreen({
         ...today,
         remainingHabitIds: [...today.remainingHabitIds, id],
       };
-      console.log('today', today);
       setDayInfo(dayInfo);
       setIsAddingHabit(false);
       setHabitText('');
@@ -214,7 +212,7 @@ export function HabitsScreen({
               {currentDate}
             </Text>
             <TouchableOpacity style={styles.plusIcon} onPress={clickPlus}>
-              <AntDesign name="plus" size={24} color={Colors.themeColor} />
+              <Plus />
             </TouchableOpacity>
           </>
         ) : (
@@ -253,9 +251,8 @@ export function HabitsScreen({
       </View>
       {areHabitsEmpty ? (
         <Text style={styles.habitCardEmptyMessage}>
-          It looks like you don't have any habits yet. Click the{' '}
-          <AntDesign name="plus" size={24} color={Colors.themeColor} /> icon to
-          add some!{' '}
+          It looks like you don't have any habits yet. Click the <Plus /> icon
+          to add some!{' '}
         </Text>
       ) : (
         <View style={styles.cardContainer}>
@@ -309,7 +306,7 @@ export function HabitsScreen({
               </Card>
               <View style={styles.buttonContainer}>
                 <ThemeButton
-                  title="Finish Day"
+                  title="Finish"
                   onPress={goToFinishDayScreen}
                   testID="finishDay"
                 />
@@ -320,6 +317,7 @@ export function HabitsScreen({
           )}
         </View>
       )}
+      <TutorialModal />
     </View>
   );
 }

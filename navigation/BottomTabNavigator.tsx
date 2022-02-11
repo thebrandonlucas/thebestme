@@ -13,13 +13,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { Icon } from 'react-native-elements';
-import MyCircleButton from '../components/HeaderButtons/MyCircleButton';
 import QuestionButton from '../components/HeaderButtons/QuestionButton';
 import SettingsButton from '../components/HeaderButtons/SettingsButton';
 import { View } from '../components/Themed';
 import { Colors } from '../constants';
+import { setDescription } from '../redux/actions/DescriptionActions';
 import CBTAddScreen from '../screens/CBTAddScreen';
-import CBTScreen from '../screens/CBTScreen';
 import DataScreen from '../screens/DataScreen';
 import DayMetricsScreen from '../screens/DayMetricsScreen';
 import EndOfDayNotesScreen from '../screens/EndOfDayNotesScreen';
@@ -64,7 +63,11 @@ export default function BottomTabNavigator() {
         component={HabitsNavigator}
         options={{
           tabBarIcon: ({ color }: { color: string }) => (
-            <TabBarIcon name="check-square" color={color} iconComponent={FontAwesome} />
+            <TabBarIcon
+              name="check-square"
+              color={color}
+              iconComponent={FontAwesome}
+            />
           ),
         }}
       />
@@ -122,7 +125,7 @@ function TabBarIcon(props: TabBarIconProps) {
     case FontAwesome:
       return (
         <FontAwesome
-          size={30}
+          size={35}
           style={{ marginBottom: -3 }}
           color={color}
           iconComponent={iconComponent}
@@ -169,10 +172,9 @@ TabBarIcon.defaultProps = {
 function headerOptions(title: string, infoType?: DescriptionType) {
   return {
     headerTitle: title,
-    headerLeft: () => <MyCircleButton />,
+    headerLeft: () => <QuestionButton infoType={infoType} />,
     headerRight: () => (
       <View style={{ flexDirection: 'row', backgroundColor: 'transparent' }}>
-        <QuestionButton infoType={infoType} />
         <SettingsButton />
       </View>
     ),
@@ -184,6 +186,7 @@ function headerOptions(title: string, infoType?: DescriptionType) {
 const HomeStack = createStackNavigator<HomeParamList>();
 
 function HomeNavigator() {
+  setDescription('home')
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -192,12 +195,13 @@ function HomeNavigator() {
         options={() => headerOptions('Home', 'home')}
       />
     </HomeStack.Navigator>
-  )
+  );
 }
 
 const HabitsStack = createStackNavigator<HabitsParamList>();
 
 function HabitsNavigator() {
+  setDescription('habits')
   return (
     <HabitsStack.Navigator>
       <HabitsStack.Screen
@@ -245,22 +249,22 @@ function JournalNavigator() {
 
 const CBTStack = createStackNavigator<CBTParamList>();
 
-// function CBTNavigator() {
-//   return (
-//     <CBTStack.Navigator>
-//       <CBTStack.Screen
-//         name="CBTScreen"
-//         component={CBTScreen}
-//         options={() => headerOptions('Thought Challenging', 'cbtJournal')}
-//       />
-//       <CBTStack.Screen
-//         name="CBTAddScreen"
-//         component={CBTAddScreen}
-//         options={() => headerOptions('CBT - Add Entry', 'cbtJournal')}
-//       />
-//     </CBTStack.Navigator>
-//   );
-// }
+function CBTNavigator() {
+  return (
+    <CBTStack.Navigator>
+      {/* <CBTStack.Screen
+        name="CBTScreen"
+        component={CBTScreen}
+        options={() => headerOptions('Thought Challenging', 'cbtJournal')}
+      /> */}
+      <CBTStack.Screen
+        name="CBTAddScreen"
+        component={CBTAddScreen}
+        options={() => headerOptions('CBT - Add Entry', 'cbtJournal')}
+      />
+    </CBTStack.Navigator>
+  );
+}
 
 const AWAREStack = createStackNavigator<AWAREParamList>();
 

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import TopTabs from '../components/TopTabs';
+import TutorialModal from '../components/TutorialModals/TutorialModal';
 import CBTScreen from './CBTScreen';
 import PrimaryJournalScreen from './PrimaryJournalScreen';
 
@@ -24,6 +25,7 @@ export default function JournalScreen({ navigation }) {
       ) : (
         <CBTScreen navigation={navigation} />
       )}
+      <TutorialModal />
     </>
   );
 }

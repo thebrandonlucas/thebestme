@@ -20,13 +20,17 @@ export default function QuestionButton({ infoType }: QuestionButtonType) {
     navigation.navigate('Info', { infoType });
   }
 
+  function showInfoModal() {
+    console.log('show info modal', infoType)
+    dispatch(setDescription(infoType));
+  }
+
   return (
-    <TouchableOpacity onPress={goToInfoScreen}>
+    <TouchableOpacity onPress={showInfoModal}>
       <AntDesign
         name="questioncircle"
-        size={20}
-        // style={{ marginTop: 50 }}
-        style={{ marginRight: 10, marginTop: 5 }}
+        size={25}
+        style={{ marginLeft: 30 }}
         color={Colors[colorScheme].tabIconDefault}
       />
     </TouchableOpacity>

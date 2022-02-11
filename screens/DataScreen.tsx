@@ -1,13 +1,10 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
 import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
-import { ChartContainer } from '../components/ChartContainer';
 import { Calendar, Card, Text, View } from '../components/Themed';
+import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
 import { MoodToColor } from '../constants/MoodToColor';
 import { selectDay } from '../redux/actions/DayActions';
@@ -164,6 +161,7 @@ function DataScreen({ habits, days, navigation }) {
           ))}
         </Picker> */}
       </ScrollView>
+      <TutorialModal />
     </View>
   );
 }

@@ -63,7 +63,6 @@ export default function Navigation({
     const mostRecentDate = dates[dates.length - 1];
     console.log('checkIfNewDate', dates, mostRecentDate)
     if (dates.length === 0 || DateTime.now().toISODate() !== mostRecentDate) {
-      console.log('checking new date')
       dispatch(newDay(habits));
     }
   }
@@ -189,7 +188,7 @@ const InfoStack = createStackNavigator<InfoParamList>();
 
 function InfoNavigator({ route }) {
   const infoType: DescriptionType = route.params.infoType;
-  const headerTitle = Descriptions[infoType].title;
+  const headerTitle = Descriptions[infoType] ? Descriptions[infoType].title : '';
   return (
     <InfoStack.Navigator>
       <InfoStack.Screen

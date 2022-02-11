@@ -4,6 +4,7 @@ import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { ChartContainer } from '../components/ChartContainer';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
+import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
 import { RootState } from '../redux/store';
 import { HabitType, IDayType, IHabitType } from '../types';
@@ -45,8 +46,14 @@ export function HomeScreen() {
   }
 
   function setHabits() {
-    const finishedHabits = getHabitsFromIdsAsArray(habits, getHabitIds(habits, true)) 
-    const remainingHabits = getHabitsFromIdsAsArray(habits, getHabitIds(habits, false))
+    const finishedHabits = getHabitsFromIdsAsArray(
+      habits,
+      getHabitIds(habits, true)
+    );
+    const remainingHabits = getHabitsFromIdsAsArray(
+      habits,
+      getHabitIds(habits, false)
+    );
     setFinishedHabits(finishedHabits);
     setRemainingHabits(remainingHabits);
   }
@@ -74,6 +81,7 @@ export function HomeScreen() {
         selectedHabitId={'top3'}
         selectedMood={'all'}
       />
+      <TutorialModal />
     </ScrollView>
   );
 }

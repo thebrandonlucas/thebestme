@@ -241,7 +241,13 @@ export type CalendarDayType = {
   year: number;
 };
 
-export type DescriptionType = 'home' | 'habits' | 'journal' | 'data';
+export type DescriptionType =
+  | 'home'
+  | 'habits'
+  | 'journal'
+  | 'data'
+  | 'dayscreen'
+  | 'closed';
 
 export type QuestionButtonType = {
   infoType?: DescriptionType;

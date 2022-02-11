@@ -1,7 +1,8 @@
+import { DescriptionType } from '../../types';
 import { SET_DESCRIPTION } from './../actions/types/DescriptionActions.types';
 
-const initialState = {
-    infoType: ''
+const initialState: { infoType: DescriptionType } = {
+    infoType: 'closed'
 }
 
 const descriptionReducer = (state = initialState, action) => {
