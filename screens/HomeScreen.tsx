@@ -5,11 +5,12 @@ import { useSelector } from 'react-redux';
 import { ChartContainer } from '../components/ChartContainer';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
 import { MoodPercentage } from '../components/MoodPercentage';
+import { Text } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
 import { RootState } from '../redux/store';
 import { HabitType, IDayType, IHabitType } from '../types';
-import { getPercentage } from '../utils';
+import getDateString, { getPercentage } from '../utils';
 import { getDaysPastWeek } from '../utils/day';
 import {
   getHabitIds,
@@ -33,6 +34,7 @@ export function HomeScreen() {
   const [habitPercentComplete, setHabitPercentComplete] = useState(0);
   const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
   const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
+  const [pastWeekDataViewable, setpastWeekDataViewable] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,6 +46,9 @@ export function HomeScreen() {
     setStartDate(DateTime.now().minus({ week: 1 }).toISODate());
     setEndDate(DateTime.now().toISODate());
     setDaysPastWeek(getDaysPastWeek(days));
+    if (Object.keys(days).length >= 7) {
+      setpastWeekDataViewable(true);
+    }
     setLoading(false);
   }
 
@@ -76,6 +81,9 @@ export function HomeScreen() {
     />
   ) : (
     <ScrollView>
+      <Text style={[styles.mainText, { color: Colors.themeColor }]}>
+        {getDateString(DateTime.now().toISODate()).date}
+      </Text>
       <HabitSummaryCard
         remainingHabits={remainingHabits}
         finishedHabits={finishedHabits}
@@ -83,22 +91,34 @@ export function HomeScreen() {
         habitPercentComplete={habitPercentComplete}
       />
 
+      {/* Today's data */}
+      {/* <PieCurrentDay /> */}
 
       {/* Past week data */}
-      <MoodPercentage
-        days={daysPastWeek}
-        startDate={startDate}
-        endDate={endDate}
-        customDateRangeText="for the past week:"
-      />
-      <ChartContainer
-        days={daysPastWeek}
-        habits={habits}
-        startDate={startDate}
-        endDate={endDate}
-        selectedHabitId={'top3'}
-        selectedMood={'all'}
-      />
+      {pastWeekDataViewable ? (
+        <>
+          <MoodPercentage
+            days={daysPastWeek}
+            startDate={startDate}
+            endDate={endDate}
+            customDateRangeText="for the past week:"
+          />
+          <ChartContainer
+            days={daysPastWeek}
+            habits={habits}
+            startDate={startDate}
+            endDate={endDate}
+            selectedHabitId={'top3'}
+            selectedMood={'all'}
+          />{' '}
+        </>
+      ) : (
+        <Text style={styles.mainText}>
+          Check back in {7 - Object.keys(days).length} days to see weekly
+          insights!
+        </Text>
+      )}
+
       <TutorialModal />
     </ScrollView>
   );
@@ -109,5 +129,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+  },
+  mainText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    margin: 10,
+    textAlign: 'center',
+  },
+  date: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    margin: 10,
   },
 });

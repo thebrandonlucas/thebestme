@@ -6,7 +6,7 @@ import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import { BarChart } from '../components/Charts/BarChart';
 import { LineChart } from '../components/Charts/LineChart';
-import { Pie } from '../components/Charts/Pie';
+import { Pie } from '../components/Charts/PieMoods';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
 import ThemeButton from '../components/ThemeButton';
 import { View } from '../components/Themed';

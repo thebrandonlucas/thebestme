@@ -13,11 +13,7 @@ import { resetHabits } from '../redux/actions/HabitsActions';
 import { DayType, HabitType, IDayType, IHabitType, ValidMood } from '../types';
 import { getPercentage } from '../utils';
 import { getMostRecentDay } from '../utils/day';
-import {
-  getHabitIds,
-  getHabitPercentComplete,
-  getHabitsFromIdsAsArray,
-} from '../utils/habit';
+import { getHabitIds, getHabitsFromIdsAsArray } from '../utils/habit';
 
 function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
   const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);

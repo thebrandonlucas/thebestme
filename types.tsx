@@ -338,6 +338,11 @@ export type FrequencyByDate = {
 
 export type HabitFrequencyMultiMoodBarChartData = HabitFrequency[];
 
+export type DateAndTime = {
+  date: string,
+  time: string,
+}
+
 export type GetComponentProps<T> = T extends
   | React.ComponentType<infer P>
   | React.Component<infer P>

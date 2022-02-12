@@ -1,3 +1,4 @@
+import { DateAndTime } from './../types';
 import { DateTime } from "luxon";
 
 // TODO: refactor getDateString and just use Luxon
@@ -5,7 +6,7 @@ import { DateTime } from "luxon";
  * Gets date as ISO string and returns formatted Date
  * @param {string} isoDate - date string in ISO format
  */
-export default function getDateString(isoDate: string): DateTime {
+export default function getDateString(isoDate: string): DateAndTime {
   const monthNames = [
     'January',
     'February',
