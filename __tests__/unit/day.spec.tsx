@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import {
   getDaysInTimeRange,
+  getDaysPastWeek,
   getMostRecentDay,
   isDatetimeInRange,
 } from '../../utils/day';
@@ -131,6 +132,55 @@ describe('Day functions', () => {
       expect(getMostRecentDay(days)).toEqual(
         dayFixture({ date: '2021-01-10' })
       );
+    });
+  });
+
+  describe('getDaysPastWeek', () => {
+    const past10Days = daysFixture([
+      { date: DateTime.now().minus({ days: 10 }).toISODate() },
+      { date: DateTime.now().minus({ days: 9 }).toISODate() },
+      { date: DateTime.now().minus({ days: 8 }).toISODate() },
+      { date: DateTime.now().minus({ days: 7 }).toISODate() },
+      { date: DateTime.now().minus({ days: 6 }).toISODate() },
+      { date: DateTime.now().minus({ days: 5 }).toISODate() },
+      { date: DateTime.now().minus({ days: 4 }).toISODate() },
+      { date: DateTime.now().minus({ days: 3 }).toISODate() },
+      { date: DateTime.now().minus({ days: 2 }).toISODate() },
+      { date: DateTime.now().minus({ days: 1 }).toISODate() },
+    ]);
+    const past3Days = daysFixture([
+      { date: DateTime.now().minus({ days: 3 }).toISODate() },
+      { date: DateTime.now().minus({ days: 2 }).toISODate() },
+      { date: DateTime.now().minus({ days: 1 }).toISODate() },
+    ]);
+    // const pastDay = daysFixture([{ date: '2021-01-01' }]);
+    it('should get past three days when only 3 days are given', () => {
+      expect(getDaysPastWeek(past3Days)).toEqual(
+        daysFixture([
+          { date: DateTime.now().minus({ days: 3 }).toISODate() },
+          { date: DateTime.now().minus({ days: 2 }).toISODate() },
+          { date: DateTime.now().minus({ days: 1 }).toISODate() },
+        ])
+      );
+    });
+    it('should return past 7 days when 10 days are given', () => {
+      expect(getDaysPastWeek(past10Days)).toEqual(
+        daysFixture([
+          { date: DateTime.now().minus({ days: 7 }).toISODate() },
+          { date: DateTime.now().minus({ days: 6 }).toISODate() },
+          { date: DateTime.now().minus({ days: 5 }).toISODate() },
+          { date: DateTime.now().minus({ days: 4 }).toISODate() },
+          { date: DateTime.now().minus({ days: 3 }).toISODate() },
+          { date: DateTime.now().minus({ days: 2 }).toISODate() },
+          { date: DateTime.now().minus({ days: 1 }).toISODate() },
+        ])
+      );
+    });
+    it('should return empty days when no days are given', () => {
+      expect(getDaysPastWeek({})).toEqual(daysFixture([]));
+    });
+    it('should return empty days when null days are given', () => {
+      expect(getDaysPastWeek(null)).toEqual({})
     });
   });
 });

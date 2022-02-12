@@ -247,9 +247,31 @@ export function getRemainingHabitIds(habits: IHabitType): string[] {
  * Get the id's of habits.
  * @param isFinished: Optional parameter to determine whether to get finished or remaining habits
  */
-export function getHabitIds(habits: IHabitType, isFinished?: boolean): string[] {
+export function getHabitIds(
+  habits: IHabitType,
+  isFinished?: boolean
+): string[] {
   if (isFinished == null) return Object.keys(habits);
   return Object.keys(habits).filter((id) => habits[id].checked === isFinished);
+}
+
+/**
+ * Get's the habits in the specified start and end date
+ * @param habits
+ * @param startDate
+ * @param endDate
+ * @returns habitsInWeek
+ */
+export function getHabitsInDateRange(
+  habits: IHabitType,
+  startDate: string,
+  endDate: string
+): IHabitType {
+  let habitsInWeek = {}
+
+
+
+  return habitsInWeek
 }
 
 // TODO: associate mood count with activities and not just days/times

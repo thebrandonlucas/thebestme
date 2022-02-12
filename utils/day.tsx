@@ -39,3 +39,13 @@ export function getMostRecentDay(days: IDayType): DayType {
   const lastDate = dates[dates.length - 1];
   return days[lastDate];
 }
+
+/**
+ * Gets the most recent days up to the past 7 days
+ * @param days
+ */
+export function getDaysPastWeek(days: IDayType): IDayType {
+  const dateWeekAgo = DateTime.now().minus({week: 1}).toISODate();
+  const daysPastWeek = getDaysInTimeRange(days, dateWeekAgo, DateTime.now().toISODate())
+  return daysPastWeek;
+}
