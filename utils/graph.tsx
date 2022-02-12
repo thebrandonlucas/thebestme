@@ -33,3 +33,27 @@ export function getColorScale(mood: ValidMood | 'all'): ColorScalePropType {
   }
   return [MoodToColor[mood]];
 }
+
+/**
+ * Get's the pie chart's display moods, so that it only shows moods that are greater than
+ * 0% of the pie
+ * @param moodFrequencies
+ */
+export function getPieChartDisplayMood(
+  moodFrequencies: { mood: ValidMood; frequency: number }[]
+): ValidMood[] {
+  if (moodFrequencies == null) {
+    throw new Error(
+      'getPieChartDisplayMoods: Error - Received a null value for moodFrequencies'
+    );
+  }
+  let displayMoods = [];
+
+  for (const moodFrequency of moodFrequencies) {
+    if (moodFrequency.frequency > 0) {
+      displayMoods.push(moodFrequency.mood);
+    }
+  }
+
+  return displayMoods;
+}

@@ -12,7 +12,7 @@ const initialState: HabitReducerType = {
 };
 
 const habitReducer = (state = initialState, action) => {
-  let tempHabits = state.habits;
+  let tempHabits = {...state.habits};
   const habitIds: string[] = Object.keys(tempHabits);
   switch (action.type) {
     case ADD_HABIT:

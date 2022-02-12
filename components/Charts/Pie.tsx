@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native';
 import { VictoryPie } from 'victory-native';
 import Colors from '../../constants/Colors';
 import { MoodToColor } from '../../constants/MoodToColor';
-import { IDayType } from '../../types';
+import { IDayType, ValidMood } from '../../types';
 import { getDaysInTimeRange } from '../../utils/day';
 import { getMoodFrequency } from '../../utils/mood';
 import { Text } from '../Themed';
@@ -61,7 +61,7 @@ export function Pie({
         style={{
           labels: {
             // FIXME: fix typescript
-            fill: ({ datum }) => MoodToColor[datum.mood],
+            fill: ({ datum }) => datum.frequency > 0 ? MoodToColor[datum.mood] : null,
             fontSize: 15,
             fontWeight: 'bold',
           },

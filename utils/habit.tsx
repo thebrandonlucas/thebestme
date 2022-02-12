@@ -218,17 +218,6 @@ export function getHabitsFromIdsAsArray(
   return selectedHabits;
 }
 
-export function getHabitPercentComplete(
-  completedHabits: number,
-  totalHabitCount: number
-): number {
-  if (totalHabitCount === 0) {
-    return 0;
-  }
-  const percentComplete = 100 * (completedHabits / totalHabitCount);
-  return Math.round(percentComplete * 100) / 100;
-}
-
 /**
  * Get the id's of habits marked as 'checked'
  */
@@ -267,12 +256,23 @@ export function getHabitsInDateRange(
   startDate: string,
   endDate: string
 ): IHabitType {
-  let habitsInWeek = {}
+  let habitsInWeek = {};
 
-
-
-  return habitsInWeek
+  return habitsInWeek;
 }
 
+/**
+ * Get only non deleted habits
+ */
+export function getNonDeletedHabits(habits: IHabitType) {
+  let nonDeletedHabits = {};
+  for (const habitId in habits) {
+    const habit = habits[habitId];
+    if (!habit.deleted) {
+      nonDeletedHabits[habit.id] = habit;
+    }
+  }
+  return nonDeletedHabits;
+}
 // TODO: associate mood count with activities and not just days/times
 export function getMoodCountForActivity() {}

@@ -139,3 +139,16 @@ export function getMoodFrequencyByDates(
 
   return moodFrequencyForDays;
 }
+
+/**
+ * Get the percentage occurrence of a particular (as an integer)
+ */
+export function getMoodPercentage(moodCount: number, totalMoodCount: number): number {
+
+  if (totalMoodCount === 0) {
+    return 0;
+  }
+  const moodPercent = 100 * ( moodCount/ totalMoodCount);
+  return Math.round(moodPercent * 100) / 100;
+
+}

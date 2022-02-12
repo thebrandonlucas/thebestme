@@ -1,14 +1,14 @@
 import { DateTime } from 'luxon';
-import { IDayType } from '../../types';
+import { IDayType, IHabitType } from '../../types';
 import {
   getDaysWithSelectedMood,
   getMoodCountTotal,
   getMoodFrequency,
   getMoodFrequencyByDate,
   getMoodFrequencyByDates,
+  getMoodPercentage,
   getNumberOfHabitsWithSelectedMood,
 } from '../../utils/mood';
-import { IHabitType } from '../../__fixtures__/component/types';
 import { dayFixture, daysFixture } from '../../__fixtures__/factory/day';
 import { habitsFixture } from '../../__fixtures__/factory/habit';
 

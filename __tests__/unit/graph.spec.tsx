@@ -1,6 +1,6 @@
 import faker from '@faker-js/faker';
 import { MoodToColor } from '../../constants/MoodToColor';
-import { IDayType, IHabitType } from '../../types';
+import { IDayType, IHabitType, ValidMood } from '../../types';
 import {
   getColorScale,
   replaceHabitFrequencyIdsWithText,
@@ -93,5 +93,24 @@ describe('Graph Data Converters', () => {
         MoodToColor['Not Good'],
       ]);
     });
+  });
+
+  describe('getPieChartDisplayMoods', () => {
+    const moodFrequenciesOnlyHappy: { mood: ValidMood; frequency: number }[] = [
+      { mood: 'Great', frequency: 1 },
+      { mood: 'Okay', frequency: 0 },
+      { mood: 'Not Good', frequency: 0 },
+    ];
+    const moodFrequenciesHappyAndSad: { mood: ValidMood; frequency: number }[] =
+      [
+        { mood: 'Great', frequency: 4 },
+        { mood: 'Okay', frequency: 0 },
+        { mood: 'Not Good', frequency: 3 },
+      ];
+    const moodFrequenciesAllThree: { mood: ValidMood; frequency: number }[] = [
+      { mood: 'Great', frequency: 4 },
+      { mood: 'Okay', frequency: 1 },
+      { mood: 'Not Good', frequency: 3 },
+    ];
   });
 });

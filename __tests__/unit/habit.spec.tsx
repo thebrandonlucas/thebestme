@@ -7,10 +7,10 @@ import {
   getHabitFrequency,
   getHabitFrequencyForMoodInTimeRange,
   getHabitIds,
-  getHabitPercentComplete,
   getHabitRemainingDays,
   getHabitsFromIds,
   getHabitsFromIdsAsArray,
+  getNonDeletedHabits,
   getTopHabitFrequenciesPerMood,
   getTopHabitFrequencyPerMood,
 } from '../../utils/habit';
@@ -752,21 +752,6 @@ describe('Habit', () => {
     });
   });
 
-  describe('getHabitPercentComplete', () => {
-    it('should return 0 when theres 10 total habits but 0 finished', () => {
-      expect(getHabitPercentComplete(0, 10)).toBe(0);
-    });
-    it('should return 1 when theres 1 habit complete and 1 total habit', () => {
-      expect(getHabitPercentComplete(1, 1)).toBe(100);
-    });
-    it('should return 33 percent complete for 1 habit out of 3 completed', () => {
-      expect(getHabitPercentComplete(1, 3)).toBe(33.33);
-    });
-    it('should return 0 when theres 0 habits and 0 finished', () => {
-      expect(getHabitPercentComplete(0, 0)).toBe(0);
-    });
-  });
-
   describe('getHabitIds', () => {
     it('should get 1 habit id when not specifying whether it should be finished or remaining', () => {
       expect(getHabitIds(singleHabit)).toEqual(['runningId']);
@@ -805,6 +790,42 @@ describe('Habit', () => {
     });
     it('should get 0 habits when not specifying finished or remaining', () => {
       expect(getHabitIds(emptyHabits)).toEqual([]);
+    });
+  });
+
+  describe('getNonDeletedHabits', () => {
+    const singleHabit = habitsFixture([{ id: 'test' }]);
+    const threeNonDeletedHabitsFiveTotal = habitsFixture([
+      { id: 'test1', deleted: true },
+      { id: 'test2' },
+      { id: 'test3' },
+      { id: 'test4', deleted: true },
+      { id: 'test5' },
+    ]);
+    const onlyDeletedHabits = habitsFixture([
+      { deleted: true },
+      { deleted: true },
+      { deleted: true },
+      { deleted: true },
+    ]);
+    it('should get 1 non deleted habit given 1 habit that hasnt been deleted', () => {
+      expect(getNonDeletedHabits(singleHabit)).toEqual(
+        habitsFixture([{ id: 'test' }])
+      );
+    });
+    it('should get 3 non deleted habits given 5 total and 2 deleted', () => {
+      expect(getNonDeletedHabits(threeNonDeletedHabitsFiveTotal)).toEqual(
+        habitsFixture([{ id: 'test2' }, { id: 'test3' }, { id: 'test5' }])
+      );
+    });
+    it('should get 0 non deleted habits when given only deleted habits', () => {
+      expect(getNonDeletedHabits(onlyDeletedHabits)).toEqual({});
+    });
+    it('should get 0 non deleted habits when given empty habits', () => {
+      expect(getNonDeletedHabits({})).toEqual({});
+    });
+    it('should get 0 habits when given null habits', () => {
+      expect(getNonDeletedHabits(null)).toEqual({});
     });
   });
 });

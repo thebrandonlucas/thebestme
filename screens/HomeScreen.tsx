@@ -4,12 +4,13 @@ import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { ChartContainer } from '../components/ChartContainer';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
+import { MoodPercentage } from '../components/MoodPercentage';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
 import { RootState } from '../redux/store';
 import { HabitType, IDayType, IHabitType } from '../types';
-import { getDaysInTimeRange } from '../utils/day';
-import { getHabitIds, getHabitsFromIdsAsArray } from '../utils/habit';
+import { getDaysPastWeek } from '../utils/day';
+import { getHabitIds, getHabitsFromIdsAsArray, getNonDeletedHabits } from '../utils/habit';
 
 export function HomeScreen() {
   const days = useSelector<RootState, IDayType>(
@@ -18,6 +19,7 @@ export function HomeScreen() {
   const habits = useSelector<RootState, IHabitType>(
     (state) => state.habitReducer.habits
   );
+  console.log('habbb', habits)
 
   const today = DateTime.now().toISODate();
 
@@ -33,26 +35,24 @@ export function HomeScreen() {
   useEffect(() => {
     getDataForPastWeek();
     setHabits();
-  }, [habits]);
+  }, [habits, days]);
 
   function getDataForPastWeek() {
-    const tempStartDate = DateTime.now().minus({ week: 1 }).toISODate();
-    const tempEndDate = DateTime.now().toISODate();
-    const selectedDays = getDaysInTimeRange(days, tempStartDate, tempEndDate);
-    setStartDate(tempStartDate);
-    setEndDate(tempEndDate);
-    setDaysPastWeek(selectedDays);
+    setStartDate(DateTime.now().minus({ week: 1 }).toISODate());
+    setEndDate(DateTime.now().toISODate());
+    setDaysPastWeek(getDaysPastWeek(days));
     setLoading(false);
   }
 
   function setHabits() {
+    const nonDeletedHabits = getNonDeletedHabits(habits)
     const finishedHabits = getHabitsFromIdsAsArray(
-      habits,
-      getHabitIds(habits, true)
+      nonDeletedHabits,
+      getHabitIds(nonDeletedHabits, true)
     );
     const remainingHabits = getHabitsFromIdsAsArray(
-      habits,
-      getHabitIds(habits, false)
+      nonDeletedHabits,
+      getHabitIds(nonDeletedHabits, false)
     );
     setFinishedHabits(finishedHabits);
     setRemainingHabits(remainingHabits);
@@ -72,7 +72,11 @@ export function HomeScreen() {
         habitCount={days[today].habitCount}
         habitPercentComplete={days[today].habitPercentComplete}
       />
-
+      <MoodPercentage
+        days={daysPastWeek}
+        startDate={startDate}
+        endDate={endDate}
+      />
       <ChartContainer
         days={daysPastWeek}
         habits={habits}
