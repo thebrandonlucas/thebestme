@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
+import { ChartContainer } from '../components/ChartContainer';
 import { Calendar, Card, Text, View } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
@@ -18,6 +19,9 @@ import {
 import getDateString, { getDateFromISOString } from '../utils';
 import getCalendarData from '../utils/getCalendarData';
 import { getMoodMode } from '../utils/mood';
+import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { v4 as uuidv4 } from 'uuid'
 
 function DataScreen({ habits, days, navigation }) {
   const currentDate = DateTime.now().toISODate();
@@ -99,7 +103,7 @@ function DataScreen({ habits, days, navigation }) {
             <Text style={styles.title}>No data to display</Text>
           )}
         </Card>
-        {/* <ChartContainer
+        <ChartContainer
           days={days}
           habits={habits}
           startDate={'2021-01-01'}
@@ -107,7 +111,7 @@ function DataScreen({ habits, days, navigation }) {
           selectedHabitId={'top3'}
           selectedMood={'all'}
         />
-        <Text>Start Date/Time</Text>
+        <Text style={styles.title}>Start Date</Text>
         <DateTimePicker
           testID="dateTimePicker"
           // FIXME: center pickers! How?
@@ -119,7 +123,7 @@ function DataScreen({ habits, days, navigation }) {
           display="default"
           onChange={onChangeStartDate}
         />
-        <Text>End Date/Time</Text>
+        <Text style={styles.title}>End Date</Text>
         <DateTimePicker
           testID="dateTimePicker"
           // FIXME: center pickers! How?
@@ -130,7 +134,7 @@ function DataScreen({ habits, days, navigation }) {
           display="default"
           onChange={onChangeEndDate}
         />
-        <Text>Mood</Text>
+        <Text style={styles.title}>Mood</Text>
         <Picker
           selectedValue={selectedMood}
           onValueChange={(itemValue, itemIndex) => setSelectedMood(itemValue)}
@@ -146,7 +150,7 @@ function DataScreen({ habits, days, navigation }) {
           ))}
         </Picker>
 
-        <Text>Habit</Text>
+        <Text style={styles.title}>Habit</Text>
         <Picker
           selectedValue={selectedHabitId}
           onValueChange={(itemValue) => setSelectedHabitId(itemValue)}
@@ -154,12 +158,13 @@ function DataScreen({ habits, days, navigation }) {
           <Picker.Item color="white" label="Top 3 Habits" value="top3" />
           {Object.keys(habits).map((habitId) => (
             <Picker.Item
+              key={uuidv4()}
               color="white"
               label={habits[habitId].text}
               value={habitId}
             />
           ))}
-        </Picker> */}
+        </Picker>
       </ScrollView>
       <TutorialModal />
     </View>
