@@ -152,7 +152,7 @@ export function getHabitRemainingDays(
 }
 
 /**
- * Get habit count for a particular mood given days
+ * Get habit count given days
  */
 export function getHabitCount(
   habitId: string,

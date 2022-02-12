@@ -9,8 +9,13 @@ import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
 import { RootState } from '../redux/store';
 import { HabitType, IDayType, IHabitType } from '../types';
+import { getPercentage } from '../utils';
 import { getDaysPastWeek } from '../utils/day';
-import { getHabitIds, getHabitsFromIdsAsArray, getNonDeletedHabits } from '../utils/habit';
+import {
+  getHabitIds,
+  getHabitsFromIdsAsArray,
+  getNonDeletedHabits,
+} from '../utils/habit';
 
 export function HomeScreen() {
   const days = useSelector<RootState, IDayType>(
@@ -19,17 +24,15 @@ export function HomeScreen() {
   const habits = useSelector<RootState, IHabitType>(
     (state) => state.habitReducer.habits
   );
-  console.log('habbb', habits)
-
-  const today = DateTime.now().toISODate();
+  const dateToday = DateTime.now().toISODate();
 
   const [daysPastWeek, setDaysPastWeek] = useState<IDayType>({});
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
-  const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
   const [habitCount, setHabitCount] = useState(0);
   const [habitPercentComplete, setHabitPercentComplete] = useState(0);
+  const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
+  const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,7 +48,7 @@ export function HomeScreen() {
   }
 
   function setHabits() {
-    const nonDeletedHabits = getNonDeletedHabits(habits)
+    const nonDeletedHabits = getNonDeletedHabits(habits);
     const finishedHabits = getHabitsFromIdsAsArray(
       nonDeletedHabits,
       getHabitIds(nonDeletedHabits, true)
@@ -54,6 +57,13 @@ export function HomeScreen() {
       nonDeletedHabits,
       getHabitIds(nonDeletedHabits, false)
     );
+    const habitCount = finishedHabits.length + remainingHabits.length;
+    const habitPercentComplete = getPercentage(
+      finishedHabits.length,
+      habitCount
+    );
+    setHabitCount(habitCount);
+    setHabitPercentComplete(habitPercentComplete);
     setFinishedHabits(finishedHabits);
     setRemainingHabits(remainingHabits);
   }
@@ -69,13 +79,17 @@ export function HomeScreen() {
       <HabitSummaryCard
         remainingHabits={remainingHabits}
         finishedHabits={finishedHabits}
-        habitCount={days[today].habitCount}
-        habitPercentComplete={days[today].habitPercentComplete}
+        habitCount={habitCount}
+        habitPercentComplete={habitPercentComplete}
       />
+
+
+      {/* Past week data */}
       <MoodPercentage
         days={daysPastWeek}
         startDate={startDate}
         endDate={endDate}
+        customDateRangeText="for the past week:"
       />
       <ChartContainer
         days={daysPastWeek}

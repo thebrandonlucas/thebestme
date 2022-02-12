@@ -11,6 +11,7 @@ import Colors from '../constants/Colors';
 import { saveDay } from '../redux/actions/DayActions';
 import { resetHabits } from '../redux/actions/HabitsActions';
 import { DayType, HabitType, IDayType, IHabitType, ValidMood } from '../types';
+import { getPercentage } from '../utils';
 import { getMostRecentDay } from '../utils/day';
 import {
   getHabitIds,
@@ -49,7 +50,7 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
       const tempHabitCount =
         tempRemainingHabits.length + tempFinishedHabits.length;
 
-      const percentComplete = getHabitPercentComplete(
+      const percentComplete = getPercentage(
         tempFinishedHabits.length,
         tempHabitCount
       );
