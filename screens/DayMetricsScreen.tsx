@@ -6,13 +6,16 @@ import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import { BarChart } from '../components/Charts/BarChart';
 import { LineChart } from '../components/Charts/LineChart';
-import { Pie } from '../components/Charts/PieMoods';
+import { PieMoods } from '../components/Charts/PieMoods';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
 import ThemeButton from '../components/ThemeButton';
-import { View } from '../components/Themed';
+import { Text, View } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { RootState } from '../redux/store';
 import { HabitType, IDayType, IHabitType, ValidMood } from '../types';
+import getDateString from '../utils';
+import Colors from '../constants/Colors'
+import { Pie } from '../components/Charts/Pie';
 
 type Mode = 'date' | 'time';
 
@@ -55,30 +58,16 @@ function DayMetricsScreen({ navigation, route }) {
     <>
       <View>
         <ScrollView>
+          <Text style={[styles.date, { color: Colors.themeColor }]}>
+            {getDateString('').date}
+          </Text>
           <HabitSummaryCard
             remainingHabits={remainingHabits}
             finishedHabits={finishedHabits}
             habitCount={currentDay.habitCount}
             habitPercentComplete={currentDay.habitPercentComplete}
           />
-
-          <Pie days={days} startDate={startDate} endDate={endDate} />
-          <BarChart
-            days={days}
-            habits={habits}
-            startDate={startDate}
-            endDate={endDate}
-            selectedHabitId={selectedHabitId}
-            selectedMood={selectedMood}
-          />
-
-          <LineChart
-            days={days}
-            startDate={startDate}
-            endDate={endDate}
-            selectedMood={selectedMood}
-          />
-
+          <Pie day={days} />
           {currentDay.endOfDayNotes && (
             <Button title="View End of Day Notes" onPress={goToEndOfDayNotes} />
           )}
@@ -110,5 +99,11 @@ const styles = StyleSheet.create({
     borderColor: '#666',
     backgroundColor: 'white',
     color: 'white',
+  },
+  date: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    margin: 10,
+    textAlign: 'center'
   },
 });

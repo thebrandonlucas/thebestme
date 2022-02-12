@@ -4,23 +4,36 @@ import { VictoryPie } from 'victory-native';
 import Colors from '../../constants/Colors';
 import { MoodToColor } from '../../constants/MoodToColor';
 import { IDayType } from '../../types';
+import { getMoodCountTotal } from '../../utils/mood';
 
 export function Pie({
   day,
 }: {
-  days: IDayType;
-  startDate: string;
-  endDate: string;
+  day: IDayType;
 }) {
   // Initialization to 0 required for animation
   const [pieChartData, setPieChartData] = useState([
-    { mood: 'Great', frequency: 0 },
-    { mood: 'Okay', frequency: 0 },
-    { mood: 'Not Good', frequency: 0 },
+    { x: 'Great', y: 0 },
+    { x: 'Okay', y: 0 },
+    { x: 'Not Good', y: 0 },
   ]);
 
   useEffect(() => {
-    // configurePieChart();
+    const happyMoodFrequencies = getMoodCountTotal(day, 'Great');
+    const neutralMoodFrequencies = getMoodCountTotal(day, 'Okay');
+    const sadMoodFrequencies = getMoodCountTotal(day, 'Not Good');
+
+    const tempPieChartdata = [
+      { mood: 'Great', frequency: happyMoodFrequencies },
+      { mood: 'Okay', frequency: neutralMoodFrequencies },
+      { mood: 'Not Good', frequency: sadMoodFrequencies },
+    ]
+    setPieChartData([
+      { x: 'Great', y: happyMoodFrequencies },
+      { x: 'Okay', y: neutralMoodFrequencies },
+      { x: 'Not Good', y: sadMoodFrequencies },
+    ]);
+    console.log('day', day)
   }, []);
 
   // TODO: set an aspect ratio for the whole project in Redux that adapts to the screen size
