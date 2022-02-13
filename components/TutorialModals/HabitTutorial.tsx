@@ -43,8 +43,4 @@ export default function HabitTutorial() {
   );
 }
 
-const styles = StyleSheet.create({
-  bulletHabit: {
-    marginVertical: 5,
-  },
-});
+

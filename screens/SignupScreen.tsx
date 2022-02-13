@@ -1,14 +1,20 @@
-// import '@firebase/firestore';
+import '@firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import PassMeter from 'react-native-passmeter';
 import ThemeButton from '../components/ThemeButton';
 import { Input } from '../components/Themed';
 import firebase from '../firebase.js';
 
 const MIN_PASSWORD_LEN = 6,
-  MAX_PASSWORD_LEN = 15,
   PASSWORD_LABELS = ['Too Short', 'Weak', 'Fair', 'Strong', 'Secure'];
 
 /*
@@ -25,7 +31,42 @@ export default function SignupScreen() {
   const goToLogin = () => {
     navigation.navigate('Login');
   };
-  function handleSignUp() {
+  async function handleSignUp() {
+    if (email.includes('@')) {
+      // Check to see if the user's email belongs to a supported school
+      // Get the last occurrence of the '@' symbol (in case user enters multiple)
+      const atSymbolCount = email.split('@').length - 1;
+      const domain = email.split('@')[atSymbolCount];
+      const fbResult = await firebase
+        .firestore()
+        .collection('accepted-email-domains')
+        .get();
+      const validDomains: string[] =
+        fbResult.docs[0].data()['accepted-domains'];
+      if (!validDomains.includes(domain)) {
+        Alert.alert(
+          'Alert',
+          'Your email must be registered with one of our partnered schools to sign up.' +
+            ' See list of available schools below',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('Ok Pressed'),
+            },
+          ],
+          { cancelable: false }
+        );
+        return;
+      }
+    } else {
+      Alert.alert(
+        'Alert',
+        'Email format is incorrect.',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+        { cancelable: false }
+      );
+      return;
+    }
     if (password.length < 6) {
       Alert.alert(
         'Alert',
@@ -68,7 +109,10 @@ export default function SignupScreen() {
   }
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
       <Text>TheBestMe</Text>
       <>
         <Input
@@ -81,7 +125,6 @@ export default function SignupScreen() {
         <Input
           keyboardType="visible-password"
           secureTextEntry
-          maxLength={MAX_PASSWORD_LEN}
           placeholder="New Password..."
           value={password}
           onChangeText={setPassword}
@@ -89,7 +132,6 @@ export default function SignupScreen() {
         <Input
           keyboardType="visible-password"
           secureTextEntry
-          maxLength={MAX_PASSWORD_LEN}
           placeholder="Confirm New Password..."
           value={confirmPassword}
           onChangeText={setConfirmPassword}
@@ -99,7 +141,6 @@ export default function SignupScreen() {
             <PassMeter
               showLabels
               password={password}
-              maxLength={MAX_PASSWORD_LEN}
               minLength={MIN_PASSWORD_LEN}
               labels={PASSWORD_LABELS}
             />

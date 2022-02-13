@@ -240,7 +240,7 @@ function JournalNavigator() {
       <CBTStack.Screen
         name="CBTAddScreen"
         component={CBTAddScreen}
-        options={() => headerOptions('CBT - Add Entry', 'cbt')}
+        options={() => headerOptions('Thought Challenging', 'cbt')}
       />
     </JournalStack.Navigator>
   );
