@@ -87,9 +87,6 @@ export default function JournalModal(props: JournalModalProps) {
               disabled={disabled}
             />
           </ScrollView>
-          {/* <InputAccessoryView nativeID={inputAccessoryViewId}>
-            <View style={styles.saveBtnContainer}><Button style={styles.saveBtn} title="Save" onPress={props.onClickSave} /></View>
-          </InputAccessoryView> */}
         </Card>
       </Modal>
     </>

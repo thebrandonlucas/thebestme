@@ -1,33 +1,35 @@
-import * as React from 'react';
-import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
-import ThemeButton from '../components/ThemeButton';
-import { Text, View } from '../components/Themed';
-import { RootState } from '../redux/store';
-import { v4 as uuidv4 } from 'uuid';
+// TODO: implement end of day notes screen for the multiple journals they will have in the future
 
-function EndOfDayNotesScreen({ navigation, route }) {
+// import * as React from 'react';
+// import { useEffect } from 'react';
+// import { StyleSheet } from 'react-native';
+// import { useSelector } from 'react-redux';
+// import ThemeButton from '../components/ThemeButton';
+// import { Text, View } from '../components/Themed';
+// import { RootState } from '../redux/store';
+// import { v4 as uuidv4 } from 'uuid';
 
-  const endOfDayNotes = useSelector<RootState, string[]>(
-    (state) => state.dayReducer.days[route.params.selectedDay].endOfDayNotes
-  );
+// function EndOfDayNotesScreen({ navigation, route }) {
 
-  function goBack() {
-    navigation.goBack();
-  }
+//   const endOfDayNotes = useSelector<RootState, string[]>(
+//     (state) => state.dayReducer.days[route.params.selectedDay].endOfDayNotes
+//   );
 
-  return (
-    <View>
-      <Text>{route.params.selectedDay}</Text>
-      {endOfDayNotes.map((text) => {
-        return <Text key={uuidv4()}>{text}</Text>;
-      })}
-      <ThemeButton title="Go Back" onPress={goBack} />
-    </View>
-  );
-}
+//   function goBack() {
+//     navigation.goBack();
+//   }
 
-export default EndOfDayNotesScreen;
+//   return (
+//     <View>
+//       <Text>{route.params.selectedDay}</Text>
+//       {endOfDayNotes.map((text) => {
+//         return <Text key={uuidv4()}>{text}</Text>;
+//       })}
+//       <ThemeButton title="Go Back" onPress={goBack} />
+//     </View>
+//   );
+// }
 
-const styles = StyleSheet.create({});
+// export default EndOfDayNotesScreen;
+
+// const styles = StyleSheet.create({});

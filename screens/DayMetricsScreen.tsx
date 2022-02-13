@@ -4,6 +4,7 @@ import { Dimensions, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import { Pie } from '../components/Charts/Pie';
+import { EndOfDayNotesModal } from '../components/EndOfDayNotesModal';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
 import { MoodPercentages } from '../components/MoodPercentages/MoodPercentages';
 import ThemeButton from '../components/ThemeButton';
@@ -34,6 +35,8 @@ function DayMetricsScreen({ navigation, route }) {
 
   const [remainingHabits, setRemainingHabits] = useState<HabitType[]>([]);
   const [finishedHabits, setFinishedHabits] = useState<HabitType[]>([]);
+  const [isEndOfDayNotesModalOpen, setIsEndOfDayNotesModalOpen] =
+    useState(false);
 
   useEffect(() => {
     setRemainingHabits(currentDay.remainingHabitIds.map((id) => habits[id]));
@@ -44,10 +47,12 @@ function DayMetricsScreen({ navigation, route }) {
     navigation.goBack();
   }
 
-  function goToEndOfDayNotes() {
-    navigation.navigate('EndOfDayNotesScreen', {
-      selectedDay: route.params.selectedDay,
-    });
+  function openEndOfDayNotesModal() {
+    setIsEndOfDayNotesModalOpen(true);
+  }
+
+  function closeEndOfDayNotesModal() {
+    setIsEndOfDayNotesModalOpen(false);
   }
 
   return (
@@ -66,11 +71,20 @@ function DayMetricsScreen({ navigation, route }) {
           <Pie day={days} />
           <MoodPercentages day={currentIDay} />
           {currentDay.endOfDayNotes && (
-            <Button title="View End of Day Notes" onPress={goToEndOfDayNotes} />
+            <Button
+              title="View End of Day Notes"
+              onPress={openEndOfDayNotesModal}
+            />
           )}
         </ScrollView>
         <ThemeButton title="Go Back" onPress={goBack} />
         <TutorialModal />
+        <EndOfDayNotesModal
+          isModalOpen={isEndOfDayNotesModalOpen}
+          // Get last endOfDayNotes entry, in future, we want to list all end of day notes
+          text={currentDay.endOfDayNotes[currentDay.endOfDayNotes.length - 1]}
+          closeModal={closeEndOfDayNotesModal}
+        />
       </View>
     </>
   );

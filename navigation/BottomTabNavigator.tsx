@@ -21,7 +21,6 @@ import { setDescription } from '../redux/actions/DescriptionActions';
 import CBTAddScreen from '../screens/CBTAddScreen';
 import DataScreen from '../screens/DataScreen';
 import DayMetricsScreen from '../screens/DayMetricsScreen';
-import EndOfDayNotesScreen from '../screens/EndOfDayNotesScreen';
 import FinishDayScreen from '../screens/FinishDayScreen';
 import HabitsScreen from '../screens/HabitsScreen';
 import { HomeScreen } from '../screens/HomeScreen';
@@ -300,11 +299,11 @@ function DataNavigator() {
         component={DayMetricsScreen}
         options={() => headerOptions('Day Metrics', 'data')}
       />
-      <DataStack.Screen
+      {/* <DataStack.Screen
         name="EndOfDayNotesScreen"
         component={EndOfDayNotesScreen}
         options={() => headerOptions('End of Day Notes')}
-      />
+      /> */}
     </DataStack.Navigator>
   );
 }
