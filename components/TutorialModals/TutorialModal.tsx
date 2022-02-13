@@ -7,6 +7,7 @@ import { setDescription } from '../../redux/actions/DescriptionActions';
 import { RootState } from '../../redux/store';
 import { DescriptionType } from '../../types';
 import { Card, Text } from '../Themed';
+import CBTAddTutorial from './CBTAddTutorial';
 import DataTutorial from './DataTutorial';
 import DayScreenTutorial from './DayScreenTutorial';
 import HabitTutorial from './HabitTutorial';
@@ -32,6 +33,7 @@ export default function TutorialModal() {
     habits: 'Habits',
     journal: 'Journal',
     data: 'Data',
+    cbt: 'Thought Challenging - Add',
   };
 
   useEffect(() => {
@@ -48,6 +50,8 @@ export default function TutorialModal() {
       case 'data':
         setTutorialType(<DataTutorial />);
         break;
+      case 'cbt':
+        setTutorialType(<CBTAddTutorial />);
       case 'dayscreen':
         setTutorialType(<DayScreenTutorial />);
       default:

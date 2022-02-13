@@ -58,6 +58,7 @@ export type AWAREParamList = {
 export type DataParamList = {
   DataScreen: undefined;
   DayMetricsScreen: undefined;
+  EndOfDayNotesScreen: undefined;
 };
 
 export type SettingsParamList = {
@@ -247,6 +248,7 @@ export type DescriptionType =
   | 'journal'
   | 'data'
   | 'dayscreen'
+  | 'cbt'
   | 'closed';
 
 export type QuestionButtonType = {

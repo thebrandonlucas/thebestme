@@ -5,23 +5,13 @@ import { useSelector } from 'react-redux';
 import ThemeButton from '../components/ThemeButton';
 import { Text, View } from '../components/Themed';
 import { RootState } from '../redux/store';
-import { EndOfDayNotesEntryType } from '../types';
+import { v4 as uuidv4 } from 'uuid';
 
-function EndOfDayNotesScreen({ navigation }) {
-  const selectedDay = useSelector<RootState, string>(
-    (state) => state.dayReducer.selectedDay
-  );
+function EndOfDayNotesScreen({ navigation, route }) {
 
-  const endOfDayNotes = useSelector<RootState, EndOfDayNotesEntryType[]>(
-    (state) => state.dayReducer.days[selectedDay].endOfDayNotes
+  const endOfDayNotes = useSelector<RootState, string[]>(
+    (state) => state.dayReducer.days[route.params.selectedDay].endOfDayNotes
   );
-  // const [endOfDayNotes, setEndOfDayNotes] = useState<EndOfDayNotesEntryType[]>();
-  // const { selectedDay } = route.params.selectedDay;
-  //
-  useEffect(() => {
-    // setEndOfDayNotes(
-    // );
-  }, []);
 
   function goBack() {
     navigation.goBack();
@@ -29,9 +19,9 @@ function EndOfDayNotesScreen({ navigation }) {
 
   return (
     <View>
-      <Text>{selectedDay}</Text>
+      <Text>{route.params.selectedDay}</Text>
       {endOfDayNotes.map((text) => {
-        return <Text>{text}</Text>;
+        return <Text key={uuidv4()}>{text}</Text>;
       })}
       <ThemeButton title="Go Back" onPress={goBack} />
     </View>

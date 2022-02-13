@@ -13,7 +13,7 @@ export default function QuestionButton({ infoType }: QuestionButtonType) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  // TODO: delete once we're sure we're not going the 'screen' route
+  // TODO: delete once we're sure we're not going the 'screen'
   function goToInfoScreen() {
     // FIXME: route.params.infoType not being passed to InfoScreen, why?
     // using redux as workaround
@@ -22,6 +22,7 @@ export default function QuestionButton({ infoType }: QuestionButtonType) {
   }
 
   function showInfoModal() {
+    console.log('info', infoType)
     dispatch(setDescription(infoType));
   }
 

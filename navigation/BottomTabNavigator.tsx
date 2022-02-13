@@ -224,11 +224,6 @@ function HabitsNavigator() {
         component={DayMetricsScreen}
         options={() => headerOptions('Day Metrics')}
       />
-      <HabitsStack.Screen
-        name="EndOfDayNotesScreen"
-        component={EndOfDayNotesScreen}
-        options={() => headerOptions('End of Day Notes')}
-      />
     </HabitsStack.Navigator>
   );
 }
@@ -246,7 +241,7 @@ function JournalNavigator() {
       <CBTStack.Screen
         name="CBTAddScreen"
         component={CBTAddScreen}
-        options={() => headerOptions('CBT - Add Entry', 'cbtJournal')}
+        options={() => headerOptions('CBT - Add Entry', 'cbt')}
       />
     </JournalStack.Navigator>
   );
@@ -257,15 +252,15 @@ const CBTStack = createStackNavigator<CBTParamList>();
 function CBTNavigator() {
   return (
     <CBTStack.Navigator>
-      <CBTStack.Screen
+      {/* <CBTStack.Screen
         name="CBTScreen"
         component={CBTScreen}
         options={() => headerOptions('Thought Challenging', 'cbtJournal')}
-      />
+      /> */}
       <CBTStack.Screen
         name="CBTAddScreen"
         component={CBTAddScreen}
-        options={() => headerOptions('CBT - Add Entry', 'cbtJournal')}
+        options={() => headerOptions('CBT - Add Entry', 'cbt')}
       />
     </CBTStack.Navigator>
   );
@@ -304,6 +299,11 @@ function DataNavigator() {
         name="DayMetricsScreen"
         component={DayMetricsScreen}
         options={() => headerOptions('Day Metrics', 'data')}
+      />
+      <DataStack.Screen
+        name="EndOfDayNotesScreen"
+        component={EndOfDayNotesScreen}
+        options={() => headerOptions('End of Day Notes')}
       />
     </DataStack.Navigator>
   );

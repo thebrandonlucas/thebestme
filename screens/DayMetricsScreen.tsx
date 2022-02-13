@@ -45,7 +45,9 @@ function DayMetricsScreen({ navigation, route }) {
   }
 
   function goToEndOfDayNotes() {
-    navigation.navigate('EndOfDayNotesScreen');
+    navigation.navigate('EndOfDayNotesScreen', {
+      selectedDay: route.params.selectedDay,
+    });
   }
 
   return (
