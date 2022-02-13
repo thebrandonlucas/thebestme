@@ -186,7 +186,7 @@ function headerOptions(title: string, infoType?: DescriptionType) {
 const HomeStack = createStackNavigator<HomeParamList>();
 
 function HomeNavigator() {
-  setDescription('home')
+  setDescription('home');
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -201,7 +201,7 @@ function HomeNavigator() {
 const HabitsStack = createStackNavigator<HabitsParamList>();
 
 function HabitsNavigator() {
-  setDescription('habits')
+  setDescription('habits');
   return (
     <HabitsStack.Navigator>
       <HabitsStack.Screen
@@ -243,6 +243,11 @@ function JournalNavigator() {
         component={JournalScreen}
         options={() => headerOptions('Journal', 'journal')}
       />
+      <CBTStack.Screen
+        name="CBTAddScreen"
+        component={CBTAddScreen}
+        options={() => headerOptions('CBT - Add Entry', 'cbtJournal')}
+      />
     </JournalStack.Navigator>
   );
 }
@@ -252,11 +257,11 @@ const CBTStack = createStackNavigator<CBTParamList>();
 function CBTNavigator() {
   return (
     <CBTStack.Navigator>
-      {/* <CBTStack.Screen
+      <CBTStack.Screen
         name="CBTScreen"
         component={CBTScreen}
         options={() => headerOptions('Thought Challenging', 'cbtJournal')}
-      /> */}
+      />
       <CBTStack.Screen
         name="CBTAddScreen"
         component={CBTAddScreen}

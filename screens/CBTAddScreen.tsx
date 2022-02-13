@@ -1,26 +1,30 @@
+import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import TextInputModal from '../components/TextInputModal';
 import ThemeButton from '../components/ThemeButton';
 import { Card, Text, View } from '../components/Themed';
+import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
 import { saveCbtJournal, updateCbtJournal } from '../redux/actions/CbtActions';
 import { setDayInfo } from '../redux/actions/DayActions';
-import { CbtJournalEntryType, DayType } from '../types';
+import { RootState } from '../redux/store';
+import { CbtJournalEntryType, DayType, IDayType } from '../types';
 import getDateString from '../utils';
-import { DateTime } from 'luxon';
 
 export function CBTAddScreen({
   route,
   navigation,
-  today,
   saveCbtJournal,
   updateCbtJournal,
-  setDayInfo
+  setDayInfo,
 }) {
+  const today = useSelector<RootState, IDayType>(
+    (state) => state.dayReducer.days
+  )[DateTime.now().toISODate()];
   const [cbtId, setCbtId] = useState<string>('');
   const [date, setDate] = useState<string>('');
 
@@ -158,13 +162,14 @@ export function CBTAddScreen({
           />
         </View>
       </View>
+      <TutorialModal />
     </>
   );
 }
 
 const mapStateToProps = (state) => {
-  const { today, day } = state.dayReducer;
-  return { today, day };
+  const { days } = state.dayReducer;
+  return { days };
 };
 const mapDispatchToProps = (
   dispatch: (arg0: {
