@@ -5,50 +5,48 @@ import Colors from '../../constants/Colors';
 import { MoodToColor } from '../../constants/MoodToColor';
 import { IDayType } from '../../types';
 import { getMoodCountTotal } from '../../utils/mood';
+import { Text } from '../Themed';
 
-export function Pie({
-  day,
-}: {
-  day: IDayType;
-}) {
+export function Pie({ day }: { day: IDayType }) {
   // Initialization to 0 required for animation
   const [pieChartData, setPieChartData] = useState([
-    { x: 'Great', y: 0 },
+    { x: 'Great', y: 100 },
     { x: 'Okay', y: 0 },
     { x: 'Not Good', y: 0 },
   ]);
 
-  useEffect(() => {
-    const happyMoodFrequencies = getMoodCountTotal(day, 'Great');
-    const neutralMoodFrequencies = getMoodCountTotal(day, 'Okay');
-    const sadMoodFrequencies = getMoodCountTotal(day, 'Not Good');
+  const [isDataEmpty, setIsDataEmpty] = useState(false);
 
-    const tempPieChartdata = [
-      { mood: 'Great', frequency: happyMoodFrequencies },
-      { mood: 'Okay', frequency: neutralMoodFrequencies },
-      { mood: 'Not Good', frequency: sadMoodFrequencies },
-    ]
+  useEffect(() => {
+    const happyMoodCount = getMoodCountTotal(day, 'Great');
+    const neutralMoodCount = getMoodCountTotal(day, 'Okay');
+    const sadMoodCount = getMoodCountTotal(day, 'Not Good');
+
+    if (happyMoodCount + neutralMoodCount + sadMoodCount === 0) {
+      setIsDataEmpty(true);
+    }
+
     setPieChartData([
-      { x: 'Great', y: happyMoodFrequencies },
-      { x: 'Okay', y: neutralMoodFrequencies },
-      { x: 'Not Good', y: sadMoodFrequencies },
+      { x: 'Great', y: happyMoodCount },
+      { x: 'Okay', y: neutralMoodCount },
+      { x: 'Not Good', y: sadMoodCount },
     ]);
-    console.log('day', day)
-  }, []);
+  }, [day]);
 
   // TODO: set an aspect ratio for the whole project in Redux that adapts to the screen size
   const aspectRatio =
     Dimensions.get('screen').height / Dimensions.get('screen').width;
 
-  return (
+  return isDataEmpty ? (
+    <Text>That aint good</Text>
+  ) : (
     <VictoryPie
       data={pieChartData}
       colorScale={[Colors.happyGreen, Colors.neutralYellow, Colors.sadRed]}
       style={{
         labels: {
           // FIXME: fix typescript
-          fill: ({ datum }) =>
-            datum.frequency > 0 ? MoodToColor[datum.mood] : null,
+          fill: ({ datum }) => (datum.y > 0 ? MoodToColor[datum.x] : null),
           fontSize: 15,
           fontWeight: 'bold',
         },

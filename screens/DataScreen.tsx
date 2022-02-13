@@ -73,9 +73,7 @@ function DataScreen({ habits, days, navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <Text style={[styles.date, { color: Colors.themeColor }]}>
-          {formattedDate}
-        </Text>
+
         <Calendar
           style={styles.calendar}
           markingType="period"

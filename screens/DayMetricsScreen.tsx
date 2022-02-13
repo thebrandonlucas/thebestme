@@ -1,21 +1,18 @@
-import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
-import { BarChart } from '../components/Charts/BarChart';
-import { LineChart } from '../components/Charts/LineChart';
-import { PieMoods } from '../components/Charts/PieMoods';
+import { Pie } from '../components/Charts/Pie';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
+import { MoodPercentages } from '../components/MoodPercentages/MoodPercentages';
 import ThemeButton from '../components/ThemeButton';
 import { Text, View } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
+import Colors from '../constants/Colors';
 import { RootState } from '../redux/store';
-import { HabitType, IDayType, IHabitType, ValidMood } from '../types';
+import { DayType, HabitType, IDayType, IHabitType } from '../types';
 import getDateString from '../utils';
-import Colors from '../constants/Colors'
-import { Pie } from '../components/Charts/Pie';
 
 type Mode = 'date' | 'time';
 
@@ -26,13 +23,10 @@ function DayMetricsScreen({ navigation, route }) {
   const habits = useSelector<RootState, IHabitType>(
     (state) => state.habitReducer.habits
   );
-  const currentDay = days[route.params.selectedDay];
-  const [selectedMood, setSelectedMood] = useState<ValidMood | 'all'>('all');
-  const [selectedHabitId, setSelectedHabitId] = useState<string>('top3');
-  const [startDate, setStartDate] = useState<string>(Object.keys(days)[0]);
-  const [endDate, setEndDate] = useState<string>(DateTime.now().toISODate());
-
-  const moods = ['Great', 'Okay', 'Not Good'];
+  const currentDay: DayType = days[route.params.selectedDay];
+  const currentIDay: IDayType = {
+    [route.params.selectedDay.date]: days[route.params.selectedDay],
+  };
 
   // TODO: set an aspect ratio for the whole project in Redux that adapts to the screen size
   const aspectRatio =
@@ -59,7 +53,7 @@ function DayMetricsScreen({ navigation, route }) {
       <View>
         <ScrollView>
           <Text style={[styles.date, { color: Colors.themeColor }]}>
-            {getDateString('').date}
+            {getDateString(currentDay.date).date}
           </Text>
           <HabitSummaryCard
             remainingHabits={remainingHabits}
@@ -68,6 +62,7 @@ function DayMetricsScreen({ navigation, route }) {
             habitPercentComplete={currentDay.habitPercentComplete}
           />
           <Pie day={days} />
+          <MoodPercentages day={currentIDay} />
           {currentDay.endOfDayNotes && (
             <Button title="View End of Day Notes" onPress={goToEndOfDayNotes} />
           )}
@@ -104,6 +99,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     margin: 10,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 });

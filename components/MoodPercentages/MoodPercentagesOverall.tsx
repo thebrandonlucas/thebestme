@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { MoodToColor } from '../constants/MoodToColor';
-import { IDayType, ValidMood } from '../types';
-import { getPercentage } from '../utils';
-import { getDaysInTimeRange } from '../utils/day';
-import { getMoodFrequency } from '../utils/mood';
-import { Text } from './Themed';
+import { MoodToColor } from '../../constants/MoodToColor';
+import { IDayType, ValidMood } from '../../types';
+import { getPercentage } from '../../utils';
+import { getDaysInTimeRange } from '../../utils/day';
+import { getMoodFrequency } from '../../utils/mood';
+import { Text } from '../Themed';
 
-export function MoodPercentage({
+/**
+ * Gets the percentage occurrence for overall moods for specified days
+ * @returns 
+ */
+export function MoodPercentageOverall({
   days,
   customDateRangeText,
   startDate,
@@ -51,7 +55,7 @@ export function MoodPercentage({
     setSadMoodPercentage(sadMoodPercentage);
   }
 
-  function MoodPercentage({
+  function MoodPercentageOverall({
     mood,
     percentage,
   }: {
@@ -59,11 +63,9 @@ export function MoodPercentage({
     percentage: number;
   }): JSX.Element {
     return (
-      <Text style={{color: MoodToColor[mood]}}>
-        {mood} {percentage}%
-        {'\n'}
+      <Text style={{ color: MoodToColor[mood] }}>
+        {mood} {percentage}%{'\n'}
       </Text>
-      
     );
   }
 
@@ -72,9 +74,9 @@ export function MoodPercentage({
       <Text style={styles.moodPercentage}>
         Your overall mood {dateRangeText}
         {'\n'}
-        <MoodPercentage mood="Great" percentage={happyMoodPercentage} />
-        <MoodPercentage mood="Okay" percentage={neutralMoodPercentage} />
-        <MoodPercentage mood="Not Good" percentage={sadMoodPercentage} />
+        <MoodPercentageOverall mood="Great" percentage={happyMoodPercentage} />
+        <MoodPercentageOverall mood="Okay" percentage={neutralMoodPercentage} />
+        <MoodPercentageOverall mood="Not Good" percentage={sadMoodPercentage} />
       </Text>
     </>
   );

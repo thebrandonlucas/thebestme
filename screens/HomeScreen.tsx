@@ -4,7 +4,6 @@ import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { ChartContainer } from '../components/ChartContainer';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
-import { MoodPercentage } from '../components/MoodPercentage';
 import { Text } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
@@ -97,7 +96,7 @@ export function HomeScreen() {
       {/* Past week data */}
       {pastWeekDataViewable ? (
         <>
-          <MoodPercentage
+          <MoodPercentageOverall
             days={daysPastWeek}
             startDate={startDate}
             endDate={endDate}
