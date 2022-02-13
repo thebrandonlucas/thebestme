@@ -52,16 +52,21 @@ export default function Navigation({
   );
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (days && habits) {
-  //     checkIfNewDate();
-  //   }
-  // }, [days, habits]);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      console.log('tick')
+      if (days && habits) {
+        checkIfNewDate();
+      }
+    }, 10000);
+
+    // Clear the interval on every run to avoid a memory leak
+    return () => clearInterval(intervalId);
+  }, []);
 
   function checkIfNewDate() {
     const dates = Object.keys(days);
     const mostRecentDate = dates[dates.length - 1];
-    console.log('checkIfNewDate', dates, mostRecentDate)
     if (dates.length === 0 || DateTime.now().toISODate() !== mostRecentDate) {
       dispatch(newDay(habits));
     }

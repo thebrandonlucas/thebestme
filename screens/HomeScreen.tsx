@@ -114,7 +114,7 @@ export function HomeScreen() {
             endDate={endDate}
             selectedHabitId={'top3'}
             selectedMood={'all'}
-          />{' '}
+          />
         </>
       ) : (
         <Text style={styles.mainText}>

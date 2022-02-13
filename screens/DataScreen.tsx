@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
 import { ChartContainer } from '../components/ChartContainer';
+import ChartCustomizeModal from '../components/ChartCustomizeModal';
 import { Calendar, Card, Text, View } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
-import { Colors } from '../constants';
 import { MoodToColor } from '../constants/MoodToColor';
 import { selectDay } from '../redux/actions/DayActions';
 import {
@@ -16,16 +16,12 @@ import {
   IHabitType,
   ValidMood,
 } from '../types';
-import getDateString, { getDateFromISOString } from '../utils';
+import { getDateFromISOString } from '../utils';
 import getCalendarData from '../utils/getCalendarData';
 import { getMoodMode } from '../utils/mood';
-import { Picker } from '@react-native-picker/picker';
-import DateTimePicker from '@react-native-community/datetimepicker'
-import { v4 as uuidv4 } from 'uuid'
 
 function DataScreen({ habits, days, navigation }) {
   const currentDate = DateTime.now().toISODate();
-  const formattedDate = getDateString(currentDate).date;
   const isoDate = getDateFromISOString(currentDate);
 
   const [calendarData, setCalendarData] = useState<CalendarDataType>({});
@@ -35,7 +31,7 @@ function DataScreen({ habits, days, navigation }) {
   const [selectedHabitId, setSelectedHabitId] = useState<string>('top3');
   const [startDate, setStartDate] = useState<string>(Object.keys(days)[0]);
   const [endDate, setEndDate] = useState<string>(DateTime.now().toISODate());
-  const moods = ['Great', 'Okay', 'Not Good'];
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -70,10 +66,17 @@ function DataScreen({ habits, days, navigation }) {
     setEndDate(DateTime.fromJSDate(selectedDate).toISODate());
   }
 
+  function openModal() {
+    setIsChartModalVisible(true);
+  }
+
+  function closeModal() {
+    setIsChartModalVisible(false);
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView>
-
         <Calendar
           style={styles.calendar}
           markingType="period"
@@ -101,68 +104,35 @@ function DataScreen({ habits, days, navigation }) {
             <Text style={styles.title}>No data to display</Text>
           )}
         </Card>
+        <Text style={styles.title}>{'\n\n'}Visualize Your Data</Text>
+        <Text style={styles.label}>
+          {'\n'}The charts below show habit and mood data over time. Customize
+          the inputs to see different insights!{'\n\n'}
+        </Text>
+        <Button onPress={openModal} title="Customize Chart Inputs" />
+
         <ChartContainer
           days={days}
           habits={habits}
-          startDate={'2021-01-01'}
-          endDate={'2021-01-10'}
-          selectedHabitId={'top3'}
-          selectedMood={'all'}
+          startDate={startDate}
+          endDate={endDate}
+          selectedHabitId={selectedHabitId}
+          selectedMood={selectedMood}
         />
-        <Text style={styles.title}>Start Date</Text>
-        <DateTimePicker
-          testID="dateTimePicker"
-          // FIXME: center pickers! How?
-          // style={{marginHorizontal: '40%'}}
-          value={DateTime.fromISO(startDate).toJSDate()}
-          // FIXME: 'datetime' only available on ios
-          mode="datetime"
-          is24Hour={true}
-          display="default"
-          onChange={onChangeStartDate}
+        <ChartCustomizeModal
+          days={days}
+          habits={habits}
+          startDate={startDate}
+          endDate={endDate}
+          selectedHabitId={selectedHabitId}
+          selectedMood={selectedMood}
+          isVisible={isChartModalVisible}
+          onChangeStartDate={onChangeStartDate}
+          onChangeEndDate={onChangeEndDate}
+          setSelectedHabitId={setSelectedHabitId}
+          setSelectedMood={setSelectedMood}
+          closeModal={closeModal}
         />
-        <Text style={styles.title}>End Date</Text>
-        <DateTimePicker
-          testID="dateTimePicker"
-          // FIXME: center pickers! How?
-          // style={{marginHorizontal: '40%'}}
-          value={DateTime.fromISO(endDate).toJSDate()}
-          mode="datetime"
-          is24Hour={true}
-          display="default"
-          onChange={onChangeEndDate}
-        />
-        <Text style={styles.title}>Mood</Text>
-        <Picker
-          selectedValue={selectedMood}
-          onValueChange={(itemValue, itemIndex) => setSelectedMood(itemValue)}
-        >
-          <Picker.Item color="white" label="All" value="all" />
-          {moods.map((mood) => (
-            <Picker.Item
-              key={uuidv4()}
-              color={MoodToColor[mood]}
-              label={mood}
-              value={mood}
-            />
-          ))}
-        </Picker>
-
-        <Text style={styles.title}>Habit</Text>
-        <Picker
-          selectedValue={selectedHabitId}
-          onValueChange={(itemValue) => setSelectedHabitId(itemValue)}
-        >
-          <Picker.Item color="white" label="Top 3 Habits" value="top3" />
-          {Object.keys(habits).map((habitId) => (
-            <Picker.Item
-              key={uuidv4()}
-              color="white"
-              label={habits[habitId].text}
-              value={habitId}
-            />
-          ))}
-        </Picker>
       </ScrollView>
       <TutorialModal />
     </View>

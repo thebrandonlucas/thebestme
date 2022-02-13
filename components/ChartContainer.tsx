@@ -38,5 +38,6 @@ export function ChartContainer({
         selectedMood={selectedMood}
       />
     </View>
+
   );
 }

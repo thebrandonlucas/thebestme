@@ -50,7 +50,7 @@ export function PieMoods({
       pieChartData[1].frequency === 0 &&
       pieChartData[2].frequency === 0)
   ) {
-    return <Text>No mood data to show for pie chart given selected days</Text>;
+    return <Text>No Pie Chart data to show for selected days</Text>;
   } else {
     return (
       <VictoryPie

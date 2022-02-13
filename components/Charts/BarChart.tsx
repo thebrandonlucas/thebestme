@@ -191,8 +191,7 @@ export function BarChart({
   ) {
     return (
       <Text>
-        No mood data to show for bar chart given selected days, mood(s), and
-        habit(s)
+       No Bar Chart data to show for selections 
       </Text>
     );
   }

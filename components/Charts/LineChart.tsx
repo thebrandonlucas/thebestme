@@ -23,11 +23,16 @@ export function LineChart({
   endDate: string;
   selectedMood: ValidMood | 'all';
 }) {
-  const [happyLineChartData, setHappyLineChartData] =
-    useState<FrequencyByDate[]>([]);
-  const [neutralLineChartData, setNeutralLineChartData] =
-    useState<FrequencyByDate[]>([]);
-  const [sadLineChartData, setSadLineChartData] = useState<FrequencyByDate[]>([]);
+  const [happyLineChartData, setHappyLineChartData] = useState<
+    FrequencyByDate[]
+  >([]);
+  const [neutralLineChartData, setNeutralLineChartData] = useState<
+    FrequencyByDate[]
+  >([]);
+  const [sadLineChartData, setSadLineChartData] = useState<FrequencyByDate[]>(
+    []
+  );
+  const [selectedDays, setSelectedDays] = useState<IDayType>({});
 
   useEffect(() => {
     configureLineChart();
@@ -41,6 +46,7 @@ export function LineChart({
       startDate,
       endDate
     );
+    setSelectedDays(selectedDays)
 
     let moodFrequencies: FrequencyByDate[];
     if (selectedMood !== 'all') {
@@ -82,26 +88,28 @@ export function LineChart({
   };
 
   if (
-    happyLineChartData.length === 0 &&
-    neutralLineChartData.length === 0 &&
-    sadLineChartData.length === 0
+    (happyLineChartData.length === 0 &&
+      neutralLineChartData.length === 0 &&
+      sadLineChartData.length === 0) ||
+    Object.keys(selectedDays).length < 2
   ) {
-    return (
-      <Text>
-        No mood data to show for line chart given selected days and mood(s)
-      </Text>
-    );
+    return <Text>No Line Chart data to show for selections</Text>;
   }
   return (
     <>
       <VictoryChart theme={barChartStyle} scale={'time'}>
-        <VictoryAxis dependentAxis tickFormat={(t) => Math.round(t)} />
-        <VictoryAxis />
+        <VictoryAxis
+          fixLabelOverlap={true}
+          dependentAxis
+          tickFormat={(t) => Math.round(t)}
+        />
+        <VictoryAxis fixLabelOverlap={true} />
         {happyLineChartData && (
           <VictoryLine
             style={{
-              data: { stroke: Colors.happyGreen },
+              data: { stroke: Colors.happyGreen, strokeWidth: 4 },
               parent: { border: '1px solid #ccc' },
+              labels: { padding: 100 },
             }}
             x="date"
             y="frequency"
@@ -111,7 +119,7 @@ export function LineChart({
         {neutralLineChartData && (
           <VictoryLine
             style={{
-              data: { stroke: Colors.neutralYellow },
+              data: { stroke: Colors.neutralYellow, strokeWidth: 4 },
               parent: { border: '1px solid #ccc' },
             }}
             x="date"
@@ -122,7 +130,7 @@ export function LineChart({
         {sadLineChartData && (
           <VictoryLine
             style={{
-              data: { stroke: Colors.sadRed },
+              data: { stroke: Colors.sadRed, strokeWidth: 4 },
               parent: { border: '1px solid #ccc' },
             }}
             x="date"
