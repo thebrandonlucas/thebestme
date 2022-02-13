@@ -1,30 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
-import { DateTime } from 'luxon';
-import React, { useEffect } from 'react';
-import { Platform, Alert } from 'react-native';
+import React from 'react';
+import { Alert, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
-import { newDay } from './redux/actions/DayActions';
 // Modify to add persistor
-import { persistor, RootState, store } from './redux/store';
-import { IDayType, IHabitType } from './types';
+import { persistor, store } from './redux/store';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   // const colorScheme = useColorScheme();
-  const colorScheme = 'dark'
+  const colorScheme = 'dark';
 
   if (!isLoadingComplete) {
     return null;
   }
 
   async function clearAppData() {
-    console.log('Clearing App Data')
+    console.log('Clearing App Data');
     // TODO: remove after dev
     const asyncStorageKeys = await AsyncStorage.getAllKeys();
     if (asyncStorageKeys.length > 0) {
@@ -33,7 +29,7 @@ export default function App() {
       }
       if (Platform.OS === 'ios') {
         await AsyncStorage.multiRemove(asyncStorageKeys);
-        Alert.alert('App data cleared')
+        Alert.alert('App data cleared');
       }
     }
   }

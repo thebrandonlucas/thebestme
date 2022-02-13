@@ -1,4 +1,4 @@
-import { HabitType } from "../../types";
+import { HabitType, IHabitType } from "../../types";
 import { ADD_HABIT, DELETE_HABIT, UPDATE_HABIT, TOGGLE_HABIT, RESET_HABITS} from "./types/HabitActions.types";
 
 /**
@@ -6,7 +6,7 @@ import { ADD_HABIT, DELETE_HABIT, UPDATE_HABIT, TOGGLE_HABIT, RESET_HABITS} from
  * @param habit 
  * @returns
  */
-export function addHabit(habit: HabitType) {
+export function addHabit(habit: IHabitType) {
     return {
         type: ADD_HABIT,
         payload: habit

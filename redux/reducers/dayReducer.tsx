@@ -6,25 +6,23 @@ import {
   NEW_DAY,
   SET_DAY,
 } from '../actions/types/DayActions.types';
-// Key value pairing
-// 'isoDateString.finishDayCount': dayInfo
-// days: { '2021-01-01.2': day }
 
-// and save whatever is in it upon rollover (if anything);
 const initialState: DayReducerType = {
   days: {},
 };
 
 const dayReducer = (state = initialState, action) => {
-  let tempDays: IDayType;
+  // console.log('days', action)
+  let tempDays: IDayType = { ...state.days };
   switch (action.type) {
     case SET_DAY:
-      tempDays = { ...state.days, [action.payload.date]: action.payload };
+      tempDays = { ...tempDays, [action.payload.date]: action.payload };
       return { ...state, days: tempDays };
     case FINISH_DAY:
-      tempDays = { ...state.days, ...action.payload };
+      tempDays = { ...tempDays, ...action.payload };
+      console.log('object being saved', action.payload)
       return { ...state, days: tempDays };
-      // return { ...state, days: {} };
+    // return { ...state, days: {} };
     case NEW_DAY:
       const newDay: DayType = {
         date: DateTime.now().toISODate(),
@@ -38,7 +36,7 @@ const dayReducer = (state = initialState, action) => {
         habitCount: 0,
         habitPercentComplete: 0,
       };
-      tempDays = { ...state.days, [newDay.date]: { ...newDay } };
+      tempDays = { ...tempDays, [newDay.date]: { ...newDay } };
       return { ...state, days: tempDays };
 
     default:

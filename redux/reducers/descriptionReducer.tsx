@@ -10,7 +10,6 @@ const initialState: { infoType: DescriptionType; isDisplaying: boolean } = {
 };
 
 const descriptionReducer = (state = initialState, action) => {
-  console.log('descriptionreducer', action)
   switch (action.type) {
     case SET_DESCRIPTION:
       return { ...state, infoType: action.payload };

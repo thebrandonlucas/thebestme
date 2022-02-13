@@ -52,11 +52,11 @@ export default function Navigation({
   );
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (days && habits) {
-      checkIfNewDate();
-    }
-  }, [days, habits]);
+  // useEffect(() => {
+  //   if (days && habits) {
+  //     checkIfNewDate();
+  //   }
+  // }, [days, habits]);
 
   function checkIfNewDate() {
     const dates = Object.keys(days);

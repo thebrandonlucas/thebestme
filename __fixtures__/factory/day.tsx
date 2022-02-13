@@ -7,7 +7,6 @@ import { DayType, IDayType } from '../../types';
 export function dayFixture(overrides: Partial<DayType> = {}): DayType {
   const defaults: DayType = {
     // FIXME: is ID really necessary for DayType?
-    id: '',
     // id: '2b68d805-734b-4f08-9e72-9b62db7d2d96',
     date: '2021-01-01',
     finishedHabitIds: [
@@ -20,14 +19,12 @@ export function dayFixture(overrides: Partial<DayType> = {}): DayType {
       'f430b0cd-0333-4fc9-813a-1c74dca07a1e',
     ],
     cbtIds: [],
-    awareIds: [],
     journalIds: [],
     mood: ['Great', 'Okay'],
     endOfDayNotes: [],
     finishedHabitCount: 0,
     habitCount: 0,
     habitPercentComplete: 0,
-    finishDayClickedCount: 0,
   };
 
   return { ...defaults, ...overrides };

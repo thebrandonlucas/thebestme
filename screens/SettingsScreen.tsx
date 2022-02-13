@@ -1,24 +1,32 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { DateTime } from 'luxon';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { Alert, Button, Platform, StyleSheet } from 'react-native';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Text, View } from '../components/Themed';
 import firebase from '../firebase';
 import { saveDay } from '../redux/actions/DayActions';
 import { addHabit } from '../redux/actions/HabitsActions';
-import { DayType, HabitType, IDayType } from '../types';
+import { RootState } from '../redux/store';
+import { IDayType, IHabitType } from '../types';
 import { habitsFixture } from '../__fixtures__/factory/habit';
 import { generateTestDaysWithHabitsRandom } from '../__fixtures__/testutil';
 
 function SettingsScreen({
   route, // TODO: these should only appear in develop mode
-  saveDay,
-  addHabit,
 }) {
   const navigation = useNavigation();
+
+  let habits = useSelector<RootState, IHabitType>(
+    (state) => state.habitReducer.habits
+  );
+
+  // const currentDay = useSelector<RootState, IDayType>(
+  //   (state) => state.dayReducer.days
+  // );
+
+  const dispatch = useDispatch();
 
   useEffect(() => {}, []);
 
@@ -29,18 +37,41 @@ function SettingsScreen({
 
   // TODO: remove after testing
   function clickInjectTestData() {
-    const habits = habitsFixture([
-      { text: 'Workout' },
-      { text: 'Eat lunch' },
-      { text: 'Code' },
-    ]);
-    addHabit(habits);
+    // Only add default habits if the user doesn't have any already
+    if (Object.keys(habits).length === 0) {
+      habits = habitsFixture([
+        { text: 'Workout' },
+        { text: 'Eat lunch' },
+        { text: 'Code' },
+      ]);
+      dispatch(addHabit(habits));
+    }
+
     const days = generateTestDaysWithHabitsRandom(100, habits, [
       'Great',
       'Okay',
       'Not Good',
     ]);
-    saveDay(days);
+    const date = '2022-02-12';
+    const day: IDayType = {
+      [date]: {
+        cbtIds: [],
+        date: '2022-02-12',
+        endOfDayNotes: [],
+        finishedHabitCount: 0,
+        finishedHabitIds: ['b1b9eda9-cabd-4988-aedb-f8486b12f19c'],
+        habitCount: 3,
+        habitPercentComplete: 0.67,
+        journalIds: [],
+        mood: ['Not Good'],
+        remainingHabitIds: [
+          'ecf8569f-d961-481e-9669-9a4992c882af',
+          '9a74c1d5-cd9a-4c72-bcaf-40047b4beeb1',
+        ],
+      },
+    };
+    console.log('clickInjectTestData', day);
+    dispatch(saveDay(days));
   }
 
   async function clearAppData() {
@@ -52,7 +83,7 @@ function SettingsScreen({
       }
       if (Platform.OS === 'ios') {
         await AsyncStorage.multiRemove(asyncStorageKeys);
-        Alert.alert('App data cleared')
+        Alert.alert('App data cleared');
       }
     }
   }
@@ -85,19 +116,7 @@ function SettingsScreen({
   );
 }
 
-// TODO: refactor to useDispatch for simplicity
-const mapDispatchToProps = (dispatch) => {
-  return {
-    saveDay: (dayInfo: IDayType) => {
-      dispatch(saveDay(dayInfo));
-    },
-    addHabit: (habit: HabitType) => {
-      dispatch(addHabit(habit));
-    },
-  };
-};
-
-export default connect(null, mapDispatchToProps)(SettingsScreen);
+export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: {
