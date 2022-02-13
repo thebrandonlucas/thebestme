@@ -16,7 +16,7 @@ export default function JournalScreen({ navigation }) {
         setScreen={setScreen}
         tabs={[
           { title: 'Primary', link: 'primary' },
-          { title: 'CBT', link: 'cbt' },
+          { title: 'Thought Challenging', link: 'cbt' },
         ]}
       />
 

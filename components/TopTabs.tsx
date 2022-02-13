@@ -27,7 +27,11 @@ export default function TopTabs({
     <View style={styles.topTabBar}>
       {tabs.map((tab) => {
         return (
-          <TouchableOpacity key={uuidv4()} onPress={() => clickTab(tab)}>
+          <TouchableOpacity
+            style={styles.tabButton}
+            key={uuidv4()}
+            onPress={() => clickTab(tab)}
+          >
             <Text
               style={
                 tab.title === screen.title
@@ -49,16 +53,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     backgroundColor: Colors.happyGreen,
-    padding: 10,
+    // padding: 10,
+    height: '7%',
   },
   tabText: {
     color: 'black',
+    fontSize: 15,
+    textAlign: 'center',
   },
   selectedTabText: {
     color: 'white',
+    fontSize: 15,
+    textAlign: 'center',
   },
-  background: {
-    borderColor: 'red',
-    borderWidth: 1,
+  tabButton: {
+    height: '100%',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center'
   },
 });

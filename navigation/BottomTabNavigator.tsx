@@ -259,7 +259,7 @@ function CBTNavigator() {
       <CBTStack.Screen
         name="CBTAddScreen"
         component={CBTAddScreen}
-        options={() => headerOptions('CBT - Add Entry', 'cbt')}
+        options={() => headerOptions('Thought Challenging - Add Entry', 'cbt')}
       />
     </CBTStack.Navigator>
   );
