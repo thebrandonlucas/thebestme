@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
 import Colors from '../../constants/Colors';
 import useColorScheme from '../../hooks/useColorScheme';
-import { setDescription } from '../../redux/actions/DescriptionActions';
+import { setDescription, setDescriptionIsDisplaying } from '../../redux/actions/DescriptionActions';
 import { QuestionButtonType } from '../../types';
 
 export default function QuestionButton({ infoType }: QuestionButtonType) {
@@ -22,8 +22,8 @@ export default function QuestionButton({ infoType }: QuestionButtonType) {
   }
 
   function showInfoModal() {
-    console.log('info', infoType)
     dispatch(setDescription(infoType));
+    dispatch(setDescriptionIsDisplaying(true));
   }
 
   return (

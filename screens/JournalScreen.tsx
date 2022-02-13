@@ -1,26 +1,36 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { useDispatch } from 'react-redux';
 import TopTabs from '../components/TopTabs';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
+import { setDescription } from '../redux/actions/DescriptionActions';
+import { DescriptionType } from '../types';
 import CBTScreen from './CBTScreen';
 import PrimaryJournalScreen from './PrimaryJournalScreen';
 
 export default function JournalScreen({ navigation }) {
-  const [screen, setScreen] = useState({ title: 'Primary', link: 'primary' });
+  const [screen, setScreen] = useState({ title: 'Journal', link: 'journal' });
+
+  const dispatch = useDispatch();
+
+  function clickTab(tab: {title: string, link: "journal" | "cbt"}) {
+    dispatch(setDescription(tab.link))
+    setScreen(tab)
+  }
 
   return (
     <>
       <TopTabs
         screen={screen}
-        setScreen={setScreen}
+        clickTab={clickTab}
         tabs={[
-          { title: 'Primary', link: 'primary' },
+          { title: 'Journal', link: 'journal' },
           { title: 'Thought Challenging', link: 'cbt' },
         ]}
       />
 
-      {screen.link === 'primary' ? (
+      {screen.link === 'journal' ? (
         <PrimaryJournalScreen navigation={navigation} />
       ) : (
         <CBTScreen navigation={navigation} />

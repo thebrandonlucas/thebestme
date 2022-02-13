@@ -5,24 +5,16 @@ import Colors from '../constants/Colors';
 
 export default function TopTabs({
   screen,
-  setScreen,
+  clickTab,
   tabs,
 }: {
   screen: {
     title: string;
     link: string;
   };
-  setScreen: React.Dispatch<
-    React.SetStateAction<{
-      title: string;
-      link: string;
-    }>
-  >;
+  clickTab: (tab: { title: string; link: string }) => void;
   tabs: { title: string; link: string }[];
 }) {
-  function clickTab(tab) {
-    setScreen(tab);
-  }
   return (
     <View style={styles.topTabBar}>
       {tabs.map((tab) => {
@@ -70,6 +62,6 @@ const styles = StyleSheet.create({
     height: '100%',
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 });

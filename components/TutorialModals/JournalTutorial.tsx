@@ -10,8 +10,9 @@ export default function JournalTutorial() {
         Journaling regularly decreases symptoms of depression, reduces stress
         and anxiety, and improves your mood among other things.
       </Text>
-      <Text>{'\n\n'}</Text>
-      <Text>There are two types of journals</Text>
+      {/* <Text>There are two types of journals:{'\n\n'}</Text>
+      <Text>{'\u2022'} Primary{'\n\n'}</Text>
+      <Text>{'\u2022'} Thought Challenging</Text> */}
     </>
   );
 }

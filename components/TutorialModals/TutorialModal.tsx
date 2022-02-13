@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
-import { setDescription } from '../../redux/actions/DescriptionActions';
+import { setDescription, setDescriptionIsDisplaying } from '../../redux/actions/DescriptionActions';
 import { RootState } from '../../redux/store';
 import { DescriptionType } from '../../types';
 import { Card, Text } from '../Themed';
@@ -15,17 +15,16 @@ import HomeTutorial from './HomeTutorial';
 import JournalTutorial from './JournalTutorial';
 
 export default function TutorialModal() {
-  const infoType = useSelector<RootState, DescriptionType>(
-    (state) => state.descriptionReducer.infoType
-  );
+  const { infoType, isDisplaying } = useSelector<
+    RootState,
+    { infoType: DescriptionType; isDisplaying: boolean }
+  >((state) => state.descriptionReducer);
 
   const [tutorialType, setTutorialType] = useState(<></>);
   const dispatch = useDispatch();
 
-  const isVisible = infoType === 'closed' ? false : true;
-
   function closeModal() {
-    dispatch(setDescription('closed'));
+    dispatch(setDescriptionIsDisplaying(false));
   }
 
   const infoTypeDescriptionMap = {
@@ -62,7 +61,7 @@ export default function TutorialModal() {
 
   return (
     <Modal
-      isVisible={isVisible}
+      isVisible={isDisplaying}
       onBackdropPress={closeModal}
       onSwipeComplete={closeModal}
       swipeDirection="down"

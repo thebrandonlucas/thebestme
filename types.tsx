@@ -248,8 +248,7 @@ export type DescriptionType =
   | 'journal'
   | 'data'
   | 'dayscreen'
-  | 'cbt'
-  | 'closed';
+  | 'cbt';
 
 export type QuestionButtonType = {
   infoType?: DescriptionType;
