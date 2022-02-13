@@ -3,7 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { ChartContainer } from '../components/ChartContainer';
+import { Pie } from '../components/Charts/Pie';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
+import { MoodPercentages } from '../components/MoodPercentages/MoodPercentages';
+import { MoodPercentageOverall } from '../components/MoodPercentages/MoodPercentagesOverall';
 import { Text } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
@@ -25,6 +28,7 @@ export function HomeScreen() {
     (state) => state.habitReducer.habits
   );
   const dateToday = DateTime.now().toISODate();
+  const currentIDay: IDayType = { [dateToday]: days[dateToday] };
 
   const [daysPastWeek, setDaysPastWeek] = useState<IDayType>({});
   const [startDate, setStartDate] = useState('');
@@ -91,7 +95,8 @@ export function HomeScreen() {
       />
 
       {/* Today's data */}
-      {/* <PieCurrentDay /> */}
+      <Pie day={days} />
+      <MoodPercentages day={currentIDay} />
 
       {/* Past week data */}
       {pastWeekDataViewable ? (
