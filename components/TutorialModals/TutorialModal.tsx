@@ -3,11 +3,11 @@ import { StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
-import { setDescription, setDescriptionIsDisplaying } from '../../redux/actions/DescriptionActions';
+import { setDescriptionIsDisplaying } from '../../redux/actions/DescriptionActions';
 import { RootState } from '../../redux/store';
 import { DescriptionType } from '../../types';
 import { Card, Text } from '../Themed';
-import CBTAddTutorial from './CBTAddTutorial';
+import CBTTutorial from './CBTTutorial';
 import DataTutorial from './DataTutorial';
 import DayScreenTutorial from './DayScreenTutorial';
 import HabitTutorial from './HabitTutorial';
@@ -50,9 +50,11 @@ export default function TutorialModal() {
         setTutorialType(<DataTutorial />);
         break;
       case 'cbt':
-        setTutorialType(<CBTAddTutorial />);
+        setTutorialType(<CBTTutorial />);
+        break;
       case 'dayscreen':
         setTutorialType(<DayScreenTutorial />);
+        break;
       default:
         closeModal();
         break;

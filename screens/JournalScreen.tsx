@@ -15,6 +15,7 @@ export default function JournalScreen({ navigation }) {
   const dispatch = useDispatch();
 
   function clickTab(tab: {title: string, link: "journal" | "cbt"}) {
+    console.log('tab', tab.link)
     dispatch(setDescription(tab.link))
     setScreen(tab)
   }

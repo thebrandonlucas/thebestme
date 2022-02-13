@@ -38,7 +38,7 @@ export default function App() {
     }
   }
 
-  // clearAppData();
+  clearAppData();
 
   // TODO: How to pass colorScheme as a prop through the app?
   return (
