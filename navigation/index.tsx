@@ -36,6 +36,7 @@ import {
   RootStackParamList,
   SettingsParamList,
 } from '../types';
+import { getMostRecentDate } from '../utils/day';
 import BottomTabNavigator from './BottomTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -57,15 +58,15 @@ export default function Navigation({
       if (days && habits) {
         checkIfNewDate();
       }
-    }, 60000);
+    }, 5000);
 
     // Clear the interval on every run to avoid a memory leak
     return () => clearInterval(intervalId);
-  }, []);
+  }, [days]);
 
   function checkIfNewDate() {
     const dates = Object.keys(days);
-    const mostRecentDate = dates[dates.length - 1];
+    const mostRecentDate = getMostRecentDate(days);
     if (dates.length === 0 || DateTime.now().toISODate() !== mostRecentDate) {
       dispatch(newDay(habits));
     }
@@ -192,7 +193,9 @@ const InfoStack = createStackNavigator<InfoParamList>();
 
 function InfoNavigator({ route }) {
   const infoType: DescriptionType = route.params.infoType;
-  const headerTitle = Descriptions[infoType] ? Descriptions[infoType].title : '';
+  const headerTitle = Descriptions[infoType]
+    ? Descriptions[infoType].title
+    : '';
   return (
     <InfoStack.Navigator>
       <InfoStack.Screen

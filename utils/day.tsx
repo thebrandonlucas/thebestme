@@ -35,9 +35,27 @@ export function isDatetimeInRange(
  * @param days
  */
 export function getMostRecentDay(days: IDayType): DayType {
-  const dates = Object.keys(days);
-  const lastDate = dates[dates.length - 1];
-  return days[lastDate];
+  if (Object.keys(days).length === 0 || !days) {
+    return {} 
+  }
+  const dateTimes: DateTime[] = Object.keys(days).map(day => DateTime.fromISO(day));
+  const mostRecentDate = DateTime.max(...dateTimes).toISODate()
+  return days[mostRecentDate];
+}
+
+/**
+ * Returns the most recent ISO date given days
+ * @param days 
+ * @returns 
+ */
+export function getMostRecentDate(days: IDayType): string {
+  // If days are empty or undefined, return an impossibly old date
+  if (Object.keys(days).length === 0 || !days) {
+    return '1970-01-01'
+  }
+  const dateTimes: DateTime[] = Object.keys(days).map(day => DateTime.fromISO(day));
+  const mostRecentDate = DateTime.max(...dateTimes).toISODate()
+  return days[mostRecentDate].date;
 }
 
 /**

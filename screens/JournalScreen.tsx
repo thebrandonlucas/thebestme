@@ -19,7 +19,6 @@ export default function JournalScreen({ navigation }) {
   );
 
   function clickTab(tab: { title: string; link: 'journal' | 'cbt' }) {
-    console.log('tab', tab.link, journalDescription);
     dispatch(setJournalDescription(tab.link));
     setScreen(tab);
   }

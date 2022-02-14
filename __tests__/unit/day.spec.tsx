@@ -133,6 +133,7 @@ describe('Day functions', () => {
         dayFixture({ date: '2021-01-10' })
       );
     });
+    it('should get an empty day when ')
   });
 
   describe('getDaysPastWeek', () => {

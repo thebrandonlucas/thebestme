@@ -169,7 +169,6 @@ TabBarIcon.defaultProps = {
 };
 
 function headerOptions(title: string, infoType?: DescriptionType) {
-  console.log('header')
   return {
     headerTitle: title,
     headerLeft: () => <QuestionButton screenName={infoType} />,
@@ -187,7 +186,6 @@ const HomeStack = createStackNavigator<HomeParamList>();
 
 function HomeNavigator() {
   setDescription('home');
-  console.log('hine')
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen

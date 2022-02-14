@@ -39,7 +39,6 @@ export default function QuestionButton({
   function showInfoModal() {
     // Journal handles it's own description setting
     if (screenName === 'journal') {
-      console.log('journalsss', journalInfoType)
       dispatch(setDescription(journalInfoType));
     } else {
       dispatch(setDescription(screenName));

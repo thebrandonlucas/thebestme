@@ -8,7 +8,6 @@ export function setDescription(infoType: DescriptionType) {
     }
 }
 export function setJournalDescription(infoType: 'journal' | 'cbt') {
-  console.log('setting action', infoType)
   return {
       type: SET_JOURNAL_DESCRIPTION,
       payload: infoType

@@ -34,7 +34,14 @@ export default function App() {
     }
   }
 
-  // clearAppData();
+  // async function clearData() {
+  //   console.log('clearrrring')
+  //   const asyncStorageKeys = await AsyncStorage.getAllKeys();
+  //   AsyncStorage.multiRemove(asyncStorageKeys);
+  // }
+
+  clearAppData();
+  // clearData()
 
   // TODO: How to pass colorScheme as a prop through the app?
   return (

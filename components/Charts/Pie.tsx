@@ -24,6 +24,8 @@ export function Pie({ day }: { day: IDayType }) {
 
     if (happyMoodCount + neutralMoodCount + sadMoodCount === 0) {
       setIsDataEmpty(true);
+    } else {
+      setIsDataEmpty(false);
     }
 
     setPieChartData([
@@ -38,8 +40,8 @@ export function Pie({ day }: { day: IDayType }) {
     Dimensions.get('screen').height / Dimensions.get('screen').width;
 
   return isDataEmpty ? (
-    // <Text>{'\n\n'}No mood data to display for today{'\n\n'}</Text>
-    <></>
+    <Text>{'\n\n'}No mood data to display for today{'\n\n'}</Text>
+    // <></>
   ) : (
     <VictoryPie
       data={pieChartData}
