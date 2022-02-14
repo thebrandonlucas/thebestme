@@ -68,7 +68,7 @@ function DayMetricsScreen({ navigation, route }) {
             habitCount={currentDay.habitCount}
             habitPercentComplete={currentDay.habitPercentComplete}
           />
-          <Pie day={days} />
+          <Pie day={currentIDay} />
           <MoodPercentages day={currentIDay} />
           {currentDay.endOfDayNotes && (
             <Button
@@ -77,7 +77,10 @@ function DayMetricsScreen({ navigation, route }) {
             />
           )}
         </ScrollView>
-        <ThemeButton title="Go Back" onPress={goBack} />
+        <View style={styles.buttonContainer}>
+          <ThemeButton title="Go Back" onPress={goBack} />
+        </View>
+
         <TutorialModal />
         <EndOfDayNotesModal
           isModalOpen={isEndOfDayNotesModalOpen}
@@ -117,4 +120,8 @@ const styles = StyleSheet.create({
     margin: 10,
     textAlign: 'center',
   },
+  buttonContainer: {
+    margin: 20,
+    alignItems: 'center'
+  }
 });

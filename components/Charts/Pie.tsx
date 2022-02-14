@@ -38,7 +38,8 @@ export function Pie({ day }: { day: IDayType }) {
     Dimensions.get('screen').height / Dimensions.get('screen').width;
 
   return isDataEmpty ? (
-    <Text>No data to display for this day</Text>
+    // <Text>{'\n\n'}No mood data to display for today{'\n\n'}</Text>
+    <></>
   ) : (
     <VictoryPie
       data={pieChartData}

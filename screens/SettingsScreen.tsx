@@ -70,7 +70,6 @@ function SettingsScreen({
         ],
       },
     };
-    console.log('clickInjectTestData', day);
     dispatch(saveDay(days));
   }
 
@@ -96,21 +95,21 @@ function SettingsScreen({
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <Button
+      {/* <Button
         title="Configure MyCircle Friends"
         onPress={() =>
           navigation.navigate('ConfigureMyCircleFriends', {
             isSendingPanicMessage: false,
           })
         }
-      />
-      <Button
+      /> */}
+      {/* <Button
         title="Configure MyCircle Message"
         onPress={() => navigation.navigate('ConfigureMyCircleMessage')}
-      />
+      /> */}
       {/* TODO: remove after dev */}
       <Button title="Inject Test Data" onPress={clickInjectTestData} />
-      <Button title="Clear App Data" onPress={clearAppData} />
+      {/* <Button title="Clear App Data" onPress={clearAppData} /> */}
       <Button title="Sign Out" onPress={signOut}></Button>
     </View>
   );

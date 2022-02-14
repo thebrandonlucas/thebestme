@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChartContainer } from '../components/ChartContainer';
 import { Pie } from '../components/Charts/Pie';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
@@ -10,6 +10,7 @@ import { MoodPercentageOverall } from '../components/MoodPercentages/MoodPercent
 import { Text } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
+import { setDescription } from '../redux/actions/DescriptionActions';
 import { RootState } from '../redux/store';
 import { HabitType, IDayType, IHabitType } from '../types';
 import getDateString, { getPercentage } from '../utils';
@@ -95,7 +96,8 @@ export function HomeScreen() {
       />
 
       {/* Today's data */}
-      <Pie day={days} />
+      {}
+      <Pie day={currentIDay} />
       <MoodPercentages day={currentIDay} />
 
       {/* Past week data */}

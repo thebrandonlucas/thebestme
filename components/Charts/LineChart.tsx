@@ -146,7 +146,7 @@ export function LineChart({
         height={100}
         // FIXME: Is dividing the screen width by 6 guaranteed to center it?
         x={Dimensions.get('screen').width / 6}
-        title="Top 3 habits"
+        title="Moods Over Time"
         orientation="horizontal"
         gutter={20}
         centerTitle

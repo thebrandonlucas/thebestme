@@ -12,7 +12,6 @@ const initialState: DayReducerType = {
 };
 
 const dayReducer = (state = initialState, action) => {
-  // console.log('days', action)
   let tempDays: IDayType = { ...state.days };
   switch (action.type) {
     case SET_DAY:
@@ -20,9 +19,7 @@ const dayReducer = (state = initialState, action) => {
       return { ...state, days: tempDays };
     case FINISH_DAY:
       tempDays = { ...tempDays, ...action.payload };
-      console.log('object being saved', action.payload)
       return { ...state, days: tempDays };
-    // return { ...state, days: {} };
     case NEW_DAY:
       const newDay: DayType = {
         date: DateTime.now().toISODate(),
@@ -38,7 +35,6 @@ const dayReducer = (state = initialState, action) => {
       };
       tempDays = { ...tempDays, [newDay.date]: { ...newDay } };
       return { ...state, days: tempDays };
-
     default:
       return state;
   }

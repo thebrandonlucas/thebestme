@@ -54,11 +54,10 @@ export default function Navigation({
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      console.log('tick')
       if (days && habits) {
         checkIfNewDate();
       }
-    }, 10000);
+    }, 60000);
 
     // Clear the interval on every run to avoid a memory leak
     return () => clearInterval(intervalId);

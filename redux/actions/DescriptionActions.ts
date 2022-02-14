@@ -1,4 +1,4 @@
-import { SET_DESCRIPTION, SET_DESCRIPTION_DISPLAY } from './types/DescriptionActions.types';
+import { SET_DESCRIPTION, SET_DESCRIPTION_DISPLAY, SET_JOURNAL_DESCRIPTION } from './types/DescriptionActions.types';
 import { DescriptionType } from "../../types";
 
 export function setDescription(infoType: DescriptionType) {
@@ -7,7 +7,13 @@ export function setDescription(infoType: DescriptionType) {
         payload: infoType
     }
 }
-
+export function setJournalDescription(infoType: 'journal' | 'cbt') {
+  console.log('setting action', infoType)
+  return {
+      type: SET_JOURNAL_DESCRIPTION,
+      payload: infoType
+  }
+}
 export function setDescriptionIsDisplaying(isDisplaying: boolean) {
   return {
     type: SET_DESCRIPTION_DISPLAY,

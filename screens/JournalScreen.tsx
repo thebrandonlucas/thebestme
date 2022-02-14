@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import TopTabs from '../components/TopTabs';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
-import { setDescription } from '../redux/actions/DescriptionActions';
-import { DescriptionType } from '../types';
+import { setJournalDescription } from '../redux/actions/DescriptionActions';
+import { RootState } from '../redux/store';
 import CBTScreen from './CBTScreen';
 import PrimaryJournalScreen from './PrimaryJournalScreen';
 
@@ -14,10 +14,14 @@ export default function JournalScreen({ navigation }) {
 
   const dispatch = useDispatch();
 
-  function clickTab(tab: {title: string, link: "journal" | "cbt"}) {
-    console.log('tab', tab.link)
-    dispatch(setDescription(tab.link))
-    setScreen(tab)
+  const journalDescription = useSelector<RootState, 'journal' | 'cbt'>(
+    (state) => state.descriptionReducer.journalInfoType
+  );
+
+  function clickTab(tab: { title: string; link: 'journal' | 'cbt' }) {
+    console.log('tab', tab.link, journalDescription);
+    dispatch(setJournalDescription(tab.link));
+    setScreen(tab);
   }
 
   return (

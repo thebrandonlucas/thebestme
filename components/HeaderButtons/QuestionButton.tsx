@@ -5,16 +5,29 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
 import useColorScheme from '../../hooks/useColorScheme';
-import { setDescription, setDescriptionIsDisplaying } from '../../redux/actions/DescriptionActions';
+import {
+  setDescription,
+  setDescriptionIsDisplaying,
+  setJournalDescription,
+} from '../../redux/actions/DescriptionActions';
 import { RootState } from '../../redux/store';
-import { DescriptionType, QuestionButtonType } from '../../types';
+import { DescriptionType } from '../../types';
 
-export default function QuestionButton() {
+export default function QuestionButton({
+  screenName,
+}: {
+  screenName: DescriptionType;
+}) {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const infoType = useSelector<RootState, DescriptionType>(state => state.descriptionReducer.infoType);
+  const infoType = useSelector<RootState, DescriptionType>(
+    (state) => state.descriptionReducer.infoType
+  );
+  const journalInfoType = useSelector<RootState, 'journal' | 'cbt'>(
+    (state) => state.descriptionReducer.journalInfoType
+  );
   // TODO: delete once we're sure we're not going the 'screen'
   function goToInfoScreen() {
     // FIXME: route.params.infoType not being passed to InfoScreen, why?
@@ -24,8 +37,13 @@ export default function QuestionButton() {
   }
 
   function showInfoModal() {
-    console.log('info', infoType)
-    dispatch(setDescription(infoType));
+    // Journal handles it's own description setting
+    if (screenName === 'journal') {
+      console.log('journalsss', journalInfoType)
+      dispatch(setDescription(journalInfoType));
+    } else {
+      dispatch(setDescription(screenName));
+    }
     dispatch(setDescriptionIsDisplaying(true));
   }
 

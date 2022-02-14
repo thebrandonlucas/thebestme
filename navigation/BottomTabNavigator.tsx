@@ -169,9 +169,10 @@ TabBarIcon.defaultProps = {
 };
 
 function headerOptions(title: string, infoType?: DescriptionType) {
+  console.log('header')
   return {
     headerTitle: title,
-    headerLeft: () => <QuestionButton infoType={infoType} />,
+    headerLeft: () => <QuestionButton screenName={infoType} />,
     headerRight: () => (
       <View style={{ flexDirection: 'row', backgroundColor: 'transparent' }}>
         <SettingsButton />
@@ -186,6 +187,7 @@ const HomeStack = createStackNavigator<HomeParamList>();
 
 function HomeNavigator() {
   setDescription('home');
+  console.log('hine')
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -213,7 +215,7 @@ function HabitsNavigator() {
         component={FinishDayScreen}
         options={() => headerOptions('Day Summary')}
       />
-      <HabitsStack.Screen
+      {/* <HabitsStack.Screen
         name="Data"
         component={DataScreen}
         options={() => headerOptions('Data')}
@@ -222,7 +224,7 @@ function HabitsNavigator() {
         name="DayMetricsScreen"
         component={DayMetricsScreen}
         options={() => headerOptions('Day Metrics')}
-      />
+      /> */}
     </HabitsStack.Navigator>
   );
 }
@@ -264,25 +266,6 @@ function CBTNavigator() {
     </CBTStack.Navigator>
   );
 }
-
-const AWAREStack = createStackNavigator<AWAREParamList>();
-
-// function AWARENavigator() {
-//   return (
-//     <AWAREStack.Navigator>
-//       <AWAREStack.Screen
-//         name="AWAREScreen"
-//         component={AWAREScreen}
-//         options={() => headerOptions('AWARE', 'awareJournal')}
-//       />
-//       <AWAREStack.Screen
-//         name="AWAREAddScreen"
-//         component={AWAREAddScreen}
-//         options={() => headerOptions('AWARE - Add Entry', 'awareJournal')}
-//       />
-//     </AWAREStack.Navigator>
-//   );
-// }
 
 const DataStack = createStackNavigator<DataParamList>();
 

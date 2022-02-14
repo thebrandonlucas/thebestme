@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 // NOTE: Required import for uuid to work
 import 'react-native-get-random-values';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import HabitContainer from '../components/HabitContainer';
 import Plus from '../components/Icons/Plus';
@@ -19,6 +19,7 @@ import { Card, Input, Text, View } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
 import { setDayInfo } from '../redux/actions/DayActions';
+import { setDescription } from '../redux/actions/DescriptionActions';
 import {
   addHabit,
   deleteHabit,

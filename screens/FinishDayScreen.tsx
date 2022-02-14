@@ -95,10 +95,9 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
         journalIds: [],
       },
     };
-    console.log('dayInfo', dayInfo)
     saveDay(dayInfo);
     dispatch(resetHabits());
-    navigation.navigate('Data');
+    navigation.navigate('HabitsScreen');
   }
 
   return (
@@ -132,7 +131,7 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
           containerStyle={styles.buttonContainerStyle as StyleProp<ViewProps>}
         />
         <ThemeButton
-          title="Good"
+          title="Okay"
           color={Colors.neutralYellow}
           onPress={() => finishDay('Okay')}
           buttonStyle={styles.button as StyleProp<ViewProps>}
