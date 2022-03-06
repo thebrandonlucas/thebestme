@@ -34,7 +34,7 @@ export function HabitSummaryCard({
     <Card style={styles.habitCard}>
       <Text style={styles.title}>Habits</Text>
       <View style={styles.textRow}>
-        <Text style={styles.bold}>Completed: {finishedHabitCount}</Text>
+        <Text style={styles.bold}>Completed: {finishedHabitCount} / {habitCount}</Text>
         <Text style={styles.bold}>
           Percent Complete: {habitPercentComplete}%
         </Text>

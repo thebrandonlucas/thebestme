@@ -1,3 +1,4 @@
+import { RESET_APP } from './../actions/types/RootActions.types';
 import { HabitReducerType } from '../../types';
 import {
   ADD_HABIT,
@@ -18,7 +19,6 @@ const habitReducer = (state = initialState, action) => {
     case ADD_HABIT:
       tempHabits = { ...tempHabits, ...action.payload };
       return { ...state, habits: tempHabits };
-      // return {...state, habits: {}}
     case DELETE_HABIT:
       tempHabits[action.payload.id].deleted = true;
       return { ...state, habits: tempHabits };
@@ -33,6 +33,8 @@ const habitReducer = (state = initialState, action) => {
         tempHabits[habitIds[i]].checked = false;
       }
       return { ...state, habits: tempHabits };
+    // case RESET_APP:
+    //   return initialState;
     default:
       return state;
   }

@@ -88,7 +88,10 @@ function DataScreen({ habits, days, navigation }) {
           {days[selectedDay] ? (
             <>
               <Text style={styles.title}>
-                Most common mood:{' '}
+                {/* TODO: use "most common mood" when we are 
+                    displaying multiple moods and charts for them all */}
+                {/* Most common mood:{' '} */}
+                Mood:{' '}
                 <Text style={[{ color: MoodToColor[moodMode] }]}>
                   {moodMode}
                 </Text>
@@ -110,7 +113,6 @@ function DataScreen({ habits, days, navigation }) {
           the inputs to see different insights!{'\n\n'}
         </Text>
         <Button onPress={openModal} title="Customize Chart Inputs" />
-
         <ChartContainer
           days={days}
           habits={habits}
@@ -118,6 +120,7 @@ function DataScreen({ habits, days, navigation }) {
           endDate={endDate}
           selectedHabitId={selectedHabitId}
           selectedMood={selectedMood}
+          selectedCharts={{ line: 'Great' }}
         />
         <ChartCustomizeModal
           days={days}

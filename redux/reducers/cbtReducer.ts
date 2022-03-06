@@ -1,3 +1,5 @@
+import { RESET_APP } from './../actions/types/RootActions.types';
+import { PURGE } from "redux-persist";
 import { SAVE_CBT_JOURNAL, DELETE_CBT_JOURNAL, UPDATE_CBT_JOURNAL } from "../actions/types/CbtActions.types";
 
 const initialState = {
@@ -21,6 +23,8 @@ const cbtJournalReducer = (state = initialState, action) => {
             tempCbtJournals[action.payload.id].behaviorsText = action.payload.behaviorsText;
             tempCbtJournals[action.payload.id].alternativeThoughtsText = action.payload.alternativeThoughtsText;
             return { ...state, cbtJournals: tempCbtJournals }
+        case RESET_APP:
+          return initialState;
         default:
             return state
     }

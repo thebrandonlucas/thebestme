@@ -14,6 +14,7 @@ interface JournalModalProps {
   modalVisible: boolean;
   text: string;
   label: string;
+  textPlaceholder?: string;
   lightColor?: string;
   darkColor?: string;
   setText: (text: string) => void;
@@ -34,7 +35,7 @@ JournalModal.defaultProps = {
  * @return {JSX.Element}
  */
 export default function JournalModal(props: JournalModalProps) {
-  const { label, lightColor, darkColor, disabled } = props;
+  const { label, textPlaceholder, lightColor, darkColor, disabled } = props;
   const mutedTextColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'mutedText'
@@ -48,6 +49,9 @@ export default function JournalModal(props: JournalModalProps) {
   const [inputAccessoryViewId, setInputAccessoryViewId] = useState(
     'journalModalKeyboardToolbar'
   );
+
+  const placeholder = textPlaceholder ? textPlaceholder : "What's on your mind?"
+
   const [height, setHeight] = useState(0);
 
   return (
@@ -79,7 +83,7 @@ export default function JournalModal(props: JournalModalProps) {
             <Input
               inputContainerStyle={{ borderBottomWidth: 0 }}
               style={{ height: height - 20 }}
-              placeholder="What's on your mind?"
+              placeholder={placeholder}
               multiline
               onChangeText={props.setText}
               value={props.text}

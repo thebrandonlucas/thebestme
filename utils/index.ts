@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
  * Gets date as ISO string and returns formatted Date
  * @param {string} isoDate - date string in ISO format
  */
-export default function getDateString(isoDate: string): DateAndTime {
+export default function getDateString(isoDate?: string): DateAndTime {
   const monthNames = [
     'January',
     'February',
@@ -30,13 +30,14 @@ export default function getDateString(isoDate: string): DateAndTime {
     'Friday',
     'Saturday',
   ];
-  const day = new Date().getDate();
-  const dayOfWeek = dayNames[new Date().getDay()];
-  const month = new Date().getMonth();
+  const jsDate = isoDate ? DateTime.fromISO(isoDate).toJSDate() : new Date();
+  const day = jsDate.getDate();
+  const dayOfWeek = dayNames[jsDate.getDay()];
+  const month = jsDate.getMonth();
   const monthName = monthNames[month];
-  const year = new Date().getFullYear();
+  const year = jsDate.getFullYear();
   const date = `${dayOfWeek}, ${monthName} ${day}, ${year}`;
-  const time = new Date().toLocaleString('en-US', {
+  const time = jsDate.toLocaleString('en-US', {
     hour: 'numeric',
     minute: 'numeric',
     hour12: true,

@@ -307,7 +307,7 @@ export function HabitsScreen({
               </Card>
               <View style={styles.buttonContainer}>
                 <ThemeButton
-                  title="Finish"
+                  title="Finish Day"
                   onPress={goToFinishDayScreen}
                   testID="finishDay"
                 />

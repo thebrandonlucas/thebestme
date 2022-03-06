@@ -12,6 +12,7 @@ export function ChartContainer({
   endDate,
   selectedHabitId,
   selectedMood,
+  selectedCharts,
 }: {
   days: IDayType;
   habits: IHabitType;
@@ -19,25 +20,37 @@ export function ChartContainer({
   endDate: string;
   selectedHabitId: string | 'top3';
   selectedMood: ValidMood | 'all';
+  selectedCharts: {
+    pie?: ValidMood | 'all';
+    line?: ValidMood | 'all';
+    bar?: ValidMood | 'all';
+  };
 }) {
   return (
     <View>
-      <PieMoods days={days} startDate={startDate} endDate={endDate} />
-      <BarChart
-        days={days}
-        habits={habits}
-        startDate={startDate}
-        endDate={endDate}
-        selectedHabitId={selectedHabitId}
-        selectedMood={selectedMood}
-      />
-      <LineChart
-        days={days}
-        startDate={startDate}
-        endDate={endDate}
-        selectedMood={selectedMood}
-      />
+      {selectedCharts.pie && (
+        <PieMoods days={days} startDate={startDate} endDate={endDate} />
+      )}
+      {selectedCharts.bar && (
+        <BarChart
+          days={days}
+          habits={habits}
+          startDate={startDate}
+          endDate={endDate}
+          selectedHabitId={selectedHabitId}
+          selectedMood={selectedMood}
+        />
+      )}
+      {selectedCharts.line && (
+        <LineChart
+          days={days}
+          startDate={startDate}
+          endDate={endDate}
+          selectedMood={
+            selectedCharts.line ? selectedCharts.line : selectedMood
+          }
+        />
+      )}
     </View>
-
   );
 }

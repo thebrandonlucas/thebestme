@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ChartContainer } from '../components/ChartContainer';
 import { Pie } from '../components/Charts/Pie';
 import { HabitSummaryCard } from '../components/HabitSummaryCard';
@@ -10,7 +10,6 @@ import { MoodPercentageOverall } from '../components/MoodPercentages/MoodPercent
 import { Text } from '../components/Themed';
 import TutorialModal from '../components/TutorialModals/TutorialModal';
 import { Colors } from '../constants';
-import { setDescription } from '../redux/actions/DescriptionActions';
 import { RootState } from '../redux/store';
 import { HabitType, IDayType, IHabitType } from '../types';
 import getDateString, { getPercentage } from '../utils';
@@ -96,10 +95,10 @@ export function HomeScreen() {
       />
 
       {/* Today's data */}
-      {}
-      <Pie day={currentIDay} />
-      <MoodPercentages day={currentIDay} />
+      {/* <Pie day={currentIDay} />
+      <MoodPercentages day={currentIDay} /> */}
 
+      <Text>{'\n\n'}</Text>
       {/* Past week data */}
       {pastWeekDataViewable ? (
         <>
@@ -107,7 +106,11 @@ export function HomeScreen() {
             days={daysPastWeek}
             startDate={startDate}
             endDate={endDate}
-            customDateRangeText="for the past week:"
+            customDateRangeText={`for the past week: (${DateTime.fromISO(
+              startDate
+            ).toLocaleString()} to ${DateTime.fromISO(
+              endDate
+            ).toLocaleString()})`}
           />
           <ChartContainer
             days={daysPastWeek}
@@ -116,6 +119,7 @@ export function HomeScreen() {
             endDate={endDate}
             selectedHabitId={'top3'}
             selectedMood={'all'}
+            selectedCharts={{ line: 'Great' }}
           />
         </>
       ) : (

@@ -1,30 +1,25 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { Alert, Button, Platform, StyleSheet } from 'react-native';
+import { Alert, Button, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Text, View } from '../components/Themed';
 import firebase from '../firebase';
 import { saveDay } from '../redux/actions/DayActions';
 import { addHabit } from '../redux/actions/HabitsActions';
+import { resetApp } from '../redux/actions/RootActions';
 import { RootState } from '../redux/store';
 import { IDayType, IHabitType } from '../types';
 import { habitsFixture } from '../__fixtures__/factory/habit';
 import { generateTestDaysWithHabitsRandom } from '../__fixtures__/testutil';
 
-function SettingsScreen({
-  route, // TODO: these should only appear in develop mode
-}) {
+function SettingsScreen({ route }) {
   const navigation = useNavigation();
 
   let habits = useSelector<RootState, IHabitType>(
     (state) => state.habitReducer.habits
   );
-
-  // const currentDay = useSelector<RootState, IDayType>(
-  //   (state) => state.dayReducer.days
-  // );
 
   const dispatch = useDispatch();
 
@@ -32,7 +27,7 @@ function SettingsScreen({
 
   async function signOut() {
     await firebase.auth().signOut();
-    navigation.navigate('Login');
+    await navigation.navigate('Login');
   }
 
   // TODO: remove after testing
@@ -73,18 +68,35 @@ function SettingsScreen({
     dispatch(saveDay(days));
   }
 
-  async function clearAppData() {
-    // TODO: remove after dev
-    const asyncStorageKeys = await AsyncStorage.getAllKeys();
-    if (asyncStorageKeys.length > 0) {
-      if (Platform.OS === 'android') {
-        await AsyncStorage.clear();
-      }
-      if (Platform.OS === 'ios') {
-        await AsyncStorage.multiRemove(asyncStorageKeys);
-        Alert.alert('App data cleared');
-      }
-    }
+  function openDonateLink() {
+    WebBrowser.openBrowserAsync(
+      'https://www.paypal.com/donate/?hosted_button_id=4L455ZAA7VCSC'
+    );
+  }
+
+  function deleteAllData() {
+    Alert.alert(
+      'Delete All Data',
+      'Are you sure you want to permanently delete all your data for TheBestMe?\n' +
+        "WARNING: This action can't be reversed!",
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            // TODO: test purging from every screen to make sure app doesn't crash
+            dispatch(resetApp());
+            signOut();
+          },
+          style: 'destructive',
+        },
+      ],
+      { cancelable: false }
+    );
   }
 
   return (
@@ -95,21 +107,14 @@ function SettingsScreen({
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      {/* <Button
-        title="Configure MyCircle Friends"
-        onPress={() =>
-          navigation.navigate('ConfigureMyCircleFriends', {
-            isSendingPanicMessage: false,
-          })
-        }
-      /> */}
-      {/* <Button
-        title="Configure MyCircle Message"
-        onPress={() => navigation.navigate('ConfigureMyCircleMessage')}
-      /> */}
-      {/* TODO: remove after dev */}
-      <Button title="Inject Test Data" onPress={clickInjectTestData} />
-      {/* <Button title="Clear App Data" onPress={clearAppData} /> */}
+      {/* TODO: figure out how to properly delete "days" data in redux 
+      (resetting to initialState currently crashes the app for some reason).
+      This error may be due to the large data size of the "days" object, may need to 
+      use something other than AsyncStorage to avoid crashing, as listed here:
+      https://stackoverflow.com/questions/48558390/crashes-when-using-redux-persist-with-react-native-on-ios-device
+      */}
+      {/* <Button color='red' title="Delete All Data" onPress={deleteAllData} /> */}
+      <Button title="Donate" onPress={openDonateLink} />
       <Button title="Sign Out" onPress={signOut}></Button>
     </View>
   );
@@ -131,5 +136,8 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  deleteAllBtn: {
+    color: 'red',
   },
 });

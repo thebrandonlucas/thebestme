@@ -17,6 +17,7 @@ interface TextInputModalProps {
   journalModalStyle?: Styles['viewStyle'];
   labelStyle?: Styles['textStyle'];
   disabled?: boolean;
+  textPlaceholder?: string;
 }
 
 TextInputModal.defaultProps = {
@@ -32,6 +33,7 @@ TextInputModal.defaultProps = {
 export default function TextInputModal(props: TextInputModalProps) {
   const {
     label,
+    textPlaceholder,
     lightColor,
     darkColor,
     text,
@@ -78,6 +80,7 @@ export default function TextInputModal(props: TextInputModalProps) {
         modalVisible={modalVisible}
         text={text}
         setText={setText}
+        textPlaceholder={textPlaceholder}
         // style={journalModalStyle}
         {...other}
       />

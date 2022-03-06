@@ -6,6 +6,7 @@ import {
   NEW_DAY,
   SET_DAY,
 } from '../actions/types/DayActions.types';
+import { RESET_APP } from '../actions/types/RootActions.types';
 
 const initialState: DayReducerType = {
   days: {},
@@ -35,6 +36,8 @@ const dayReducer = (state = initialState, action) => {
       };
       tempDays = { ...tempDays, [newDay.date]: { ...newDay } };
       return { ...state, days: tempDays };
+    case RESET_APP:
+      return initialState;
     default:
       return state;
   }

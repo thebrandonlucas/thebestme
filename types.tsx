@@ -344,6 +344,8 @@ export type DateAndTime = {
   time: string,
 }
 
+export type Chart = 'bar' | 'line' | 'pie'
+
 export type GetComponentProps<T> = T extends
   | React.ComponentType<infer P>
   | React.Component<infer P>

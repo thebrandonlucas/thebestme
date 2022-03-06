@@ -1,3 +1,4 @@
+import { RESET_APP } from './../actions/types/RootActions.types';
 import { SAVE_JOURNAL, UPDATE_JOURNAL, DELETE_JOURNAL } from "../actions/types/JournalActions.types";
 
 const initialState = {
@@ -17,8 +18,10 @@ const journalReducer = (state = initialState, action) => {
         case UPDATE_JOURNAL:
             tempJournals[action.payload.id].text = action.payload.text;
             return { ...state, journals: tempJournals }
+        case RESET_APP:
+          return initialState;
         default:
-            return state
+            return state;
     }
 }
 

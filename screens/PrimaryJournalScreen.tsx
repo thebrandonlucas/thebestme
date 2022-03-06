@@ -23,14 +23,12 @@ export function PrimaryJournalScreen({
   saveJournal,
   updateJournal,
   deleteJournal,
-  // today,
 }) {
   const colorScheme = useColorScheme() ?? 'dark';
   const [journalId, setJournalId] = useState<string>('');
   const [journalText, setJournalText] = useState<string>('');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isAddingJournal, setIsAddingJournal] = useState<boolean>(false);
-  const [isEditingJournal, setIsEditingJournal] = useState<boolean>(false);
   const [date, setDate] = useState<string>('');
   const [journals, setJournals] = useState<JournalEntryType>();
   const [loading, setLoading] = useState(true);
@@ -76,7 +74,7 @@ export function PrimaryJournalScreen({
       updateJournal(journalId, journalText);
       setJournalId('');
       setJournalText('');
-      setIsEditingJournal(false);
+      setIsAddingJournal(false);
     }
   }
 
@@ -88,7 +86,7 @@ export function PrimaryJournalScreen({
   function clickPlus(): void {
     setJournalId('');
     // FIXME: Refactor getDateString and all function calls to it
-    setDate(getDateString(new Date().toISOString()).date);
+    setDate(DateTime.now().toISODate());
     setIsAddingJournal(true);
     setModalVisible(true);
   }
@@ -102,7 +100,7 @@ export function PrimaryJournalScreen({
     setJournalId(id);
     setJournalText(text);
     setDate(date);
-    setIsEditingJournal(true);
+    setIsAddingJournal(false);
     setModalVisible(true);
   }
 

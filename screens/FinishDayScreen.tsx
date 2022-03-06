@@ -107,6 +107,7 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
         setText={setEndOfDayNotes}
         label="End of Day Notes"
         buttonStyle={styles.endOfDayNotes as StyleProp<ViewStyle>}
+        textPlaceholder={"Enter your reflections"}
       />
       <HabitSummaryCard
         remainingHabits={remainingHabits}
@@ -118,7 +119,7 @@ function FinishDayScreen({ navigation, dayReducer, habitReducer, saveDay }) {
         <Text style={styles.title}>Journals</Text>
         <View style={[styles.rowContainer, { marginVertical: 5 }]}>
           <Text style={styles.bold}>Primary: {journalEntryCount}</Text>
-          <Text style={styles.bold}>CBT: {cbtEntryCount}</Text>
+          <Text style={styles.bold}>Thought Challenging: {cbtEntryCount}</Text>
         </View>
       </Card>
       <Text style={styles.title}>How are you feeling?</Text>

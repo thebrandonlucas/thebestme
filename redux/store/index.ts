@@ -15,6 +15,7 @@ import { createStore, combineReducers,
 import thunk from 'redux-thunk'; 
 import dayReducer from '../reducers/dayReducer';
 import descriptionReducer from '../reducers/descriptionReducer';
+import { RESET_APP } from '../actions/types/RootActions.types';
 
 const persistConfig = {
   key: 'root',

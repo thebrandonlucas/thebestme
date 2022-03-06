@@ -4,6 +4,7 @@ import {
   SET_DESCRIPTION_DISPLAY,
   SET_JOURNAL_DESCRIPTION,
 } from '../actions/types/DescriptionActions.types';
+import { RESET_HABITS } from '../actions/types/HabitActions.types';
 
 const initialState: {
   infoType: DescriptionType;
@@ -23,6 +24,8 @@ const descriptionReducer = (state = initialState, action) => {
       return { ...state, journalInfoType: action.payload };
     case SET_DESCRIPTION_DISPLAY:
       return { ...state, isDisplaying: action.payload };
+    // case RESET_HABITS:
+    //   return initialState;
     default:
       return state;
   }
